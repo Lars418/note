@@ -1,0 +1,223 @@
+{
+    "name": {
+        "message": "Notes ",
+        "description": "Extension name"
+    },
+    "description": {
+        "message": "Dead simple extension to manage notes.",
+        "description": "Extension description"
+    },
+
+
+    "popupTitle": {
+        "message": "Notes"
+    },
+    "newTabTitle": {
+        "message": "Open in seperate window"
+    },
+    "settingsTitle": {
+        "message": "Go to options"
+    },
+    "defaultPriorityHigh": {
+        "message": "High"
+    },
+    "defaultPriorityMedium": {
+        "message": "Medium"
+    },
+    "defaultPriorityLow": {
+        "message": "Low"
+    },
+    "addNotePlaceholder": {
+        "message": "Add note…"
+    },
+    "recentNotes": {
+        "message": "Recently added",
+        "description": "headline for last/recent notes"
+    },
+
+    "addHintKey": {
+        "message": "Enter"
+    },
+    "addHintTitle": {
+        "message": "Press \"Enter\" to add note"
+    },
+
+
+    "justNow": {
+        "message": "just now"
+    },
+    "oneMinuteAgo": {
+        "message": "one minute ago"
+    },
+    "nMinutesAgo": {
+        "message": "$MINUTES$ minutes ago",
+        "placeholders": {
+            "minutes": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "oneHourAgo": {
+        "message": "one hour ago"
+    },
+    "nHoursAgo": {
+        "message": "$HOURS$ hours ago",
+        "placeholders": {
+            "hours": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "oneDayAgo": {
+        "message": "one day ago"
+    },
+    "nDaysAgo": {
+        "message": "$DAYS$ days ago",
+        "placeholders": {
+            "days": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "overAMonth": {
+        "message": "Over a month ago"
+    },
+
+    "noNotes": {
+        "message": "Nothing noted yet."
+    },
+
+    "noteActionsTitle": {
+        "message": "More note actions"
+    },
+    "noteActionCompletedTitle": {
+        "message": "Mark as completed"
+    } ,
+    "noteActionChangePriority": {
+        "message": "Change priority"
+    },
+    "noteActionDelete": {
+        "message": "Delete"
+    },
+    "noteActionEdit": {
+        "message": "Edit text"
+    },
+
+    "optionsTitle": {
+        "message": "Note options"
+    },
+
+    "optionsGeneral": {
+        "message": "General"
+    },
+
+    "saveCurrentNote": {
+        "message": "Save current draft"
+    },
+    "saveCurrentNoteDesc": {
+        "message": "Your current note will be saved upon closing the popup and loaded when it is opened again."
+    },
+
+    "showContextMenu": {
+        "message": "Show context menu"
+    },
+    "showContextMenuDesc": {
+        "message": "Adds an option to the context menu. This option allows you to create a note from a text selection."
+    },
+
+    "optionsAdvanced": {
+        "message": "Advanced"
+    },
+
+    "advancedEnableSpellcheck": {
+        "message": "Enable spellcheck"
+    },
+    "advancedEnableSpellcheckDesc": {
+        "message": "The extension will check for any grammar mistakes when creating or editing a note."
+    },
+
+    "advancedParseUrls": {
+        "message": "Parse urls"
+    },
+    "advancedParseUrlsDesc": {
+        "message": "Allows interaction with links to websites or emails inside a note."
+    },
+
+    "advancedShowChangelog": {
+        "message": "Show version changelog"
+    },
+    "advancedShowChangelogDesc": {
+        "message": "Opens the changelog upon an extension update."
+    },
+
+    "actionButtons": {
+        "message": "Actions"
+    },
+
+    "actionClearCompletedNotes": {
+        "message": "Clear completed notes"
+    },
+    "actionResetSettings": {
+        "message": "Reset settings"
+    },
+    "actionExportNotes": {
+        "message": "Export notes"
+    },
+    "actionImportNotes": {
+        "message": "Load notes"
+    },
+    "downloadFileName": {
+        "message": "Notes backup ($DATE$).json",
+        "placeholders": {
+            "date": {
+                "content": "$1",
+                "example": "01.01.2020"
+            }
+        }
+    },
+
+    "actionExtensionSupport": {
+        "message": "Extension support"
+    },
+    "actionExtensionSupportTitle": {
+        "message": "Send an email to extension-support@koelker.dev"
+    },
+
+    "debugInformation": {
+        "message": "Debug information"
+    },
+
+    "optionsCopyrightNotice": {
+        "message": "Copyright © <a href='https://lars.koelker.dev/' target='_blank'>Lars Kölker</a> 2020 － $YEAR$. All rights reserved.",
+        "placeholders": {
+            "year": {
+                "content": "$1",
+                "example": "2020"
+            }
+        }
+    },
+    "optionsFeatherNotice": {
+        "message": "Icons provided by feathericons.com"
+    },
+    "optionMoreInformation": {
+        "message": "More information"
+    },
+
+    
+    "contextMenuText": {
+        "message": "Add note \"%s\""
+    },
+    "contextMenuFileUrl": {
+        "message": "Local file"
+    },
+
+    "dialogActionOk": {
+        "message": "Okay"
+    },
+    "dialogActionCloseTitle": {
+        "message": "Close"
+    }
+}

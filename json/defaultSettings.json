@@ -1,0 +1,72 @@
+{
+    "notePriorities": [
+        {
+            "name": "HIGH",
+            "default": {
+                "value": "defaultPriorityHigh",
+                "color": "var(--red)",
+                "icon": "<svg xmlns=\"http:\/\/www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"17 11 12 6 7 11\"></polyline><polyline points=\"17 18 12 13 7 18\"></polyline></svg>"
+            },
+            "custom": {
+                "value": null,
+                "color": null
+            }
+        },
+        {
+            "name": "MEDIUM",
+            "default": {
+                "value": "defaultPriorityMedium",
+                "color": "var(--orange)",
+                "icon": "<svg viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"2\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\"5\" y1=\"8\" x2=\"19\" y2=\"8\"></line><line x1=\"5\" y1=\"16\" x2=\"19\" y2=\"16\"></line></svg>"
+                
+            },
+            "custom": {
+                "value": null,
+                "color": null
+            }
+        },
+        {
+            "name": "LOW",
+            "default": {
+                "value": "defaultPriorityLow",
+                "color": "var(--lightblue)",
+                "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"7 13 12 18 17 13\"></polyline><polyline points=\"7 6 12 11 17 6\"></polyline></svg>"
+            },
+            "custom": {
+                "value": null,
+                "color": null
+            }
+        }
+    ],
+    "draft": {
+        "value": "",
+        "priority": null
+    },
+    "settings": {
+        "default": {
+            "advancedParseUrls": true,
+            "advancedEnableSpellcheck": true,
+            "advancedShowChangelog": true,
+
+            "saveCurrentNote": true,
+            "showContextMenu": false,
+
+            "priorityKeywords": {
+                "high": {
+                    "en": [ "important", "high" ],
+                    "de": [ "wichtig" ]
+                },
+                "medium": {
+                    "en": [ "normal" ],
+                    "de": [ "normal" ]
+                },
+                "low": {
+                    "en": [ "unimportant", "not important" ],
+                    "de": [ "unrelevant", "nicht relevant" ]
+                }
+            }
+        },
+        "custom": {}
+    },
+    "notes": []
+}

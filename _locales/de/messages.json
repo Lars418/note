@@ -1,0 +1,10 @@
+{
+    "name": {
+        "message": "Notizen",
+        "description": "Extension name"
+    },
+    "description": {
+        "message": "Erweiterung zum Verwalten von Notizen",
+        "description": "Extension description"
+    }
+}

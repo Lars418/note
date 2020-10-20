@@ -1,0 +1,41 @@
+{
+    "manifest_version": 2,
+    "version": "0.1",
+    "version_name": "0.1 beta",
+
+    "name": "__MSG_name__",
+    "description": "__MSG_description__",
+    "icons": {
+        "16": "img/extension_icon/16.png",
+        "32": "img/extension_icon/32.png",
+        "64": "img/extension_icon/64.png",
+        "128": "img/extension_icon/128.png"
+    },
+
+    "permissions": [ "storage", "activeTab", "commands" ],
+    "optional_permissions": [ "contextMenus" ],
+
+    "default_locale": "en",
+
+    "options_ui": {
+        "page": "options.html",
+        "open_in_tab": true
+    },
+
+    "browser_action": {
+        "default_popup": "popup.html"
+    },
+
+    "commands": {
+        "_execute_browser_action": {
+            "suggested_key": {
+              "default": "Ctrl+Shift+O",
+              "mac": "Command+Shift+O"
+            }
+        }
+    },
+
+    "background": {
+        "scripts": [ "js/background.js" ]
+    }
+}
