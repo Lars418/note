@@ -8,3 +8,4 @@ A simple browser extension for managing notes.
  - Firefox: coming soon (tm)
 
 ## License
+[Apache License 2.0](LICENSE)
