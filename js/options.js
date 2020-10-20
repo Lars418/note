@@ -1,6 +1,7 @@
 //#region vars
 const generalOptionsWrapper = document.getElementById("generalOptionsWrapper");
 const advancedOptionsWrapper = document.getElementById("advancedOptionsWrapper");
+const priorityNamesWrapper = document.getElementById("priorityNamesWrapper");
 const clearCompletedNotesBtn = document.getElementById("clearCompletedNotes");
 const resetSettingsBtn = document.getElementById("resetSettings");
 const exportNotesBtn = document.getElementById("exportNotes");
@@ -62,19 +63,27 @@ if(new URL(location.href).searchParams.get("debug") === "1") debug.style.display
 //#region i18n
 const i18n = document.querySelectorAll("[intl]");
 const i18nTitle = document.querySelectorAll("[intl-title]");
-i18n.forEach(msg => msg.innerHTML = chrome.i18n.getMessage(msg.getAttribute("intl") || msg.id));
-i18nTitle.forEach(msg => msg.title = chrome.i18n.getMessage(msg.getAttribute("intl-title")));
+i18n.forEach(msg => {
+    msg.innerHTML = chrome.i18n.getMessage(msg.getAttribute("intl") || msg.id);
+    msg.removeAttribute("intl");
+});
+i18nTitle.forEach(msg => {
+    msg.title = chrome.i18n.getMessage(msg.getAttribute("intl-title"));
+    msg.removeAttribute("intl-title");
+});
 //#endregion
 
 //#region load settings
-chrome.storage.local.get("settings", res => {
+chrome.storage.local.get(["settings", "notePriorities"], res => {
     const settings = Object.keys(res.settings.default);
+    const notePriorities = res.notePriorities;
     
     const generalOptions = settings.filter(x => !x.startsWith("advanced") && typeof res.settings.default[x] === "boolean");
     const advancedOptions = settings.filter(x => x.startsWith("advanced") && typeof res.settings.default[x] === "boolean");
 
     generalOptions.map(setting => createOption(setting, res.settings, generalOptionsWrapper));
     advancedOptions.map(setting => createOption(setting, res.settings, advancedOptionsWrapper));
+    notePriorities.map(priority => createPriority(priority, priorityNamesWrapper));
 
     if(res.settings.custom.advancedUser ?? res.settings.default.advancedUser) debug.style.display = "initial";
 })
@@ -206,6 +215,34 @@ function createOption(setting, settingsObject, wrapper) {
     }
 
     wrapper.appendChild(settingWrapper);
+}
+
+function createPriority(priority, wrapper) {
+    const prio = document.createElement("div");
+    console.log(priority);
+    prio.style.backgroundColor = priority.custom.color || priority.default.color;
+    prio.innerHTML = 
+    `
+        ${priority.custom.icon ||priority.default.icon}
+        <input
+            type="text"
+            value="${priority.custom.value || priority.default.value}"
+            name="${priority.name}"
+        />
+    `;
+
+    const prioInput = prio.querySelector("input");
+    prioInput.oninput = () => {
+        chrome.storage.local.get("notePriorities", res => {
+            const { notePriorities } = res;
+            const updatedPriorities = notePriorities.find(p => p.name === priority.name);
+            updatedPriorities.custom.value = prioInput.value.trim();
+
+            chrome.storage.local.set({notePriorities});
+        })
+    }
+
+    wrapper.appendChild(prio);
 }
 
 function showOptionDialog(option) {

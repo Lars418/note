@@ -1,7 +1,10 @@
 # Note extension
 A simple browser extension for managing notes.
 
-## Download for chrome
-link coming soon
+## Features
+
+## Download
+ - Chrome / MS Edge / Brave / Vivaldi
+ - Firefox: coming soon (tm)
 
 ## License

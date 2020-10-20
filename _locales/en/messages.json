@@ -128,6 +128,13 @@
         "message": "Adds an option to the context menu. This option allows you to create a note from a text selection."
     },
 
+    "optionPriorities": {
+        "message": "Note priorities"
+    },
+    "optionPriorityHint": {
+        "message": "Click on a priority to rename it."
+    },
+
     "optionsAdvanced": {
         "message": "Advanced"
     },

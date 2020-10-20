@@ -38,7 +38,7 @@ main {
     > section {
         width: 100%;
         max-width: 40rem;
-        margin: 1.5rem auto;
+        margin: 1rem auto;
 
         > h2 {
             max-width: 50rem;
@@ -172,6 +172,42 @@ main {
                         transform: translateY(-50%);
                         transition: transform 200ms;
                         will-change: transform;
+                    }
+                }
+            }
+        }
+
+        > #priorityNamesWrapper {
+            display: flex;
+            flex-direction: column;
+
+            > div {
+                display: flex;
+                padding: 0 .75rem;
+                margin: .5rem 0;
+                align-items: center;
+
+                &:focus-within {
+                    box-shadow: 0 0 0 3px rgba(0,125,250,0.45);
+                }
+
+                > svg {
+                    width: 1.5rem;
+                    height: 1.5rem;
+                }
+
+                > input {
+                    -webkit-appearance: none;
+                    -moz-appearance: none;
+                    appearance: none;
+                    border: none;
+                    padding: .75rem 0;
+                    width: 100%;
+                    margin-left: .25rem;
+                    background-color: transparent;
+
+                    &:focus {
+                        box-shadow: none;
                     }
                 }
             }

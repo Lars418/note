@@ -97,8 +97,14 @@ loadPrioritySelection();
 //#region i18n
 const i18n = document.querySelectorAll("[intl]");
 const i18nTitle = document.querySelectorAll("[intl-title]");
-i18n.forEach(msg => msg.innerHTML = chrome.i18n.getMessage(msg.getAttribute("intl") || msg.id));
-i18nTitle.forEach(msg => msg.title = chrome.i18n.getMessage(msg.getAttribute("intl-title")));
+i18n.forEach(msg => {
+    msg.innerHTML = chrome.i18n.getMessage(msg.getAttribute("intl") || msg.id);
+    msg.removeAttribute("intl");
+});
+i18nTitle.forEach(msg => {
+    msg.title = chrome.i18n.getMessage(msg.getAttribute("intl-title"));
+    msg.removeAttribute("intl-title");
+});
 //#endregion
 
 //#region newTab
