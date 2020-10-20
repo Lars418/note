@@ -48,8 +48,6 @@ chrome.runtime.onInstalled.addListener(async e => {
                 });
             }
         });
-
-        // add context menu
     }
 
     initBadge();
