@@ -1,9 +1,9 @@
-# Note extension
+# Notes - Managing notes made easy.
 A clean and simple browser extension for managing notes.
 
-[lars.koelker.dev/extension/note/](https://lars.koelker.dev/extension/note/)
+Website: [lars.koelker.dev/extension/note/](https://lars.koelker.dev/extension/note/)
 
-## Features
+## [Documentation](https://lars.koelker.dev/extension/note/documentation.php)
 
 ## Installation
  - Chrome: 
