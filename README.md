@@ -1,7 +1,7 @@
 # Notes - Managing notes made easy.
 A clean and simple browser extension for managing notes.
 
-Website: [lars.koelker.dev/extension/note/](https://lars.koelker.dev/extension/note/)
+[lars.koelker.dev/extension/note/](https://lars.koelker.dev/extension/note/)
 
 ## [Documentation](https://lars.koelker.dev/extension/note/documentation.php)
 
