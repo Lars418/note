@@ -24,6 +24,14 @@ header {
         margin: 0 auto;
         max-width: 40rem;
         font-weight: normal;
+        display: flex;
+        align-items: center;
+
+        > svg {
+            width: 2rem;
+            height: 2rem;
+            margin-right: .5rem;
+        }
     }
 }
 

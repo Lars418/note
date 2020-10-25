@@ -1,6 +1,6 @@
 //#region vars
 const searchParams = new URL(window.location.href).searchParams;
-const uiLang = chrome.i18n.getMessage("@@ui_locale");
+const uiLang = chrome.i18n.getUILanguage();
 const addNoteInput = document.getElementById("addNote");
 const addNoteWrapper = document.getElementById("addNoteWrapper");
 const noteTag = document.getElementById("tag");
@@ -176,29 +176,35 @@ chrome.storage.local.get("settings", res => {
     }
 });
 
-addNoteInput.onkeypress = e => {
-    if(!e.shiftKey && e.key === "Enter") {
-        e.preventDefault();
-
-        chrome.storage.local.get(["notes"], res => {
-            const note = {
-                value: addNoteInput.value.trim(),
-                priority: addNoteInput.parentElement.getAttribute("priority") || "MEDIUM",
-                completed: false,
-                date: new Date().toISOString(),
-                id: uuidv4(),
-                origin: null
-            };
-            res.notes.push(note);
-            
-            chrome.storage.local.set({notes: res.notes});
-            addNoteInput.value = "";
-            addNoteHint.style.opacity = 0;
-            clearTag();
-            addNote(note);
-        })
-
+[addNoteInput, addNoteHint].forEach(el => {
+    el.onkeypress = e => {
+        if(!e.shiftKey && e.key === "Enter") {
+            e.preventDefault();
+            saveNote();
+        }
     }
+});
+
+addNoteHint.onclick = saveNote;
+
+function saveNote() {
+    chrome.storage.local.get(["notes"], res => {
+        const note = {
+            value: addNoteInput.value.trim(),
+            priority: addNoteInput.parentElement.getAttribute("priority") || "MEDIUM",
+            completed: false,
+            date: new Date().toISOString(),
+            id: uuidv4(),
+            origin: null
+        };
+        res.notes.push(note);
+        
+        chrome.storage.local.set({notes: res.notes});
+        addNoteInput.value = "";
+        addNoteHint.style.opacity = 0;
+        clearTag();
+        addNote(note);
+    });
 }
 //#endregion
 

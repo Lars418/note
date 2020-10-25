@@ -4,7 +4,227 @@
         "description": "Extension name"
     },
     "description": {
-        "message": "Erweiterung zum Verwalten von Notizen",
+        "message": "Erweiterung zum Erstellen und Verwalten von Notizen.",
         "description": "Extension description"
+    },
+
+
+    "popupTitle": {
+        "message": "Notizen"
+    },
+    "newTabTitle": {
+        "message": "In separatem Fenster öffnen"
+    },
+    "settingsTitle": {
+        "message": "Zu Optionen wechseln"
+    },
+    "defaultPriorityHigh": {
+        "message": "Hoch"
+    },
+    "defaultPriorityMedium": {
+        "message": "Mittel"
+    },
+    "defaultPriorityLow": {
+        "message": "Niedrig"
+    },
+    "addNotePlaceholder": {
+        "message": "Notiz hinzufügen…"
+    },
+    "recentNotes": {
+        "message": "Kürzlich hinzugefügt",
+        "description": "headline for last/recent notes"
+    },
+
+    "addHintKey": {
+        "message": "Enter"
+    },
+    "addHintTitle": {
+        "message": "Drücke \"Enter\" zum Bestätigen"
+    },
+
+
+    "justNow": {
+        "message": "gerade eben"
+    },
+    "oneMinuteAgo": {
+        "message": "vor einer Minute"
+    },
+    "nMinutesAgo": {
+        "message": "vor $MINUTES$ Minuten",
+        "placeholders": {
+            "minutes": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "oneHourAgo": {
+        "message": "vor einer Stunde"
+    },
+    "nHoursAgo": {
+        "message": "vor $HOURS$ Stunden",
+        "placeholders": {
+            "hours": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "oneDayAgo": {
+        "message": "vor einem Tag"
+    },
+    "nDaysAgo": {
+        "message": "vor $DAYS$ Tagen",
+        "placeholders": {
+            "days": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "overAMonth": {
+        "message": "Vor über einem Monat"
+    },
+
+    "noNotes": {
+        "message": "Noch nichts notiert."
+    },
+
+    "noteActionsTitle": {
+        "message": "Mehr Notizaktionen"
+    },
+    "noteActionCompletedTitle": {
+        "message": "Als abgeschlossen markieren"
+    } ,
+    "noteActionChangePriority": {
+        "message": "Priorität ändern"
+    },
+    "noteActionDelete": {
+        "message": "Löschen"
+    },
+    "noteActionEdit": {
+        "message": "Text ändern"
+    },
+
+    "optionsTitle": {
+        "message": "Notiz Optionen"
+    },
+
+    "optionsGeneral": {
+        "message": "Generell"
+    },
+
+    "saveCurrentNote": {
+        "message": "Aktuellen Entwurf speichern"
+    },
+    "saveCurrentNoteDesc": {
+        "message": "Deine atkuelle Notiz wird beim schließen des Fensters gespeichert und beim erneuten öffnen geladen."
+    },
+
+    "showContextMenu": {
+        "message": "Kontextmenü anzeigen"
+    },
+    "showContextMenuDesc": {
+        "message": "Fügt dem Kontextmenü eine Option hinzu. Diese ermöglicht einem das Erstellen einer Notiz durch eine Textauswahl."
+    },
+
+    "optionPriorities": {
+        "message": "Notizprioritäten"
+    },
+    "optionPriorityHint": {
+        "message": "Klicke auf eine Priorität, um diese umzubenennen."
+    },
+
+    "optionsAdvanced": {
+        "message": "Erweitert"
+    },
+
+    "advancedEnableSpellcheck": {
+        "message": "Sprachprüfung aktivieren"
+    },
+    "advancedEnableSpellcheckDesc": {
+        "message": "Die Erweiterung prüft beim Erstellen oder Bearbeiten einer Notiz die Grammatik."
+    },
+
+    "advancedParseUrls": {
+        "message": "Nach Links suchen"
+    },
+    "advancedParseUrlsDesc": {
+        "message": "Ermöglicht die Interkation mit Links und E-Mails innerhalb einer Notiz."
+    },
+
+    "advancedShowChangelog": {
+        "message": "Versionsänderungen anzeigen"
+    },
+    "advancedShowChangelogDesc": {
+        "message": "Zeigt die Versionsänderungen nach einem Update an."
+    },
+
+    "actionButtons": {
+        "message": "Aktionen"
+    },
+
+    "actionClearCompletedNotes": {
+        "message": "Abge­schlossene Notizen löschen"
+    },
+    "actionResetSettings": {
+        "message": "Einstellungen zurücksetzen"
+    },
+    "actionExportNotes": {
+        "message": "Notizen speichern"
+    },
+    "actionImportNotes": {
+        "message": "Notizen laden"
+    },
+    "downloadFileName": {
+        "message": "Notizen Sicherung ($DATE$).json",
+        "placeholders": {
+            "date": {
+                "content": "$1",
+                "example": "01.01.2020"
+            }
+        }
+    },
+
+    "actionExtensionSupport": {
+        "message": "Support"
+    },
+    "actionExtensionSupportTitle": {
+        "message": "Sende eine E-Mail an extension-support@koelker.dev"
+    },
+
+    "debugInformation": {
+        "message": "Entwickler Informationen"
+    },
+
+    "optionsCopyrightNotice": {
+        "message": "Copyright © <a href='https://lars.koelker.dev/' target='_blank'>Lars Kölker</a> 2020 － $YEAR$. Alle Rechte vorbehalten.",
+        "placeholders": {
+            "year": {
+                "content": "$1",
+                "example": "2020"
+            }
+        }
+    },
+    "optionsFeatherNotice": {
+        "message": "Icons bereitgestellt von feathericons.com"
+    },
+    "optionMoreInformation": {
+        "message": "Mehr Informationen"
+    },
+
+    
+    "contextMenuText": {
+        "message": "Notiz \"%s\" hinzufügen"
+    },
+    "contextMenuFileUrl": {
+        "message": "Lokale Datei"
+    },
+
+    "dialogActionOk": {
+        "message": "Okay"
+    },
+    "dialogActionCloseTitle": {
+        "message": "Schließen"
     }
 }

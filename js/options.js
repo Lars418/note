@@ -13,7 +13,7 @@ const debugWrapper = document.getElementById("debugInformationWrapper");
 const optionDialog = document.getElementById("dialogOption");
 const optionDialogOk = document.getElementById("dialogOk");
 const optionDialogClose = document.getElementById("dialogClose");
-const uiLang = chrome.i18n.getMessage("@@ui_locale");
+const uiLang =  chrome.i18n.getUILanguage();
 const manifest = chrome.runtime.getManifest();
 const osMapping = {
     android: "Android",

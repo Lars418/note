@@ -1,11 +1,20 @@
 # Note extension
-A simple browser extension for managing notes.
+A clean and simple browser extension for managing notes.
+
+[lars.koelker.dev/extension/note/](https://lars.koelker.dev/extension/note/)
 
 ## Features
 
-## Download
- - Chrome / MS Edge / Brave / Vivaldi
- - Firefox: coming soon (tm)
+## Installation
+ - Chrome: 
+
+ *Chromium based browsers (e.g. MS Edge) may also be able to install the extension using the link above. Keep in mind: The extension has been developed for Google Chrome. It might not work as expected in other browsers.*
+
+## Languages
+Note is availiable in English and German.
+
+## Contributing
+(to be done)
 
 ## License
-[Apache License 2.0](LICENSE)
+Note is licensed under the [Apache License 2.0](LICENSE).
