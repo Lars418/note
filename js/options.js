@@ -219,7 +219,6 @@ function createOption(setting, settingsObject, wrapper) {
 
 function createPriority(priority, wrapper) {
     const prio = document.createElement("div");
-    console.log(priority);
     prio.style.backgroundColor = priority.custom.color || priority.default.color;
     prio.innerHTML = 
     `
@@ -261,24 +260,6 @@ function closeOptionDialog() {
 
 function updateSetting(key, value) {
     chrome.storage.local.get("settings", res => {
-
-        /*if(key === "showContextMenu") {
-            chrome.permissions.contains({permissions: [ "contextMenus" ]}, bool => {
-                if(!bool) {
-                    chrome.permissions.request({permissions: [ "contextMenus" ]}, granted => {
-                        if(granted) {
-                            chrome.contextMenus.create({
-                                id: "1",
-                                contexts: [ "selection" ],
-                                title: chrome.i18n.getMessage("contextMenuText"),
-                                onclick: res => addNoteThroughContextmenu(res.selectionText, res.pageUrl)
-                            });
-                        }
-                    })
-                }
-            })
-        }*/
-
         const oldSettings = res.settings;
         const custom = oldSettings.custom;
         custom[key] = value;
