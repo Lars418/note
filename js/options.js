@@ -262,7 +262,7 @@ function closeOptionDialog() {
 function updateSetting(key, value) {
     chrome.storage.local.get("settings", res => {
 
-        if(key === "showContextMenu") {
+        /*if(key === "showContextMenu") {
             chrome.permissions.contains({permissions: [ "contextMenus" ]}, bool => {
                 if(!bool) {
                     chrome.permissions.request({permissions: [ "contextMenus" ]}, granted => {
@@ -277,7 +277,7 @@ function updateSetting(key, value) {
                     })
                 }
             })
-        }
+        }*/
 
         const oldSettings = res.settings;
         const custom = oldSettings.custom;

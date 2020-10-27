@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
-    "version": "0.1",
-    "version_name": "0.1 beta",
+    "version": "0.2",
+    "version_name": "0.2 (beta release)",
 
     "name": "__MSG_name__",
     "description": "__MSG_description__",
@@ -12,8 +12,7 @@
         "128": "img/extension_icon/128.png"
     },
 
-    "permissions": [ "storage", "activeTab", "commands" ],
-    "optional_permissions": [ "contextMenus" ],
+    "permissions": [ "storage", "activeTab", "commands", "contextMenus" ],
 
     "default_locale": "en",
 

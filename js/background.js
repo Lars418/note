@@ -33,7 +33,7 @@ chrome.runtime.onInstalled.addListener(async e => {
             if(res.settings.custom.advancedShowChangelog ?? res.settings.default.advancedShowChangelog) {
                 chrome.runtime.getPlatformInfo(info => {
                     chrome.tabs.create({
-                        url: `https://lars.koelker.dev/extensions/note/changelog?v=${encodeURIComponent(version)}&previous=${encodeURIComponent(previousVersion)}&os=${info.os}`
+                        url: `https://lars.koelker.dev/extensions/note/changelog.php?v=${encodeURIComponent(version)}&previous=${encodeURIComponent(previousVersion)}&os=${info.os}`
                     });
                 });
             };
