@@ -264,6 +264,12 @@ function updateSetting(key, value) {
         const custom = oldSettings.custom;
         custom[key] = value;
 
+        if(key === "showContextMenu") {
+            chrome.contextMenus.update("1", {
+                visible: value
+            });
+        }
+
         chrome.storage.local.set({
             settings: {
                 ...oldSettings,

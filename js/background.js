@@ -22,6 +22,8 @@ chrome.runtime.onInstalled.addListener(async e => {
             });
 
             chrome.storage.local.set(json);
+
+            initContextMenu();
         });
 
     }
@@ -38,15 +40,10 @@ chrome.runtime.onInstalled.addListener(async e => {
                 });
             };
 
-            // add context menu
-            if(res.settings.custom.showContextMenu ?? res.settings.default.showContextMenu) {
-                chrome.contextMenus.create({
-                    id: "1",
-                    contexts: [ "selection" ],
-                    title: chrome.i18n.getMessage("contextMenuText"),
-                    onclick: res => addNoteThroughContextmenu(res.selectionText, res.pageUrl)
-                });
-            }
+            // update context menu
+            chrome.contextMenus.update("1", {
+                visible: res.settings.custom.showContextMenu ?? res.settings.default.showContextMenu
+            });
         });
     }
 
@@ -88,6 +85,16 @@ function initBadge() {
             });
         }
     })
+}
+
+function initContextMenu() {
+    chrome.contextMenus.create({
+        id: "1",
+        contexts: [ "selection" ],
+        title: chrome.i18n.getMessage("contextMenuText"),
+        onclick: res => addNoteThroughContextmenu(res.selectionText, res.pageUrl),
+        visible: true
+    });
 }
 
 /**

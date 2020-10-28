@@ -49,7 +49,7 @@
             "advancedShowChangelog": true,
 
             "saveCurrentNote": true,
-            "showContextMenu": false,
+            "showContextMenu": true,
 
             "priorityKeywords": {
                 "high": {
