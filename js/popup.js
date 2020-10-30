@@ -477,23 +477,30 @@ function editNote(id) {
         if(!e.shiftKey && e.key === "Enter") {
             e.preventDefault();
 
-            chrome.storage.local.get(["notes", "settings"], res => {
-                const { settings } = res;
-                const oldNotes = res.notes;
-                const updateNote = oldNotes.find(note => note.id === id);
-                updateNote.value = selectedNoteContent.textContent.trim();
-
-                chrome.storage.local.set({
-                    notes: oldNotes
-                });
-
-                selectedNoteContent.innerHTML = ((settings.custom.advancedParseUrls ?? settings.default.advancedParseUrls) && formatNoteValue(selectedNoteContent.textContent)) || selectedNoteContent.innerHTML;
-                selectedNoteContent.removeAttribute("contenteditable");
-                selectedNoteContent.removeAttribute("tabindex");
-                addNoteLinkListeners(selectedNoteContent);
-                selectedNoteContent.onkeydown = null;
-            });
+            selectedNoteContent.removeAttribute("contenteditable"); // this triggers the onblur handler
+            selectedNoteContent.removeAttribute("tabindex");
         }
+    }
+
+    selectedNoteContent.onblur = e => {
+        e.preventDefault();
+
+        chrome.storage.local.get(["notes", "settings"], res => {
+            const { settings } = res;
+            const oldNotes = res.notes;
+            const updateNote = oldNotes.find(note => note.id === id);
+            updateNote.value = selectedNoteContent.textContent.trim();
+
+            chrome.storage.local.set({
+                notes: oldNotes
+            });
+
+            selectedNoteContent.innerHTML = ((settings.custom.advancedParseUrls ?? settings.default.advancedParseUrls) && formatNoteValue(selectedNoteContent.textContent)) || selectedNoteContent.innerHTML;
+            selectedNoteContent.removeAttribute("contenteditable");
+            selectedNoteContent.removeAttribute("tabindex");
+            addNoteLinkListeners(selectedNoteContent);
+            selectedNoteContent.onkeydown = null;
+        }); 
     }
 }
 

@@ -24,6 +24,10 @@ chrome.runtime.onInstalled.addListener(async e => {
             chrome.storage.local.set(json);
 
             initContextMenu();
+
+            chrome.tabs.create({
+                url: "https://lars.koelker.dev/extensions/note/install.php"
+            })
         });
 
     }
@@ -41,6 +45,7 @@ chrome.runtime.onInstalled.addListener(async e => {
             };
 
             // update context menu
+            initContextMenu();
             chrome.contextMenus.update("1", {
                 visible: res.settings.custom.showContextMenu ?? res.settings.default.showContextMenu
             });
