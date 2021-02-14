@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "version": "0.2.1",
-    "version_name": "0.2 (beta release)",
+    "version_name": "0.2.1 (beta release)",
 
     "name": "__MSG_name__",
     "description": "__MSG_description__",

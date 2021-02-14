@@ -55,6 +55,19 @@ chrome.runtime.onInstalled.addListener(async e => {
     initBadge();
 });
 
+chrome.runtime.onStartup.addListener(() => {
+    initBadge();
+    initContextMenu();
+})
+
+chrome.storage.onChanged.addListener(res => {
+    if(res.notes) {
+        chrome.browserAction.setBadgeText({
+            text: res.notes.newValue.filter(note => !note.completed).length.toString()
+        });
+    }
+})
+
 //#region helper
 function addNoteThroughContextmenu(value, origin, priority = "MEDIUM") {
     chrome.storage.local.get("notes", res => {
@@ -82,14 +95,6 @@ function initBadge() {
             text: res.notes.filter(note => !note.completed).length.toString()
         });
     });
-
-    chrome.storage.onChanged.addListener(res => {
-        if(res.notes) {
-            chrome.browserAction.setBadgeText({
-                text: res.notes.newValue.filter(note => !note.completed).length.toString()
-            });
-        }
-    })
 }
 
 function initContextMenu() {
