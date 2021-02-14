@@ -57,6 +57,13 @@ chrome.runtime.onInstalled.addListener(async e => {
 
 chrome.runtime.onStartup.addListener(() => {
     initBadge();
+
+    chrome.storage.local.get("settings", res => {
+        chrome.contextMenus.update("1", {
+            visible: res.settings.custom.showContextMenu ?? res.settings.default.showContextMenu
+        });
+    })
+
     initContextMenu();
 })
 
