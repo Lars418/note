@@ -38,5 +38,9 @@
         "scripts": [ "js/background.js" ]
     },
 
+    "content_scripts": [
+        "js/content.js"
+    ],
+
     "web_accessible_resources": [ "manifest.json" ]
 }
