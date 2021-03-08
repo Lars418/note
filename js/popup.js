@@ -608,11 +608,11 @@ function formatDatetime(date) {
 
 function formatNoteValue(value) {
     value.match(EMAIL_REGEX)?.forEach(email => {
-        value = value.replace(email, `<a href="mailto:${email}">${email}</a>`);
+        value = value.replace(email, `<a href="mailto:${email}" rel="noopener noreferrer">${email}</a>`);
     });
 
     value.match(URL_REGEX)?.forEach(url => {
-        value = value.replace(url, `<a href="${url}">${url.replace(/https?:\/\//gi, "")}</a>`);
+        value = value.replace(url, `<a href="${url}" rel="noopener noreferrer">${url.replace(/https?:\/\//gi, "")}</a>`);
     })
 
     return value;

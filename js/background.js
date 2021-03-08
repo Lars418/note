@@ -2,10 +2,7 @@ function getMsg(msg) {
     return chrome.i18n.getMessage(msg);
 }
 
-chrome.runtime.onInstalled.addListener(async e => {
-    // use svg icon instead of png
-    chrome.browserAction.setIcon({ path: 'img/extension_icon/file.svg' });
-    
+chrome.runtime.onInstalled.addListener(async e => {    
     if(e.reason === 'install') {
         // Load default settings
         await fetch("../json/defaultSettings.json")
@@ -32,11 +29,11 @@ chrome.runtime.onInstalled.addListener(async e => {
 
     }
     else if(e.reason === "update") {
-        const { version, previousVersion } = chrome.runtime.getManifest();
+        const { version, version_name, previousVersion } = chrome.runtime.getManifest();
 
         chrome.storage.local.get("settings", res => {
-            // show version changelog if enabled
-            if(res.settings.custom.advancedShowChangelog ?? res.settings.default.advancedShowChangelog) {
+            // show version changelog if enabled (silent update if version name starts with "&shy;" (shy char: "­"))
+            if((res.settings.custom.advancedShowChangelog ?? res.settings.default.advancedShowChangelog) && !version_name.startsWith("­")) {
                 chrome.runtime.getPlatformInfo(info => {
                     chrome.tabs.create({
                         url: `https://lars.koelker.dev/extensions/note/changelog.php?v=${encodeURIComponent(version)}&previous=${encodeURIComponent(previousVersion)}&os=${info.os}`
@@ -44,7 +41,6 @@ chrome.runtime.onInstalled.addListener(async e => {
                 });
             };
 
-            // update context menu
             initContextMenu();
             chrome.contextMenus.update("1", {
                 visible: res.settings.custom.showContextMenu ?? res.settings.default.showContextMenu
@@ -115,7 +111,7 @@ function initContextMenu() {
 }
 
 /**
- * Generated a uuidv4
+ * Generate a uuidv4
  * @author https://stackoverflow.com/a/2117523/8463645
  */
 function uuidv4() {
