@@ -39,7 +39,7 @@ chrome.runtime.onInstalled.addListener(async e => {
                         url: `https://lars.koelker.dev/extensions/note/changelog.php?v=${encodeURIComponent(version)}&previous=${encodeURIComponent(previousVersion)}&os=${info.os}`
                     });
                 });
-            };
+            }
 
             initContextMenu();
             chrome.contextMenus.update("1", {
@@ -116,8 +116,8 @@ function initContextMenu() {
  */
 function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
+        const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
     });
 }
 //#endregion

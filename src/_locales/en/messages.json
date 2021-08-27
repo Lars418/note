@@ -226,5 +226,9 @@
     },
     "dialogActionCloseTitle": {
         "message": "Close"
+    },
+
+    "addMarkedText": {
+        "message": "Add marked text"
     }
 }
