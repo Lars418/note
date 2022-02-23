@@ -1,9 +1,16 @@
-function getMsg(msg) {
-    return chrome.i18n.getMessage(msg);
-}
+const {
+    i18n: { getMessage },
+    runtime,
+    storage,
+    tabs,
+    contextMenus,
+    browserAction,
+} = chrome;
 
-chrome.runtime.onInstalled.addListener(async e => {    
-    if(e.reason === 'install') {
+runtime.onInstalled.addListener(async ({ reason }) => {
+    const installReason = runtime.OnInstalledReason;
+
+    if(reason === installReason.INSTALL) {
         // Load default settings
         await fetch("../json/defaultSettings.json")
         .then(res => res.json())
@@ -13,37 +20,38 @@ chrome.runtime.onInstalled.addListener(async e => {
                     ...json.notePriorities[x],
                     default: {
                         ...json.notePriorities[x].default,
-                        value: getMsg(json.notePriorities[x].default.value)
+                        value: getMessage(json.notePriorities[x].default.value)
                     }
                 }
             });
 
-            chrome.storage.local.set(json);
+            storage.local.set(json);
 
             initContextMenu();
 
-            chrome.tabs.create({
+            tabs.create({
                 url: "https://lars.koelker.dev/extensions/note/install.php"
             })
         });
 
     }
-    else if(e.reason === "update") {
-        const { version, version_name, previousVersion } = chrome.runtime.getManifest();
 
-        chrome.storage.local.get("settings", res => {
+    if(reason === installReason.UPDATE) {
+        const { version, version_name, previousVersion } = runtime.getManifest();
+
+        storage.local.get("settings", ({ settings }) => {
             // show version changelog if enabled (silent update if version name starts with "&shy;" (shy char: "­"))
-            if((res.settings.custom.advancedShowChangelog ?? res.settings.default.advancedShowChangelog) && !version_name.startsWith("­")) {
-                chrome.runtime.getPlatformInfo(info => {
-                    chrome.tabs.create({
+            if((settings.custom.advancedShowChangelog ?? settings.default.advancedShowChangelog) && !version_name.startsWith("­")) {
+                runtime.getPlatformInfo(info => {
+                    tabs.create({
                         url: `https://lars.koelker.dev/extensions/note/changelog.php?v=${encodeURIComponent(version)}&previous=${encodeURIComponent(previousVersion)}&os=${info.os}`
                     });
                 });
             }
 
             initContextMenu();
-            chrome.contextMenus.update("1", {
-                visible: res.settings.custom.showContextMenu ?? res.settings.default.showContextMenu
+            contextMenus.update("1", {
+                visible: settings.custom.showContextMenu ?? settings.default.showContextMenu
             });
         });
     }
@@ -51,72 +59,73 @@ chrome.runtime.onInstalled.addListener(async e => {
     initBadge();
 });
 
-chrome.runtime.onStartup.addListener(() => {
+runtime.onStartup.addListener(() => {
     initBadge();
 
-    chrome.storage.local.get("settings", res => {
-        chrome.contextMenus.update("1", {
-            visible: res.settings.custom.showContextMenu ?? res.settings.default.showContextMenu
+    storage.local.get("settings", ({ settings }) => {
+        contextMenus.update("1", {
+            visible: settings.custom.showContextMenu ?? settings.default.showContextMenu
         });
     })
 
     initContextMenu();
 })
 
-chrome.storage.onChanged.addListener(res => {
-    if(res.notes) {
-        chrome.browserAction.setBadgeText({
-            text: res.notes.newValue.filter(note => !note.completed).length.toString()
+storage.onChanged.addListener(({ notes }) => {
+    if (notes) {
+        browserAction.setBadgeText({
+            text: notes.newValue.filter(note => !note.completed).length.toString()
         });
     }
 })
 
 //#region helper
 function addNoteThroughContextmenu(value, origin, priority = "MEDIUM") {
-    chrome.storage.local.get("notes", res => {
-        const notes = res.notes;
-
+    storage.local.get("notes", ({ notes }) => {
         notes.push({
             completed: false,
             date: new Date().toISOString(),
-            id: uuidv4(),
+            id: createId(),
             priority,
             value,
             origin
         });
 
-        chrome.storage.local.set({notes});
+        storage.local.set({ notes });
     })
 }
 
 function initBadge() {
-    chrome.browserAction.setBadgeBackgroundColor({
+    browserAction.setBadgeBackgroundColor({
         color: "#3367d6"
     });
-    chrome.storage.local.get("notes", res => {
-        chrome.browserAction.setBadgeText({
-            text: res.notes.filter(note => !note.completed).length.toString()
+    storage.local.get("notes", ({ notes }) => {
+        browserAction.setBadgeText({
+            text: notes.filter(note => !note.completed).length.toString()
         });
     });
 }
 
 function initContextMenu() {
-    chrome.contextMenus.create({
+    contextMenus.create({
         id: "1",
         contexts: [ "selection" ],
-        title: chrome.i18n.getMessage("contextMenuText"),
-        onclick: res => addNoteThroughContextmenu(res.selectionText, res.pageUrl),
+        title: getMessage("contextMenuText"),
+        onclick: (e) => {
+            console.log(e);
+            addNoteThroughContextmenu(e.selectionText, e.pageUrl)
+        },
         visible: true
     });
 }
 
 /**
- * Generate a uuidv4
+ * Create an id
  * @author https://stackoverflow.com/a/2117523/8463645
  */
-function uuidv4() {
+function createId() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
     });
 }

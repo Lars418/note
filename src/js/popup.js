@@ -1,13 +1,22 @@
 //#region vars
-const searchParams = new URL(window.location.href).searchParams;
-const uiLang = chrome.i18n.getUILanguage();
-const addNoteInput = document.getElementById("addNote");
-const addNoteWrapper = document.getElementById("addNoteWrapper");
-const noteTag = document.getElementById("tag");
-const recentlyAdded = document.getElementById("recentlyAdded");
-const noteMenu = document.getElementById("noteMenu");
-const prioritySelection = document.getElementById("prioritySelection");
-const addNoteHint = document.getElementById("addHint");
+import {createId, formatDateTime, formatTimestamp, lightenDarkenColor} from './util.js';
+
+const {
+    i18n: { getMessage, getUILanguage },
+    storage,
+    runtime,
+    windows,
+    tabs,
+} = chrome;
+const { searchParams } = new URL(window.location.href);
+const uiLang = getUILanguage();
+const addNoteInput = document.getElementById('addNote');
+const addNoteWrapper = document.getElementById('addNoteWrapper');
+const noteTag = document.getElementById('tag');
+const recentlyAdded = document.getElementById('recentlyAdded');
+const noteMenu = document.getElementById('noteMenu');
+const prioritySelection = document.getElementById('prioritySelection');
+const addNoteHint = document.getElementById('addHint');
 
 const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi;
 const EMAIL_REGEX = /\S+@\S+\.\S+/gi;
@@ -17,76 +26,68 @@ let noteActionBtnHandle = null;
 
 //#region Init
 document.documentElement.lang = uiLang;
-document.title = chrome.i18n.getMessage("popupTitle");
-if(searchParams.get("standalone") === "1") document.documentElement.classList.add("standalone");
-if(searchParams.get("predefMsg")) addNoteInput.value = decodeURIComponent(searchParams.get("predefMsg"));
-if(searchParams.get("priority")) setPriority(searchParams.get("priority"));
+document.title = getMessage('popupTitle');
+
+if(searchParams.get('standalone') === '1') document.documentElement.classList.add('standalone');
+if(searchParams.get('predefinedMessage')) {
+    addNoteInput.value = decodeURIComponent(searchParams.get('predefinedMessage'));
+    addNoteHint.setAttribute('tabindex', addNoteInput.value.trim() === '' ? '-1' : '0');
+}
+if(searchParams.get('priority')) setPriority(searchParams.get('priority'));
 
 
 function loadDraft() {
-    chrome.storage.local.get(["settings", "draft"], res => {
-        const { settings, draft } = res;
-
+    storage.local.get(['settings', 'draft'], ({ settings, draft }) => {
         if(settings.custom.saveCurrentNote ?? settings.default.saveCurrentNote) {
             addNoteInput.value = draft.value;
             if(draft.priority) setPriority(draft.priority);
 
             // draft value gets reset for some reason, adding a short delay fixes it
             setTimeout(() => {
-                chrome.storage.local.set({
+                storage.local.set({
                     draft: {
                         value: draft.value,
                         priority: draft.priority
                     }
                 });
+                addNoteHint.setAttribute('tabindex', addNoteInput.value.trim() === '' ? '-1' : '0');
             }, 50)
         }
     });
 }
 
 function clearDraft() {
-    chrome.storage.local.set({
+    storage.local.set({
         draft: {
-            value: "",
+            value: '',
             priority: null
         }
     });
 }
 
 function loadNotes() {
-    recentlyAdded.textContent = "";
+    recentlyAdded.textContent = '';
 
-    chrome.storage.local.get("notes", res => {
-        const { notes } = res;
-        
+    storage.local.get('notes', ({ notes }) => {
         notes.forEach(note => addNote(note));
         recentlyAdded.dataset.amount = notes.length;
-    })
+    });
 }
 
 function loadPrioritySelection() {
-    chrome.storage.local.get(["notePriorities"], res => {
-        res.notePriorities.forEach(priority => {
-            const prio = document.createElement("button");
+    storage.local.get([ 'notePriorities' ], ({ notePriorities }) => {
+        notePriorities.forEach(priority => {
+            const prio = document.createElement('button');
             prio.textContent = priority.custom.value || priority.default.value;
             prio.dataset.priority = priority.name;
-            prio.setAttribute("style", `background-color:${priority.custom.color || priority.default.color};color:${lightenDarkenColor((priority.custom.color || priority.default.color), -70)}`);
+            prio.setAttribute('style', `background-color:${priority.custom.color || priority.default.color};color:${lightenDarkenColor((priority.custom.color || priority.default.color), -70)}`);
             prio.onclick = () => {
-                changeNotePirority(prioritySelection.dataset.id, prio.dataset.priority);
+                changeNotePriority(prioritySelection.dataset.id, prio.dataset.priority);
             };
             prioritySelection.append(prio);
         })
     })
 }
-
-// Multi window support
-setInterval(() => {
-    chrome.storage.local.get("notes", res => {
-        const { notes } = res;
-
-        if(notes.length !== Number(recentlyAdded.dataset.amount)) loadNotes();
-    })
-}, 1000 * 15);
 
 // execute
 loadNotes();
@@ -95,24 +96,24 @@ loadPrioritySelection();
 //#endregion
 
 //#region i18n
-const i18n = document.querySelectorAll("[intl]");
-const i18nTitle = document.querySelectorAll("[intl-title]");
+const i18n = document.querySelectorAll('[intl]');
+const i18nTitle = document.querySelectorAll('[intl-title]');
 i18n.forEach(msg => {
-    msg.innerHTML = chrome.i18n.getMessage(msg.getAttribute("intl") || msg.id);
+    msg.innerHTML = getMessage(msg.getAttribute('intl') || msg.id);
     msg.removeAttribute("intl");
 });
 i18nTitle.forEach(msg => {
-    msg.title = chrome.i18n.getMessage(msg.getAttribute("intl-title"));
-    msg.removeAttribute("intl-title");
+    msg.title = getMessage(msg.getAttribute('intl-title'));
+    msg.removeAttribute('intl-title');
 });
 //#endregion
 
 //#region newTab
-const newTab = document.getElementById("newTab");
+const newTab = document.getElementById('newTab');
 newTab.onclick = () => {
-    chrome.windows.create({
-        url: `popup.html?standalone=1&predefMsg=${encodeURIComponent(addNoteInput.value.trim()) || ''}&priority=${noteTag.getAttribute("priority") || ''}`,
-        type: "popup",
+    windows.create({
+        url: `popup.html?standalone=1&predefinedMessage=${encodeURIComponent(addNoteInput.value.trim()) || ''}&priority=${noteTag.getAttribute('priority') || ''}`,
+        type: 'popup',
         width: 500,
         height: 750,
         top: 0
@@ -122,8 +123,8 @@ newTab.onclick = () => {
 //#endregion
 
 //#region settings
-const optionsBtn = document.getElementById("settings");
-optionsBtn.onclick = () => chrome.runtime.openOptionsPage();
+const optionsBtn = document.getElementById('settings');
+optionsBtn.onclick = () => runtime.openOptionsPage();
 optionsBtn.oncontextmenu = e => {
     e.preventDefault();
     // TODO: Implement menu with quick actions
@@ -131,36 +132,38 @@ optionsBtn.oncontextmenu = e => {
 //#endregion
 
 //#region add priority, add "enter"
-addNoteInput.setAttribute("placeholder", chrome.i18n.getMessage("addNotePlaceholder"));
+addNoteInput.setAttribute('placeholder', getMessage('addNotePlaceholder'));
 addNoteInput.oninput = () => {
     const currentValue = addNoteInput.value.slice(0, 2);
     const parent = addNoteInput.parentElement;
 
+    addNoteHint.setAttribute('tabindex', addNoteInput.value.trim() === '' ? '-1' : '0');
+
     if(/^(\+.)$/i.test(currentValue)) {
         addNoteInput.value = addNoteInput.value.substr(1);
-        parent.removeAttribute("priority");
-        setPriority("MEDIUM");
+        parent.removeAttribute('priority');
+        setPriority('MEDIUM');
     }
     else if(/^(!.)$/i.test(currentValue)) {
         addNoteInput.value = addNoteInput.value.substr(1);
-        parent.setAttribute("priority", "HIGH");
-        setPriority("HIGH");
+        parent.setAttribute('priority', 'HIGH');
+        setPriority('HIGH');
     }
     else if(/^(-.)$/i.test(currentValue)) {
         addNoteInput.value = addNoteInput.value.substr(1);
-        parent.setAttribute("priority", "LOW");
-        setPriority("LOW");
+        parent.setAttribute('priority', 'LOW');
+        setPriority('LOW');
     }
 
     // show "enter"
-    if(addNoteInput.value.trim().length > 0) addNoteHint.style.opacity = 1;
-    else addNoteHint.style.opacity = 0;
+    if(addNoteInput.value.trim().length > 0) addNoteHint.style.opacity = '1';
+    else addNoteHint.style.opacity = '0';
 
     // save draft
-    chrome.storage.local.set({
+    storage.local.set({
         draft: {
             value: addNoteInput.value.trim(),
-            priority: addNoteInput.parentElement.getAttribute("priority") || null
+            priority: addNoteInput.parentElement.getAttribute('priority') || null
         }
     });
 }
@@ -168,9 +171,7 @@ addNoteInput.oninput = () => {
 
 //#region add note
 // spellcheck
-chrome.storage.local.get("settings", res => {
-    const settings = res.settings;
-
+storage.local.get('settings', ({ settings }) => {
     if(!(settings.custom.advancedEnableSpellcheck ?? settings.default.advancedEnableSpellcheck)) {
         addNoteInput.spellcheck = false;
     }
@@ -178,7 +179,7 @@ chrome.storage.local.get("settings", res => {
 
 [addNoteInput, addNoteHint].forEach(el => {
     el.onkeypress = e => {
-        if(!e.shiftKey && e.key === "Enter") {
+        if(!e.shiftKey && e.key === 'Enter') {
             e.preventDefault();
             saveNote();
         }
@@ -188,20 +189,20 @@ chrome.storage.local.get("settings", res => {
 addNoteHint.onclick = saveNote;
 
 function saveNote() {
-    chrome.storage.local.get(["notes"], res => {
+    storage.local.get([ 'notes' ], ({ notes }) => {
         const note = {
             value: addNoteInput.value.trim(),
             priority: addNoteInput.parentElement.getAttribute("priority") || "MEDIUM",
             completed: false,
             date: new Date().toISOString(),
-            id: uuidv4(),
+            id: createId(),
             origin: null
         };
-        res.notes.push(note);
+        notes.push(note);
         
-        chrome.storage.local.set({notes: res.notes});
-        addNoteInput.value = "";
-        addNoteHint.style.opacity = 0;
+        storage.local.set({ notes });
+        addNoteInput.value = '';
+        addNoteHint.style.opacity = '0';
         clearTag();
         addNote(note);
     });
@@ -210,8 +211,8 @@ function saveNote() {
 
 //#region note tags
 function setPriority(name) {
-    chrome.storage.local.get(["notePriorities"], res => {
-        const priority = res.notePriorities.find(x => x.name === name);
+    storage.local.get(['notePriorities'], ({ notePriorities }) => {
+        const priority = notePriorities.find(x => x.name === name);
 
         noteTag.innerHTML = `
             <span>${priority.custom.value || priority.default.value}</span>
@@ -219,15 +220,15 @@ function setPriority(name) {
         `;
         noteTag.style.background = priority.custom.color || priority.default.color;
         noteTag.style.color = lightenDarkenColor(priority.custom.color || priority.default.color, -70);
-        noteTag.setAttribute("priority", priority.name);
+        noteTag.setAttribute('priority', priority.name);
     });
 }
 
 function clearTag() {
-    noteTag.removeAttribute("style");
-    noteTag.removeAttribute("priority");
-    noteTag.textContent = "";
-    addNoteWrapper.removeAttribute("priority");
+    noteTag.removeAttribute('style');
+    noteTag.removeAttribute('priority');
+    noteTag.textContent = '';
+    addNoteWrapper.removeAttribute('priority');
 }
 //#endregion
 
@@ -237,49 +238,53 @@ function clearTag() {
 document.body.onclick = () => document.activeElement == document.body && closeNoteMenu();
 
 // handle keys
-noteMenu.querySelectorAll("li").forEach(option => {
-    option.addEventListener("keydown", e => {
+noteMenu.querySelectorAll('li').forEach(option => {
+    option.addEventListener('keydown', e => {
         e.preventDefault();
         e.stopPropagation();
 
         switch(e.key) {
-            case "ArrowDown":
-                option.nextElementSibling ? option.nextElementSibling.focus() : noteMenu.querySelector("li").focus();
+            case 'ArrowDown':
+                option.nextElementSibling
+                    ? option.nextElementSibling.focus()
+                    : noteMenu.querySelector('li').focus();
                 break;
-            case "ArrowUp":
-                option.previousElementSibling ? option.previousElementSibling.focus() : noteMenu.querySelector("li:last-child").focus();
+            case 'ArrowUp':
+                option.previousElementSibling
+                    ? option.previousElementSibling.focus()
+                    : noteMenu.querySelector('li:last-child').focus();
                 break;
-            case "Home":
+            case 'Home':
                 noteMenu.querySelector("li").focus();
                 break;
-            case "End": 
+            case 'End':
                 noteMenu.querySelector("li:last-child").focus();
                 break;
-            case "Escape":
+            case 'Escape':
                 closeNoteMenu();
                 break;
-            case "Enter":
+            case 'Enter':
                 option.click();
                 break;
             default: 
-                Array.from(noteMenu.querySelectorAll("li")).find(x => x.textContent.startsWith(e.key))?.focus();
+                Array.from(noteMenu.querySelectorAll('li')).find(x => x.textContent.startsWith(e.key))?.focus();
                 break;
         }
     });
 
-    option.addEventListener("click", e => {
+    option.addEventListener('click', e => {
         const id = noteActionBtnHandle.dataset.id;
         let focusNoteMenu = true;
 
         switch(e.target.id) {
-            case "changeNotePriority":
+            case 'changeNotePriority':
                 focusNoteMenu = false;
                 showNotePrioritySelection(noteActionBtnHandle);
                 break;
-            case "deleteNote":
+            case 'deleteNote':
                 deleteNote(id);
                 break;
-            case "editNote":
+            case 'editNote':
                 focusNoteMenu = false;
                 editNote(id);
                 break;
@@ -323,11 +328,11 @@ function closeNoteMenu(retainFocus) {
 }
 
 function deleteNote(id) {
-    chrome.storage.local.get("notes", res => {
+    storage.local.get("notes", res => {
         const { notes } = res;
         const updatedNotes = notes.filter(note => note.id !== id);
 
-        chrome.storage.local.set({
+        storage.local.set({
             notes: updatedNotes
         }, () => {
             try {
@@ -343,9 +348,7 @@ function deleteNote(id) {
 }
 
 function addNote(note) {
-    chrome.storage.local.get(["notePriorities", "settings"], res => {
-        const { notePriorities, settings } = res;
-
+    storage.local.get(["notePriorities", "settings"], ({ notePriorities, settings }) => {
         const priority = notePriorities.find(p => p.name === note.priority);
         const noteElement = document.createElement("div");
         noteElement.classList.add("note");
@@ -361,7 +364,7 @@ function addNote(note) {
             <article>
                 <div
                     class="note-value"
-                    ${((!settings.custom.advancedEnableSpellcheck ?? !settings.default.advancedEnableSpellcheck) && "spellcheck='false'") || ""}
+                    ${((!settings.custom.advancedEnableSpellcheck ?? !settings.default.advancedEnableSpellcheck) && 'spellcheck="false"') || ""}
                 >
                     ${((settings.custom.advancedParseUrls ?? settings.default.advancedParseUrls) && formatNoteValue(note.value)) || note.value}
                 </div>
@@ -369,24 +372,12 @@ function addNote(note) {
                 <div class="note-meta">
                     <time 
                         datetime="${note.date}"
-                        title="${formatDatetime(note.date)}"
+                        title="${formatDateTime(note.date, uiLang)}"
                     >
-                        ${generatedTimestamp(note.date)}
+                        ${formatTimestamp(note.date)}
                     </time>
 
-                    ${(note.origin && (
-                        `
-                        <span class="seperator">•</span>
-                        <a
-                            class="note-origin"
-                            href="${note.origin}"
-                            title="${note.origin}"
-                            target="_parent"
-                        >
-                            ${getUrlFormat(note.origin)}
-                        </a>
-                        `
-                    )) || ""}
+                    ${getNoteOrigin(note.origin, note.value)}
                 </div>
             </article>
         `;
@@ -396,7 +387,7 @@ function addNote(note) {
         if(origin) {
             origin.addEventListener("click", e => {
                 e.preventDefault();
-                chrome.tabs.create({url: origin.href});
+                tabs.create({url: origin.href});
             });
         }
 
@@ -407,19 +398,19 @@ function addNote(note) {
         const completedBtn = document.createElement("input");
         completedBtn.type = "checkbox";
         completedBtn.classList.add("note-action-complete");
-        completedBtn.title = chrome.i18n.getMessage("noteActionCompletedTitle");
+        completedBtn.title = getMessage("noteActionCompletedTitle");
         completedBtn.checked = note.completed;
         if(note.completed) noteElement.classList.toggle("is-completed");
         completedBtn.onclick = e => {
             e.stopImmediatePropagation();
             noteElement.classList.toggle("is-completed");
 
-            chrome.storage.local.get("notes", res => {
+            storage.local.get("notes", res => {
                 const oldNotes = res.notes;
                 const updateNote = oldNotes.find(note => note.id === noteElement.dataset.id);
                 updateNote.completed = completedBtn.checked;
 
-                chrome.storage.local.set({
+                storage.local.set({
                     notes: oldNotes
                 });
             })
@@ -428,7 +419,7 @@ function addNote(note) {
 
         // more actions btn
         const noteActionBtn = document.createElement("button");
-        noteActionBtn.title = chrome.i18n.getMessage("noteActionsTitle");
+        noteActionBtn.title = getMessage("noteActionsTitle");
         noteActionBtn.classList.add("note-actions");
         noteActionBtn.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -485,13 +476,13 @@ function editNote(id) {
     selectedNoteContent.onblur = e => {
         e.preventDefault();
 
-        chrome.storage.local.get(["notes", "settings"], res => {
+        storage.local.get(["notes", "settings"], res => {
             const { settings } = res;
             const oldNotes = res.notes;
             const updateNote = oldNotes.find(note => note.id === id);
             updateNote.value = selectedNoteContent.textContent.trim();
 
-            chrome.storage.local.set({
+            storage.local.set({
                 notes: oldNotes
             });
 
@@ -504,18 +495,18 @@ function editNote(id) {
     }
 }
 
-function changeNotePirority(id, priority) {
-    chrome.storage.local.get(["notes", "notePriorities"], res => {
+function changeNotePriority(id, priority) {
+    storage.local.get(["notes", "notePriorities"], res => {
 
         const {notes, notePriorities} = res;
         const updateNote = notes.find(note => note.id === id);
         const oldNoteElement = Array.from(recentlyAdded.querySelectorAll(".note")).find(note => note.dataset.id === id);
 
-        if(!updateNote || !oldNoteElement) return;
+        if(!updateNote || !oldNoteElement) return;
 
         updateNote.priority = priority;
     
-        chrome.storage.local.set({
+        storage.local.set({
             notes: notes
         });
 
@@ -548,62 +539,39 @@ function showNotePrioritySelection(note) {
 //#endregion
 
 //#region helper functions
-/**
- * Generated a uuidv4
- * @author https://stackoverflow.com/a/2117523/8463645
- */
-function uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
-}
-
-/**
- * Lightens or darkens a hex color
- * @param {*} col 
- * @param {*} amt 
- * @author https://stackoverflow.com/q/5560248/8463645 (this version is slightly modified from the linked one)
- */
-function lightenDarkenColor(col, amt) {
-    if(col.startsWith("var(--")) {
-        const cssVar = col.replace("var(", "").replace(")", "");
-        col = getComputedStyle(document.documentElement).getPropertyValue(cssVar);
+function getNoteOrigin(url, value = null) {
+    if (!url) {
+        return '';
     }
 
-    col = col.replace("#", "");
-    col = parseInt(col, 16);
+    const { hash, host, protocol } = new URL(url);
+    const hasHash = hash !== '';
+    const preparedUrl = hasHash && value
+        ? url
+        : url + '#:~:text=' + encodeURIComponent(value);
+    const formattedDomain = `${protocol}//${host}`;
+    const faviconTemplateUrl = 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&url={URL}&size=16'.replace('{URL}', formattedDomain);
 
-    const color = (((col & 0x0000FF) + amt) | ((((col >> 8) & 0x00FF) + amt) << 8) | (((col >> 16) + amt) << 16)).toString(16).replace("-", "");
-    return color < 1 ? "var(--black)" : ("#" + color);
-}
-
-function generatedTimestamp(date) {
-    const today = new Date();
-    const noteDate = new Date(date);
-    const minute = 60 * 1000;
-    const diff = Math.round(Math.abs((today - noteDate) / minute));
-
-    if(diff === 0) return chrome.i18n.getMessage("justNow");
-    else if(diff === 1) return chrome.i18n.getMessage("oneMinuteAgo");
-    else if(diff < 60) return chrome.i18n.getMessage("nMinutesAgo", diff.toString());
-    else if(diff < 120) return chrome.i18n.getMessage("oneHourAgo");
-    else if(diff < (60 * 24)) return chrome.i18n.getMessage("nHoursAgo", Math.round(diff / 60).toString());
-    else if(diff < 60 * 24 * 2) return chrome.i18n.getMessage("oneDayAgo");
-    else if(diff < (60 * 24 * 30)) return chrome.i18n.getMessage("nDaysAgo", Math.round(diff / (60*24)).toString());
-    else return chrome.i18n.getMessage("overAMonth");
-}
-
-function formatDatetime(date) {
-    return new Intl
-    .DateTimeFormat(uiLang, {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric'
-    })
-    .format(new Date(date));
+    return (
+        `
+            <span class="seperator">•</span>
+            <a
+                class="note-origin"
+                href="${preparedUrl}"
+                title="${url}"
+                target="_parent"
+            >   
+                ${protocol.includes('http') ? `              
+                    <img
+                        src="${faviconTemplateUrl}"
+                        alt="${host}"
+                        class="note-origin-favicon"
+                    />
+                ` : ''}
+                ${getUrlFormat(url)}
+            </a>
+        `
+    )
 }
 
 function formatNoteValue(value) {
@@ -623,7 +591,7 @@ function addNoteLinkListeners(note) {
         a.addEventListener("click", e => {
             e.preventDefault();
 
-            chrome.tabs.create({
+            tabs.create({
                 url: a.href
             });
         })
@@ -634,12 +602,12 @@ function getUrlFormat(uri) {
     const { host, pathname, protocol} = new URL(uri);
 
     if(protocol === "file:") {
-        const filename = pathname.split('/');
-        return filename[filename.split('?')[0] ?? filename.length].replace(/\//g, "");
+        const paths = pathname.split('/');
+
+        return paths[(paths.length - 1)];
     }
 
-    // Context menu returns chrome-extension uri if being used in a file:/// uri
-    if(protocol === "chrome-extension:") return chrome.i18n.getMessage("contextMenuFileUrl");
+    if(protocol === "chrome-extension:") return getMessage("contextMenuFileUrl");
 
     if(protocol === "data:") {
         return "data-uri"
