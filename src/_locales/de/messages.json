@@ -35,11 +35,14 @@
         "description": "headline for last/recent notes"
     },
 
-    "addHintKey": {
+    "addNoteBtn": {
+        "message": "Erstellen"
+    },
+    "addNoteBtnShortcut": {
         "message": "Enter"
     },
-    "addHintTitle": {
-        "message": "Drücke \"Enter\" zum Bestätigen"
+    "addNoteTitle": {
+        "message": "Notiz erstellen"
     },
 
 
@@ -158,6 +161,12 @@
     },
     "advancedShowChangelogDesc": {
         "message": "Zeigt die Versionsänderungen nach einem Update an."
+    },
+    "advancedShowUrlFavicon": {
+        "message": "URL-Favicon anzeigen"
+    },
+    "advancedShowUrlFaviconDesc": {
+        "message": "Zeigt das Favicon neben Lins an"
     },
 
     "actionButtons": {

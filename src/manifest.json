@@ -38,16 +38,5 @@
         "scripts": [ "js/background.js" ]
     },
 
-    "content_scripts": [
-        {
-            "matches": [
-                "http://*/*",
-                "https://*/*"
-            ],
-            "js": ["js/content.js"],
-            "css": ["css/content.min.css"]
-        }
-    ],
-
     "web_accessible_resources": [ "manifest.json" ]
 }

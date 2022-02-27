@@ -1,4 +1,6 @@
 //#region vars
+import { applyTranslations } from './util.js';
+
 const generalOptionsWrapper = document.getElementById('generalOptionsWrapper');
 const advancedOptionsWrapper = document.getElementById('advancedOptionsWrapper');
 const priorityNamesWrapper = document.getElementById('priorityNamesWrapper');
@@ -28,11 +30,8 @@ const osMapping = {
 
 //#region init
 document.documentElement.lang = uiLang;
-document.title = getMessage('optionsTitle');
-
 document.getElementById('copyright').innerHTML = getMessage('optionsCopyrightNotice', new Date().getFullYear().toString());
 
-// dropdowns
 document.querySelectorAll('.dropdown').forEach(btn => {
     btn.setAttribute('aria-expanded', 'false');
     btn.setAttribute('role', 'button');
@@ -56,24 +55,11 @@ document.querySelectorAll('.dropdown').forEach(btn => {
     });
 });
 
-// option dialog
 [optionDialogClose, optionDialogOk].forEach(btn => btn.onclick = closeOptionDialog);
 
-// debug
 if (new URL(location.href).searchParams.get('debug') === '1') debug.style.display = 'block';
-//#endregion
 
-//#region i18n
-const i18n = document.querySelectorAll('[intl]');
-const i18nTitle = document.querySelectorAll('[intl-title]');
-i18n.forEach(msg => {
-    msg.innerHTML = getMessage(msg.getAttribute('intl') || msg.id);
-    msg.removeAttribute('intl');
-});
-i18nTitle.forEach(msg => {
-    msg.title = getMessage(msg.getAttribute('intl-title'));
-    msg.removeAttribute('intl-title');
-});
+applyTranslations(document);
 //#endregion
 
 //#region load settings
@@ -156,10 +142,13 @@ importNotesInput.onchange = e => {
 
 //#region debug
 runtime.getPlatformInfo(({ os, arch, nacl_arch }) => {
-    debugWrapper.innerHTML = `
+    storage.local.get('userId', ({ userId }) => {
+        debugWrapper.innerHTML = `
         <p>${manifest.name} - v${manifest.version}</p>
         <p>${osMapping[os]} ${arch} (${nacl_arch})</p>
+        <small>${userId}</small>
     `;
+    });
 });
 //#endregion
 

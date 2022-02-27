@@ -47,6 +47,7 @@
             "advancedParseUrls": true,
             "advancedEnableSpellcheck": true,
             "advancedShowChangelog": true,
+            "advancedShowUrlFavicon": false,
 
             "saveCurrentNote": true,
             "showContextMenu": true,

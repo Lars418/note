@@ -3,24 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title data-intl="popupTitle"></title>
 
-    <!-- CSS -->
     <link rel="stylesheet" href="css/popup.min.css">
-    <!-- JS -->
     <script src="js/popup.js" type="module" defer></script>
 </head>
 <body>
     <header>
-        <h1 intl="popupTitle"></h1>
+        <h1 data-intl="popupTitle"></h1>
         <div id="actions">
-            <button id="settings" intl-title="settingsTitle">
+            <button id="settings" data-intl-title="settingsTitle">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="3"></circle>
                     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                 </svg>
             </button>
-            <button id="newTab" intl-title="newTabTitle">
+            <button id="newTab" data-intl-title="newTabTitle">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="15 3 21 3 21 9"></polyline>
                     <polyline points="9 21 3 21 3 15"></polyline>
@@ -34,19 +32,26 @@
             <textarea
                 id="addNote"
                 autofocus
+                data-intl-placeholder="addNotePlaceholder"
+                data-intl-aria-label="addNotePlaceholder"
             ></textarea>
             <div id="tag"></div>
-            <div id="addHint" intl-title="addHintTitle" role="button" tabindex="-1">
-                <kbd intl="addHintKey">Enter</kbd>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="presentation">
-                    <polyline points="9 10 4 15 9 20"></polyline>
-                    <path d="M20 4v7a4 4 0 0 1-4 4H4"></path>
-                </svg>
+            <div
+                id="addNoteBtn"
+                data-intl-title="addNoteTitle"
+                role="button"
+                tabindex="-1"
+                class="is-hidden"
+            >
+                <span>
+                    <span data-intl="addNoteBtn"></span>
+                    (<kbd data-intl="addNoteBtnShortcut"></kbd>)
+                </span>
             </div>
         </div>
 
         <section id="recentlyAddedWrapper">
-            <h2 intl="recentNotes"></h2>
+            <h2 data-intl="recentNotes"></h2>
             <div id="recentlyAdded"></div>
         </section>
     </main>
@@ -56,9 +61,9 @@
     <!-- Menus / overlays -->
     <div id="noteMenu" data-id="">
         <ul role="listbox">
-            <li id="changeNotePriority" role="option" tabindex="0" intl="noteActionChangePriority"></li>
-            <li id="deleteNote" role="option" tabindex="0" intl="noteActionDelete"></li>
-            <li id="editNote" role="option" tabindex="0" intl="noteActionEdit"></li>
+            <li id="changeNotePriority" role="option" tabindex="0" data-intl="noteActionChangePriority"></li>
+            <li id="deleteNote" role="option" tabindex="0" data-intl="noteActionDelete"></li>
+            <li id="editNote" role="option" tabindex="0" data-intl="noteActionEdit"></li>
         </ul>
     </div>
 

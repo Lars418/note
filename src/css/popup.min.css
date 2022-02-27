@@ -1,19 +1,24 @@
 :root {
   --black: #0d0d0d;
   --blue: #3367d6;
-  --blue-light: lighten(#3367d6, 20%);
-  --blue-lighter: lighten(#3367d6, 5%);
+  --blue-light: #5b85de;
+  --blue-lighter: #3d6ed8;
   --white: #fff;
   --orange: #ffc156;
   --red: #ff5a3f;
   --lightblue: #add8e6;
   --gray: #f2f2f2;
-  --gray-focus: darken(#f2f2f2, 10%);
+  --gray-focus: #d9d9d9;
   --placeholder: #6b6b6b;
   --note: #f9f9f9;
   --link: #065fd4;
-  --link-dark: darken(#065fd4, 5%);
+  --link-dark: #055ac9;
   --success: #28a745;
+}
+
+* {
+  outline-color: var(--blue);
+  outline-offset: 1px;
 }
 
 *, *::before, *::after {
@@ -26,6 +31,10 @@ html, body {
   font-size: 16px;
   font-family: "Arial", sans-serif;
   color: var(--black);
+}
+
+.is-hidden {
+  display: none !important;
 }
 
 html {
@@ -107,7 +116,7 @@ main > #addNoteWrapper > #tag > svg {
   height: 1rem;
   margin-left: 0.2rem;
 }
-main > #addNoteWrapper > #addHint {
+main > #addNoteWrapper > #addNoteBtn {
   background: var(--gray);
   color: var(--placeholder);
   padding: 2px 0.25rem;
@@ -118,14 +127,7 @@ main > #addNoteWrapper > #addHint {
   align-items: center;
   font-size: 0.8rem;
   border-radius: 5px;
-  opacity: 0;
-  transition: opacity 200ms;
   cursor: pointer;
-}
-main > #addNoteWrapper > #addHint > svg {
-  width: 0.7rem;
-  height: 0.7rem;
-  margin-left: 0.2rem;
 }
 main > #addNoteWrapper > #addNote {
   background: none;
@@ -164,10 +166,9 @@ main > #recentlyAddedWrapper > #recentlyAdded > .note {
   padding: 0.75rem 0.5rem;
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
-  transition: border-top-color 200ms, border-bottom-color 200ms;
+  transition: border-top-color 200ms, border-bottom-color 200ms, opacity 200ms;
   display: flex;
   position: relative;
-  transition: opacity 200ms;
 }
 main > #recentlyAddedWrapper > #recentlyAdded > .note.is-completed {
   opacity: 0.5;
@@ -211,6 +212,7 @@ main > #recentlyAddedWrapper > #recentlyAdded > .note > article {
 main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-value {
   transition: padding 200ms, background-color 200ms;
   outline: none;
+  word-break: break-all;
 }
 main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-value > a {
   text-decoration: none;

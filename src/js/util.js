@@ -65,3 +65,25 @@ export function formatTimestamp(date) {
 
     return getMessage("overAMonth");
 }
+
+export function applyTranslations(document) {
+    const { getMessage } = chrome.i18n;
+    const elements = Array.from(document.querySelectorAll('*'))
+        .filter(element => Object.keys(element.dataset).some(attribute => attribute.startsWith('intl')));
+
+    elements.forEach(element => {
+       const dataAttributes = Object.keys(element.dataset).filter(attribute => attribute.startsWith('intl'));
+
+       dataAttributes.forEach(attribute => {
+            if (attribute === 'intl') {
+                element.innerHTML = getMessage(element.dataset.intl);
+            } else {
+                const preparedAttribute = attribute
+                    .replace(/^intl/i, '')
+                    .split(/(?=[A-Z])/).join('-').toLowerCase();
+
+                element.setAttribute(preparedAttribute, getMessage(element.dataset[attribute]));
+            }
+       });
+    });
+}

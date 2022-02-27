@@ -1,0 +1,24 @@
+:root {
+  --black: #0d0d0d;
+  --blue: #3367d6;
+  --blue-light: #5b85de;
+  --blue-lighter: #3d6ed8;
+  --white: #fff;
+  --orange: #ffc156;
+  --red: #ff5a3f;
+  --lightblue: #add8e6;
+  --gray: #f2f2f2;
+  --gray-focus: #d9d9d9;
+  --placeholder: #6b6b6b;
+  --note: #f9f9f9;
+  --link: #065fd4;
+  --link-dark: #055ac9;
+  --success: #28a745;
+}
+
+* {
+  outline-color: var(--blue);
+  outline-offset: 1px;
+}
+
+/*# sourceMappingURL=colors.min.css.map */

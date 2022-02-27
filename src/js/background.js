@@ -14,7 +14,7 @@ runtime.onInstalled.addListener(async ({ reason }) => {
         // Load default settings
         await fetch("../json/defaultSettings.json")
         .then(res => res.json())
-        .then(json => {
+        .then((json) => {
             Object.keys(json.notePriorities).map(x => {
                 json.notePriorities[x] = {
                     ...json.notePriorities[x],
@@ -39,8 +39,8 @@ runtime.onInstalled.addListener(async ({ reason }) => {
     if(reason === installReason.UPDATE) {
         const { version, version_name, previousVersion } = runtime.getManifest();
 
-        storage.local.get("settings", ({ settings }) => {
-            // show version changelog if enabled (silent update if version name starts with "&shy;" (shy char: "­"))
+        storage.local.get('settings', async ({ settings }) => {
+            // Show version changelog if enabled (silent update if version name starts with "&shy;" (shy char: "­"))
             if((settings.custom.advancedShowChangelog ?? settings.default.advancedShowChangelog) && !version_name.startsWith("­")) {
                 runtime.getPlatformInfo(info => {
                     tabs.create({
@@ -49,12 +49,32 @@ runtime.onInstalled.addListener(async ({ reason }) => {
                 });
             }
 
+            // Update default settings in case new ones have been added
+            const defaultSettings = await fetch("../json/defaultSettings.json").then(res => res.json());
+
+            console.log('Updating default settings', defaultSettings);
+
+            storage.local.set({
+                settings: {
+                    ...settings,
+                    default: defaultSettings.settings.default,
+                },
+            });
+
             initContextMenu();
-            contextMenus.update("1", {
+            contextMenus.update('1', {
                 visible: settings.custom.showContextMenu ?? settings.default.showContextMenu
             });
         });
     }
+
+    storage.local.get('userId',async ({ userId }) => {
+        if (!userId) {
+            storage.local.set({
+                userId: (await createUuid()),
+            })
+        }
+    });
 
     initBadge();
 });
@@ -62,8 +82,8 @@ runtime.onInstalled.addListener(async ({ reason }) => {
 runtime.onStartup.addListener(() => {
     initBadge();
 
-    storage.local.get("settings", ({ settings }) => {
-        contextMenus.update("1", {
+    storage.local.get('settings', ({ settings }) => {
+        contextMenus.update('1', {
             visible: settings.custom.showContextMenu ?? settings.default.showContextMenu
         });
     })
@@ -80,8 +100,8 @@ storage.onChanged.addListener(({ notes }) => {
 })
 
 //#region helper
-function addNoteThroughContextmenu(value, origin, priority = "MEDIUM") {
-    storage.local.get("notes", ({ notes }) => {
+function addNoteThroughContextmenu(value, origin, priority = 'MEDIUM') {
+    storage.local.get('notes', ({ notes }) => {
         notes.push({
             completed: false,
             date: new Date().toISOString(),
@@ -97,9 +117,9 @@ function addNoteThroughContextmenu(value, origin, priority = "MEDIUM") {
 
 function initBadge() {
     browserAction.setBadgeBackgroundColor({
-        color: "#3367d6"
+        color: '#3367d6'
     });
-    storage.local.get("notes", ({ notes }) => {
+    storage.local.get('notes', ({ notes }) => {
         browserAction.setBadgeText({
             text: notes.filter(note => !note.completed).length.toString()
         });
@@ -108,9 +128,9 @@ function initBadge() {
 
 function initContextMenu() {
     contextMenus.create({
-        id: "1",
-        contexts: [ "selection" ],
-        title: getMessage("contextMenuText"),
+        id: '1',
+        contexts: [ 'selection' ],
+        title: getMessage('contextMenuText'),
         onclick: (e) => {
             console.log(e);
             addNoteThroughContextmenu(e.selectionText, e.pageUrl)
@@ -127,6 +147,15 @@ function createId() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
+    });
+}
+
+
+function createUuid() {
+    return new Promise((resolve) => {
+        runtime.getPlatformInfo(({ os, arch, nacl_arch }) => {
+             resolve(btoa(`${createId()};${os};${arch};${nacl_arch}`));
+        });
     });
 }
 //#endregion

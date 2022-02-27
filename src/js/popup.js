@@ -1,5 +1,6 @@
 //#region vars
-import {createId, formatDateTime, formatTimestamp, lightenDarkenColor} from './util.js';
+import {applyTranslations, createId, formatDateTime, formatTimestamp, lightenDarkenColor} from './util.js';
+import { constant } from './constant.js';
 
 const {
     i18n: { getMessage, getUILanguage },
@@ -16,22 +17,21 @@ const noteTag = document.getElementById('tag');
 const recentlyAdded = document.getElementById('recentlyAdded');
 const noteMenu = document.getElementById('noteMenu');
 const prioritySelection = document.getElementById('prioritySelection');
-const addNoteHint = document.getElementById('addHint');
-
-const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi;
-const EMAIL_REGEX = /\S+@\S+\.\S+/gi;
+const addNoteBtn = document.getElementById('addNoteBtn');
 
 let noteActionBtnHandle = null;
 //#endregion
 
 //#region Init
 document.documentElement.lang = uiLang;
-document.title = getMessage('popupTitle');
 
 if(searchParams.get('standalone') === '1') document.documentElement.classList.add('standalone');
 if(searchParams.get('predefinedMessage')) {
     addNoteInput.value = decodeURIComponent(searchParams.get('predefinedMessage'));
-    addNoteHint.setAttribute('tabindex', addNoteInput.value.trim() === '' ? '-1' : '0');
+
+    if (addNoteInput.value.trim()) {
+        addNoteBtn.classList.remove('is-hidden');
+    }
 }
 if(searchParams.get('priority')) setPriority(searchParams.get('priority'));
 
@@ -50,7 +50,10 @@ function loadDraft() {
                         priority: draft.priority
                     }
                 });
-                addNoteHint.setAttribute('tabindex', addNoteInput.value.trim() === '' ? '-1' : '0');
+
+                if (addNoteInput.value.trim()) {
+                    addNoteBtn.classList.remove('is-hidden');
+                }
             }, 50)
         }
     });
@@ -93,19 +96,7 @@ function loadPrioritySelection() {
 loadNotes();
 loadDraft();
 loadPrioritySelection();
-//#endregion
-
-//#region i18n
-const i18n = document.querySelectorAll('[intl]');
-const i18nTitle = document.querySelectorAll('[intl-title]');
-i18n.forEach(msg => {
-    msg.innerHTML = getMessage(msg.getAttribute('intl') || msg.id);
-    msg.removeAttribute("intl");
-});
-i18nTitle.forEach(msg => {
-    msg.title = getMessage(msg.getAttribute('intl-title'));
-    msg.removeAttribute('intl-title');
-});
+applyTranslations(document);
 //#endregion
 
 //#region newTab
@@ -125,19 +116,19 @@ newTab.onclick = () => {
 //#region settings
 const optionsBtn = document.getElementById('settings');
 optionsBtn.onclick = () => runtime.openOptionsPage();
-optionsBtn.oncontextmenu = e => {
-    e.preventDefault();
-    // TODO: Implement menu with quick actions
-}
 //#endregion
 
 //#region add priority, add "enter"
-addNoteInput.setAttribute('placeholder', getMessage('addNotePlaceholder'));
+// addNoteInput.setAttribute('placeholder', getMessage('addNotePlaceholder'));
 addNoteInput.oninput = () => {
     const currentValue = addNoteInput.value.slice(0, 2);
     const parent = addNoteInput.parentElement;
 
-    addNoteHint.setAttribute('tabindex', addNoteInput.value.trim() === '' ? '-1' : '0');
+    if (addNoteInput.value.trim()) {
+        addNoteBtn.classList.remove('is-hidden');
+    } else {
+        addNoteBtn.classList.add('is-hidden');
+    }
 
     if(/^(\+.)$/i.test(currentValue)) {
         addNoteInput.value = addNoteInput.value.substr(1);
@@ -154,10 +145,6 @@ addNoteInput.oninput = () => {
         parent.setAttribute('priority', 'LOW');
         setPriority('LOW');
     }
-
-    // show "enter"
-    if(addNoteInput.value.trim().length > 0) addNoteHint.style.opacity = '1';
-    else addNoteHint.style.opacity = '0';
 
     // save draft
     storage.local.set({
@@ -177,16 +164,15 @@ storage.local.get('settings', ({ settings }) => {
     }
 });
 
-[addNoteInput, addNoteHint].forEach(el => {
-    el.onkeypress = e => {
-        if(!e.shiftKey && e.key === 'Enter') {
-            e.preventDefault();
+[addNoteInput, addNoteBtn].forEach(element => {
+    element.addEventListener('keypress', (event) => {
+        if(!event.shiftKey && event.key === 'Enter') {
+            event.preventDefault();
             saveNote();
         }
-    }
+    });
 });
-
-addNoteHint.onclick = saveNote;
+addNoteBtn.addEventListener('click', saveNote);
 
 function saveNote() {
     storage.local.get([ 'notes' ], ({ notes }) => {
@@ -202,7 +188,7 @@ function saveNote() {
         
         storage.local.set({ notes });
         addNoteInput.value = '';
-        addNoteHint.style.opacity = '0';
+        addNoteBtn.classList.add('is-hidden');
         clearTag();
         addNote(note);
     });
@@ -235,7 +221,7 @@ function clearTag() {
 //#region note specific methods
 
 // handle menu close
-document.body.onclick = () => document.activeElement == document.body && closeNoteMenu();
+document.body.onclick = () => document.activeElement === document.body && closeNoteMenu();
 
 // handle keys
 noteMenu.querySelectorAll('li').forEach(option => {
@@ -294,7 +280,6 @@ noteMenu.querySelectorAll('li').forEach(option => {
     })
 })
 
-
 function openNoteMenu(e) {
     e.stopPropagation();
 
@@ -348,7 +333,7 @@ function deleteNote(id) {
 }
 
 function addNote(note) {
-    storage.local.get(["notePriorities", "settings"], ({ notePriorities, settings }) => {
+    storage.local.get(["notePriorities", "settings"], async ({ notePriorities, settings }) => {
         const priority = notePriorities.find(p => p.name === note.priority);
         const noteElement = document.createElement("div");
         noteElement.classList.add("note");
@@ -377,7 +362,7 @@ function addNote(note) {
                         ${formatTimestamp(note.date)}
                     </time>
 
-                    ${getNoteOrigin(note.origin, note.value)}
+                    ${(await getNoteOrigin(note.origin, note.value))}
                 </div>
             </article>
         `;
@@ -458,7 +443,7 @@ function editNote(id) {
     Array.from(selectedNoteContent.querySelectorAll("a"))
     .filter(a => !a.href.startsWith("mailto:"))
     .forEach(a => a.textContent = a.href);
-    selectedNoteContent.textContent = selectedNoteContent.textContent;
+    selectedNoteContent.textContent = selectedNoteContent.textContent.trim();
 
     selectedNoteContent.setAttribute("contenteditable", "true");
     selectedNoteContent.setAttribute("tabindex", "-1");
@@ -476,9 +461,7 @@ function editNote(id) {
     selectedNoteContent.onblur = e => {
         e.preventDefault();
 
-        storage.local.get(["notes", "settings"], res => {
-            const { settings } = res;
-            const oldNotes = res.notes;
+        storage.local.get(["notes", "settings"], ({ settings, notes: oldNotes}) => {
             const updateNote = oldNotes.find(note => note.id === id);
             updateNote.value = selectedNoteContent.textContent.trim();
 
@@ -496,9 +479,7 @@ function editNote(id) {
 }
 
 function changeNotePriority(id, priority) {
-    storage.local.get(["notes", "notePriorities"], res => {
-
-        const {notes, notePriorities} = res;
+    storage.local.get(["notes", "notePriorities"], ({notes, notePriorities}) => {
         const updateNote = notes.find(note => note.id === id);
         const oldNoteElement = Array.from(recentlyAdded.querySelectorAll(".note")).find(note => note.dataset.id === id);
 
@@ -540,46 +521,53 @@ function showNotePrioritySelection(note) {
 
 //#region helper functions
 function getNoteOrigin(url, value = null) {
-    if (!url) {
-        return '';
-    }
+    return new Promise(((resolve) => {
+        storage.local.get('settings', ({ settings }) => {
+            if (!url) {
+                resolve('');
+                return;
+            }
 
-    const { hash, host, protocol } = new URL(url);
-    const hasHash = hash !== '';
-    const preparedUrl = hasHash && value
-        ? url
-        : url + '#:~:text=' + encodeURIComponent(value);
-    const formattedDomain = `${protocol}//${host}`;
-    const faviconTemplateUrl = 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&url={URL}&size=16'.replace('{URL}', formattedDomain);
+            const { hash, host, protocol } = new URL(url);
+            const hasHash = hash !== '';
+            const preparedUrl = hasHash && value
+                ? url
+                : url + '#:~:text=' + encodeURIComponent(value);
+            const formattedDomain = `${protocol}//${host}`;
+            const faviconTemplateUrl = constant.FAVICON_TEMPLATE_URL.replace('{URL}', formattedDomain);
+            const faviconEnabled = settings.custom.advancedShowUrlFavicon ?? settings.default.advancedShowUrlFavicon;
 
-    return (
-        `
-            <span class="seperator">•</span>
-            <a
-                class="note-origin"
-                href="${preparedUrl}"
-                title="${url}"
-                target="_parent"
-            >   
-                ${protocol.includes('http') ? `              
-                    <img
-                        src="${faviconTemplateUrl}"
-                        alt="${host}"
-                        class="note-origin-favicon"
-                    />
-                ` : ''}
-                ${getUrlFormat(url)}
-            </a>
-        `
-    )
+            resolve(
+            `
+                    <span class="seperator">•</span>
+                    <a
+                        class="note-origin"
+                        href="${preparedUrl}"
+                        title="${url}"
+                        target="_parent"
+                        rel="noopener noreferrer"
+                    >   
+                        ${(protocol.includes('http') && faviconEnabled) ? `              
+                            <img
+                                src="${faviconTemplateUrl}"
+                                alt="${host}"
+                                class="note-origin-favicon"
+                            />
+                        ` : ''}
+                        ${getUrlFormat(url)}
+                    </a>
+                `
+            )
+        })
+    }));
 }
 
 function formatNoteValue(value) {
-    value.match(EMAIL_REGEX)?.forEach(email => {
+    value.match(constant.EMAIL_REGEX)?.forEach(email => {
         value = value.replace(email, `<a href="mailto:${email}" rel="noopener noreferrer">${email}</a>`);
     });
 
-    value.match(URL_REGEX)?.forEach(url => {
+    value.match(constant.URL_REGEX)?.forEach(url => {
         value = value.replace(url, `<a href="${url}" rel="noopener noreferrer">${url.replace(/https?:\/\//gi, "")}</a>`);
     })
 

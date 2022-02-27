@@ -3,33 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title data-intl="optionsTitle"></title>
 
-    <!-- CSS -->
     <link rel="stylesheet" href="css/options.min.css">
-    <!-- JS-->
-    <script src="js/options.js" defer></script>
+    <script src="js/options.js" type="module" defer></script>
 </head>
 <body>
     <header>
         <h1>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" role="presentation">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="3"></circle>
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
             </svg>
-            <span  intl="optionsTitle"></span>
+            <span data-intl="optionsTitle"></span>
         </h1>
     </header>
 
     <main>
         <section id="generalOptions">
-            <h2 intl="optionsGeneral"></h2>
+            <h2 data-intl="optionsGeneral"></h2>
             <div id="generalOptionsWrapper"></div>
         </section>
 
         <section id="advancedOptions">
             <h2 class="dropdown">
-                <span intl="optionsAdvanced"></span>
+                <span data-intl="optionsAdvanced"></span>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="15 18 9 12 15 6"></polyline>
                 </svg>
@@ -39,19 +37,19 @@
 
         <section id="priorities" aria-describedby="prio-desc">
             <h2 class="dropdown">
-                <span intl="optionPriorities"></span>
+                <span data-intl="optionPriorities"></span>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="15 18 9 12 15 6"></polyline>
                 </svg>
             </h2>
             <div id="priorityNamesWrapper">
-                <p intl="optionPriorityHint" id="prio-desc"></p>
+                <p data-intl="optionPriorityHint" id="prio-desc"></p>
             </div>
         </section>
 
         <section id="actions">
             <h2 class="dropdown">
-                <span intl="actionButtons"></span>
+                <span data-intl="actionButtons"></span>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" role="presentation">
                     <polyline points="15 18 9 12 15 6"></polyline>
                 </svg>
@@ -62,7 +60,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="presentation">
                         <polyline points="20 6 9 17 4 12"></polyline>
                     </svg>
-                    <span intl="actionClearCompletedNotes"></span>
+                    <span data-intl="actionClearCompletedNotes"></span>
                 </button>
     
                 <button id="resetSettings">
@@ -70,7 +68,7 @@
                         <circle cx="12" cy="12" r="3"></circle>
                         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                     </svg>
-                    <span intl="actionResetSettings"></span>
+                    <span data-intl="actionResetSettings"></span>
                 </button>
     
                 <button id="exportNotes">
@@ -79,7 +77,7 @@
                         <polyline points="7 10 12 15 17 10"></polyline>
                         <line x1="12" y1="15" x2="12" y2="3"></line>
                     </svg>
-                    <span intl="actionExportNotes"></span>
+                    <span data-intl="actionExportNotes"></span>
                 </button>
 
                 <label
@@ -87,12 +85,12 @@
                     for="importNotesInput"
                     role="button"
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="presentation">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                         <polyline points="17 8 12 3 7 8"></polyline>
                         <line x1="12" y1="3" x2="12" y2="15"></line>
                     </svg>
-                    <span intl="actionImportNotes"></span>
+                    <span data-intl="actionImportNotes"></span>
                 </label>
 
                 <a 
@@ -100,13 +98,13 @@
                 id="extensionSupport"
                 class="mail"
                 target="_blank"
-                intl-title="actionExtensionSupportTitle"
+                data-intl-title="actionExtensionSupportTitle"
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="presentation">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="22" y1="2" x2="11" y2="13"></line>
                         <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                     </svg>
-                    <span intl="actionExtensionSupport"></span>
+                    <span data-intl="actionExtensionSupport"></span>
                 </a>
 
                 <!-- hidden -->
@@ -120,19 +118,19 @@
         </section>
 
         <section id="debug">
-            <h2 intl="debugInformation"></h2>
+            <h2 data-intl="debugInformation"></h2>
             <div id="debugInformationWrapper"></div>
         </section>
     </main>
 
     <footer>
         <p id="copyright"></p>
-        <p intl="optionsFeatherNotice"></p>
+        <p data-intl="optionsFeatherNotice"></p>
     </footer>
 
     <dialog id="dialogOption">
-        <button id="dialogClose" intl-title="dialogActionCloseTitle">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="presentation">
+        <button id="dialogClose" data-intl-title="dialogActionCloseTitle">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
@@ -142,7 +140,7 @@
         <p id="optionDescription"></p>
 
         <div id="dialogActions">
-            <button id="dialogOk" intl="dialogActionOk" autofocus></button>
+            <button id="dialogOk" data-intl="dialogActionOk" autofocus></button>
         </div>
     </dialog>
 </body>

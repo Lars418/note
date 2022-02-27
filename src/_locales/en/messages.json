@@ -35,11 +35,14 @@
         "description": "headline for last/recent notes"
     },
 
-    "addHintKey": {
+    "addNoteBtn": {
+        "message": "Create"
+    },
+    "addNoteBtnShortcut": {
         "message": "Enter"
     },
-    "addHintTitle": {
-        "message": "Press \"Enter\" to add note"
+    "addNoteTitle": {
+        "message": "Create note"
     },
 
 
@@ -158,6 +161,12 @@
     },
     "advancedShowChangelogDesc": {
         "message": "Opens the changelog upon an extension update."
+    },
+    "advancedShowUrlFavicon": {
+        "message": "Show url favicon"
+    },
+    "advancedShowUrlFaviconDesc": {
+        "message": "Displays the favicon next to a link"
     },
 
     "actionButtons": {
