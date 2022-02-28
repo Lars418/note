@@ -28,11 +28,6 @@ html, body {
   --success: #28a745;
 }
 
-* {
-  outline-color: var(--blue);
-  outline-offset: 1px;
-}
-
 *:focus {
   box-shadow: 0 0 0 3px rgba(0, 125, 250, 0.45);
   outline: none;

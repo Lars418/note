@@ -47,6 +47,20 @@ export function formatDateTime(date, language) {
 
 /**
  * @param date {string}
+ * @param language {string}
+ * */
+export function formatShortDate(date, language) {
+    return new Intl
+        .DateTimeFormat(language, {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+        })
+        .format(new Date(date));
+}
+
+/**
+ * @param date {string}
  * */
 export function formatTimestamp(date) {
     const { getMessage } = chrome.i18n;

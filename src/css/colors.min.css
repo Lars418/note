@@ -16,9 +16,4 @@
   --success: #28a745;
 }
 
-* {
-  outline-color: var(--blue);
-  outline-offset: 1px;
-}
-
 /*# sourceMappingURL=colors.min.css.map */

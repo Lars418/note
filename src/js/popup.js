@@ -1,5 +1,12 @@
 //#region vars
-import {applyTranslations, createId, formatDateTime, formatTimestamp, lightenDarkenColor} from './util.js';
+import {
+    applyTranslations,
+    createId,
+    formatDateTime,
+    formatShortDate,
+    formatTimestamp,
+    lightenDarkenColor
+} from './util.js';
 import { constant } from './constant.js';
 
 const {
@@ -92,16 +99,15 @@ function loadPrioritySelection() {
     })
 }
 
-// execute
 loadNotes();
 loadDraft();
 loadPrioritySelection();
 applyTranslations(document);
 //#endregion
 
-//#region newTab
+//#region Standalone
 const newTab = document.getElementById('newTab');
-newTab.onclick = () => {
+newTab.addEventListener('click', () => {
     windows.create({
         url: `popup.html?standalone=1&predefinedMessage=${encodeURIComponent(addNoteInput.value.trim()) || ''}&priority=${noteTag.getAttribute('priority') || ''}`,
         type: 'popup',
@@ -110,16 +116,15 @@ newTab.onclick = () => {
         top: 0
     });
     window.close();
-}
+});
 //#endregion
 
 //#region settings
 const optionsBtn = document.getElementById('settings');
-optionsBtn.onclick = () => runtime.openOptionsPage();
+optionsBtn.addEventListener('click', () => runtime.openOptionsPage());
 //#endregion
 
 //#region add priority, add "enter"
-// addNoteInput.setAttribute('placeholder', getMessage('addNotePlaceholder'));
 addNoteInput.oninput = () => {
     const currentValue = addNoteInput.value.slice(0, 2);
     const parent = addNoteInput.parentElement;
@@ -156,8 +161,7 @@ addNoteInput.oninput = () => {
 }
 //#endregion
 
-//#region add note
-// spellcheck
+//#region Add note
 storage.local.get('settings', ({ settings }) => {
     if(!(settings.custom.advancedEnableSpellcheck ?? settings.default.advancedEnableSpellcheck)) {
         addNoteInput.spellcheck = false;
@@ -278,7 +282,7 @@ noteMenu.querySelectorAll('li').forEach(option => {
 
         closeNoteMenu(focusNoteMenu);
     })
-})
+});
 
 function openNoteMenu(e) {
     e.stopPropagation();
@@ -338,20 +342,22 @@ function addNote(note) {
         const noteElement = document.createElement("div");
         noteElement.classList.add("note");
         noteElement.dataset.id = note.id;
+        noteElement.setAttribute('tabindex', '0');
+        const formattedNoteValue = (settings.custom.advancedParseUrls ?? settings.default.advancedParseUrls)
+            ? await formatNoteValue(note.value) : note.value;
+        console.log(formattedNoteValue);
         noteElement.innerHTML = `
-            <div class="note-priority">
-                <div
+            <div
+                class="note-priority"
                 style="background-color:${priority.custom.color || priority.default.color};color:${lightenDarkenColor((priority.custom.color || priority.default.color), -70)}"
-                >
-                    ${priority.custom.icon || priority.default.icon}
-                </div>
+            >
             </div>
             <article>
                 <div
                     class="note-value"
-                    ${((!settings.custom.advancedEnableSpellcheck ?? !settings.default.advancedEnableSpellcheck) && 'spellcheck="false"') || ""}
+                    ${((!settings.custom.advancedEnableSpellcheck ?? !settings.default.advancedEnableSpellcheck) && 'spellcheck="false"') || ''}
                 >
-                    ${((settings.custom.advancedParseUrls ?? settings.default.advancedParseUrls) && formatNoteValue(note.value)) || note.value}
+                    ${formattedNoteValue}
                 </div>
 
                 <div class="note-meta">
@@ -416,7 +422,6 @@ function addNote(note) {
         noteActionBtn.onclick = openNoteMenu;
         noteActionWrapper.appendChild(noteActionBtn);
 
-
         noteElement.ondblclick = editNote.bind(null, note.id);
 
         // on blur
@@ -439,14 +444,15 @@ function editNote(id) {
 
     const selectedNoteContent = selectedNote.querySelector(".note-value");
 
-    // get rid of html markup
+    // Get rid of html markup
     Array.from(selectedNoteContent.querySelectorAll("a"))
     .filter(a => !a.href.startsWith("mailto:"))
     .forEach(a => a.textContent = a.href);
     selectedNoteContent.textContent = selectedNoteContent.textContent.trim();
 
-    selectedNoteContent.setAttribute("contenteditable", "true");
-    selectedNoteContent.setAttribute("tabindex", "-1");
+    selectedNoteContent.setAttribute('contenteditable', 'true');
+    selectedNoteContent.setAttribute('role', 'textbox');
+    selectedNoteContent.setAttribute('tabindex', '-1');
     selectedNoteContent.focus();
 
     selectedNoteContent.onkeydown = e => {
@@ -472,6 +478,7 @@ function editNote(id) {
             selectedNoteContent.innerHTML = ((settings.custom.advancedParseUrls ?? settings.default.advancedParseUrls) && formatNoteValue(selectedNoteContent.textContent)) || selectedNoteContent.innerHTML;
             selectedNoteContent.removeAttribute("contenteditable");
             selectedNoteContent.removeAttribute("tabindex");
+            selectedNoteContent.removeAttribute('role');
             addNoteLinkListeners(selectedNoteContent);
             selectedNoteContent.onkeydown = null;
         }); 
@@ -562,14 +569,23 @@ function getNoteOrigin(url, value = null) {
     }));
 }
 
-function formatNoteValue(value) {
+async function formatNoteValue(value) {
     value.match(constant.EMAIL_REGEX)?.forEach(email => {
         value = value.replace(email, `<a href="mailto:${email}" rel="noopener noreferrer">${email}</a>`);
     });
 
-    value.match(constant.URL_REGEX)?.forEach(url => {
+    const urlMatches = value.match(constant.URL_REGEX);
+
+    if (urlMatches) {
+        for (const url of urlMatches) {
+            const ogpData = await createOgpCard(url);
+            value = value.replace(url, (ogpData));
+        }
+    }
+
+    /*value.match(constant.URL_REGEX)?.forEach(url => {
         value = value.replace(url, `<a href="${url}" rel="noopener noreferrer">${url.replace(/https?:\/\//gi, "")}</a>`);
-    })
+    });*/
 
     return value;
 }
@@ -602,5 +618,46 @@ function getUrlFormat(uri) {
     }
 
     return host;
+}
+
+async function createOgpCard(url) {
+    const ogpOptions = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url }),
+    };
+    const ogp = await fetch(constant.OGP_URL, ogpOptions).then(res => res.json());
+    const media = ogp.media ?
+        `<img src="${ogp.media.url}" alt="${ogp.title}" draggable="false" />`
+        : '';
+    const lang = ogp.locale ? `hreflang="${ogp.locale}" lang="${ogp.locale}"` : '';
+    const description = ogp.description ? `
+        <div class="ogp-meta">
+            <span class="ogp-description">${ogp.description}</span>
+        </div>   
+    ` : '';
+
+    return `
+        <a
+            href="${url}"
+            ${lang}
+            class="ogp-card"          
+        >
+            ${media}
+            <div class="ogp-data">
+                <div class="ogp-meta">
+                    <span class="ogp-page-name">${ogp.pageName}</span>
+                    ${ogp.publicationDate ? `
+                        <span class="ogp-separator">•</span>
+                        <time datetime="${ogp.publicationDate}">${formatShortDate(ogp.publicationDate, uiLang)}</time>
+                    ` : ''}
+                </div>
+                <strong class="ogp-page-title">${ogp.title}</strong>
+               ${description}         
+            </div>
+        </a>
+    `;
 }
 //#endregion

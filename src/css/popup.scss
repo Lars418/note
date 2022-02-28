@@ -1,6 +1,7 @@
 @import "colors";
 @import "reset";
-@import "util";
+
+
 
 html {
     width: 420px;
@@ -152,6 +153,8 @@ main {
                 transition: border-top-color 200ms, border-bottom-color 200ms, opacity 200ms;
                 display: flex;
                 position: relative;
+                outline-offset: -1px;
+                z-index: 0;
 
                 &.is-completed {
                     opacity: .5;
@@ -162,34 +165,12 @@ main {
                 }
 
                 > .note-priority {
-                    padding-right: .45rem;
-                    margin: calc(-.75rem - 1px) 0;
-                    left: -18px;
+                    margin: calc(-.75rem - 1px) .8rem calc(-.75rem - 1px) -10px;
                     position: relative;
                     transition: left 200ms ease;
                     overflow: hidden;
-
-                    > div {
-                        height: 100%;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        width: 16px;
-                        > svg {
-                            width: 1rem;
-                            height: 1rem;
-                            transition: opacity 175ms ease-out;
-                            opacity: 0;
-                        }
-                    }
-
-                    &:hover, &:focus {
-                        left: -8px;
-
-                        > div > svg {
-                            opacity: 1;
-                        }
-                    }
+                    z-index: -1;
+                    width: .5rem;
                 }
 
                 > article {
@@ -201,7 +182,7 @@ main {
                     > .note-value {
                         transition: padding 200ms, background-color 200ms;
                         outline: none;
-                        word-break: break-all;
+                        word-break: break-word;
 
                         > a {
                             text-decoration: none;
@@ -406,6 +387,58 @@ footer {
         left: 0;
         right: 0;
         background: rgba(0,0,0,0.25);
+    }
+}
+
+.ogp-card, .ogp-card:visited {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 20rem;
+    border: 1px solid darkgray;
+    border-radius: .75rem;
+    overflow: hidden;
+    transition: all 500ms;
+    text-decoration-color: var(--black);
+    background-color: #f5f5f5;
+
+    > img, video {
+        width: 100%;
+        height: 7.5rem;
+        border-bottom: 1px solid darkgray;
+        margin-bottom: .25rem;
+    }
+
+    > img {
+        object-fit: cover;
+    }
+
+    > .ogp-data {
+        padding: .25rem .5rem;
+
+        > .ogp-meta {
+            color: #999999;
+            font-size: .7rem;
+            margin-bottom: .25rem;
+
+            > .ogp-description {
+                display: inline-block;
+                width: 100%;
+                white-space: nowrap;
+                text-align: justify;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+        }
+
+        > strong {
+            font-weight: normal;
+            color: var(--black);
+        }
+    }
+
+    &:hover {
+        opacity: .7;
     }
 }
 
