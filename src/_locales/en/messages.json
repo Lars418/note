@@ -93,17 +93,11 @@
         "message": "Nothing noted yet."
     },
 
-    "noteActionsTitle": {
-        "message": "More note actions"
-    },
     "noteActionCompletedTitle": {
         "message": "Mark as completed"
     } ,
-    "noteActionChangePriority": {
-        "message": "Change priority"
-    },
     "noteActionDelete": {
-        "message": "Delete"
+        "message": "Delete note"
     },
     "noteActionEdit": {
         "message": "Edit text"
@@ -166,7 +160,13 @@
         "message": "Show url favicon"
     },
     "advancedShowUrlFaviconDesc": {
-        "message": "Displays the favicon next to a link"
+        "message": "Displays the favicon next to a link."
+    },
+    "advancedShowLinkPreview": {
+        "message": "Show link preview"
+    },
+    "advancedShowLinkPreviewDesc": {
+        "message": "Links will be pre-rendered, allowing you to see the page title, description and preview image."
     },
 
     "actionButtons": {

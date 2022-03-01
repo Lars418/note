@@ -157,6 +157,7 @@ main > #recentlyAddedWrapper > #recentlyAdded > .note {
   padding: 0.75rem 0.5rem;
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
+  border-left: 0.35rem solid transparent;
   transition: border-top-color 200ms, border-bottom-color 200ms, opacity 200ms;
   display: flex;
   position: relative;
@@ -168,14 +169,6 @@ main > #recentlyAddedWrapper > #recentlyAdded > .note.is-completed {
 }
 main > #recentlyAddedWrapper > #recentlyAdded > .note.is-completed > article > .note-value {
   text-decoration: line-through;
-}
-main > #recentlyAddedWrapper > #recentlyAdded > .note > .note-priority {
-  margin: calc(-.75rem - 1px) 0.8rem calc(-.75rem - 1px) -10px;
-  position: relative;
-  transition: left 200ms ease;
-  overflow: hidden;
-  z-index: -1;
-  width: 0.5rem;
 }
 main > #recentlyAddedWrapper > #recentlyAdded > .note > article {
   display: flex;
@@ -200,8 +193,9 @@ main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-value[co
   padding: 0.25rem 0.125rem;
   background-color: var(--gray-focus);
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-meta {
+main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer {
   display: flex;
+  align-items: center;
   margin-top: 0.2rem;
   color: darkgray;
   font-size: 0.75rem;
@@ -209,24 +203,51 @@ main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-meta {
   transition: opacity 200ms;
   font-style: italic;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-meta > time {
+main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer > .note-meta {
+  display: flex;
+}
+main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer > .note-meta > time {
   width: fit-content;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-meta > .seperator {
+main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer > .note-meta > .separator {
   margin: 0 0.25rem;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-meta > a {
+main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer > .note-meta > a {
   text-decoration: none;
   color: inherit;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-meta > .note-origin {
+main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer > .note-meta > .note-origin {
   display: flex;
   align-items: center;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-meta > .note-origin > img {
+main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer > .note-meta > .note-origin > img {
   width: 14px;
   height: 14px;
   object-fit: contain;
+}
+main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer > .note-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0 0.5rem;
+  align-items: center;
+}
+main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer > .note-actions > button {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  transition: opacity 200ms;
+  cursor: pointer;
+}
+main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer > .note-actions > button > svg {
+  width: 0.8rem;
+  height: 0.8rem;
+  stroke: darkgray;
+}
+main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer > .note-actions > button:hover {
+  opacity: 0.75;
 }
 main > #recentlyAddedWrapper > #recentlyAdded > .note > .note-action-wrapper {
   position: absolute;
@@ -296,7 +317,7 @@ main > #recentlyAddedWrapper > #recentlyAdded > .note:hover, main > #recentlyAdd
   border-top-color: var(--gray);
   border-bottom-color: var(--gray);
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note:hover > article > .note-meta, main > #recentlyAddedWrapper > #recentlyAdded > .note:hover > .note-action-wrapper, main > #recentlyAddedWrapper > #recentlyAdded > .note:focus > article > .note-meta, main > #recentlyAddedWrapper > #recentlyAdded > .note:focus > .note-action-wrapper, main > #recentlyAddedWrapper > #recentlyAdded > .note:focus-within > article > .note-meta, main > #recentlyAddedWrapper > #recentlyAdded > .note:focus-within > .note-action-wrapper {
+main > #recentlyAddedWrapper > #recentlyAdded > .note:hover > article > .note-footer, main > #recentlyAddedWrapper > #recentlyAdded > .note:hover > .note-action-wrapper, main > #recentlyAddedWrapper > #recentlyAdded > .note:focus > article > .note-footer, main > #recentlyAddedWrapper > #recentlyAdded > .note:focus > .note-action-wrapper, main > #recentlyAddedWrapper > #recentlyAdded > .note:focus-within > article > .note-footer, main > #recentlyAddedWrapper > #recentlyAdded > .note:focus-within > .note-action-wrapper {
   opacity: 1;
 }
 main > #recentlyAddedWrapper > #recentlyAdded > .note:nth-child(odd) {
@@ -305,60 +326,6 @@ main > #recentlyAddedWrapper > #recentlyAdded > .note:nth-child(odd) {
 
 footer {
   padding: 0.5rem;
-}
-
-#noteMenu {
-  padding: 0.2rem 0;
-  box-shadow: 5px 5px 8px 0px rgba(0, 0, 0, 0.15);
-  background: var(--white);
-  position: fixed;
-  display: none;
-}
-#noteMenu > ul {
-  padding-inline-start: 0;
-  list-style-type: none;
-  margin: 0;
-}
-#noteMenu > ul > li {
-  padding: 0.5rem;
-  transition: background-color 200ms;
-  font-size: 0.95rem;
-  cursor: pointer;
-}
-#noteMenu > ul > li:not(:last-of-type) {
-  border-bottom: 1px solid var(--gray);
-}
-#noteMenu > ul > li:hover {
-  background-color: var(--gray);
-}
-#noteMenu > ul > li:focus {
-  outline: none;
-  background: lightgray;
-}
-
-#prioritySelection {
-  position: fixed;
-  width: 100%;
-  display: none;
-  justify-content: stretch;
-  z-index: 100;
-}
-#prioritySelection > button {
-  border: none;
-  padding: 0.5rem 1rem;
-  flex: 1;
-  cursor: pointer;
-}
-#prioritySelection::after {
-  content: "";
-  z-index: -1;
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.25);
 }
 
 .ogp-card, .ogp-card:visited {
@@ -373,14 +340,22 @@ footer {
   text-decoration-color: var(--black);
   background-color: #f5f5f5;
 }
-.ogp-card > img, .ogp-card video, .ogp-card:visited > img, .ogp-card:visited video {
+.ogp-card > img.ogp-banner, .ogp-card video, .ogp-card:visited > img.ogp-banner, .ogp-card:visited video {
   width: 100%;
   height: 7.5rem;
   border-bottom: 1px solid darkgray;
   margin-bottom: 0.25rem;
 }
-.ogp-card > img, .ogp-card:visited > img {
+.ogp-card > img.ogp-banner, .ogp-card:visited > img.ogp-banner {
   object-fit: cover;
+}
+.ogp-card > img.ogp-favicon, .ogp-card:visited > img.ogp-favicon {
+  top: 1rem;
+  left: 1rem;
+  position: absolute;
+  object-fit: contain;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 .ogp-card > .ogp-data, .ogp-card:visited > .ogp-data {
   padding: 0.25rem 0.5rem;

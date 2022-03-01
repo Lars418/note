@@ -4,7 +4,7 @@ import {
     createId,
     formatDateTime,
     formatShortDate,
-    formatTimestamp,
+    formatTimestamp, getFaviconUrl,
     lightenDarkenColor
 } from './util.js';
 import { constant } from './constant.js';
@@ -23,7 +23,6 @@ const addNoteWrapper = document.getElementById('addNoteWrapper');
 const noteTag = document.getElementById('tag');
 const recentlyAdded = document.getElementById('recentlyAdded');
 const noteMenu = document.getElementById('noteMenu');
-const prioritySelection = document.getElementById('prioritySelection');
 const addNoteBtn = document.getElementById('addNoteBtn');
 
 let noteActionBtnHandle = null;
@@ -84,24 +83,8 @@ function loadNotes() {
     });
 }
 
-function loadPrioritySelection() {
-    storage.local.get([ 'notePriorities' ], ({ notePriorities }) => {
-        notePriorities.forEach(priority => {
-            const prio = document.createElement('button');
-            prio.textContent = priority.custom.value || priority.default.value;
-            prio.dataset.priority = priority.name;
-            prio.setAttribute('style', `background-color:${priority.custom.color || priority.default.color};color:${lightenDarkenColor((priority.custom.color || priority.default.color), -70)}`);
-            prio.onclick = () => {
-                changeNotePriority(prioritySelection.dataset.id, prio.dataset.priority);
-            };
-            prioritySelection.append(prio);
-        })
-    })
-}
-
 loadNotes();
 loadDraft();
-loadPrioritySelection();
 applyTranslations(document);
 //#endregion
 
@@ -224,98 +207,6 @@ function clearTag() {
 
 //#region note specific methods
 
-// handle menu close
-document.body.onclick = () => document.activeElement === document.body && closeNoteMenu();
-
-// handle keys
-noteMenu.querySelectorAll('li').forEach(option => {
-    option.addEventListener('keydown', e => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        switch(e.key) {
-            case 'ArrowDown':
-                option.nextElementSibling
-                    ? option.nextElementSibling.focus()
-                    : noteMenu.querySelector('li').focus();
-                break;
-            case 'ArrowUp':
-                option.previousElementSibling
-                    ? option.previousElementSibling.focus()
-                    : noteMenu.querySelector('li:last-child').focus();
-                break;
-            case 'Home':
-                noteMenu.querySelector("li").focus();
-                break;
-            case 'End':
-                noteMenu.querySelector("li:last-child").focus();
-                break;
-            case 'Escape':
-                closeNoteMenu();
-                break;
-            case 'Enter':
-                option.click();
-                break;
-            default: 
-                Array.from(noteMenu.querySelectorAll('li')).find(x => x.textContent.startsWith(e.key))?.focus();
-                break;
-        }
-    });
-
-    option.addEventListener('click', e => {
-        const id = noteActionBtnHandle.dataset.id;
-        let focusNoteMenu = true;
-
-        switch(e.target.id) {
-            case 'changeNotePriority':
-                focusNoteMenu = false;
-                showNotePrioritySelection(noteActionBtnHandle);
-                break;
-            case 'deleteNote':
-                deleteNote(id);
-                break;
-            case 'editNote':
-                focusNoteMenu = false;
-                editNote(id);
-                break;
-        }
-
-        closeNoteMenu(focusNoteMenu);
-    })
-});
-
-function openNoteMenu(e) {
-    e.stopPropagation();
-
-    // store reference to button to be able to set focus on it after closing the menu
-    noteActionBtnHandle = e.target.closest(".note");
-
-    noteMenu.style.display = "flex";
-    // to allow calculation of an elements width, its display state has to be != "none",
-    // therefore the visibility is being to used to bypass this limitation.
-    noteMenu.style.visibility = "hidden";
-    
-    const buffer = 50;
-    const rect = noteMenu.getBoundingClientRect();
-    const left = e.clientX - rect.width;
-    const top = ((rect.bottom + buffer) > window.innerHeight) ? (e.clientY - rect.height) : e.clientY;
-
-    noteMenu.style.visibility = null;
-    noteMenu.style.left = `${left}px`;
-    noteMenu.style.top = `${top}px`;
-
-    noteMenu.querySelector("li").focus();
-    noteActionBtnHandle.querySelector(".note-actions").setAttribute("aria-expanded", "true");
-    noteMenu.dataset.id = noteActionBtnHandle.dataset.id;
-}
-
-function closeNoteMenu(retainFocus) {
-    noteMenu.style.display = null;
-    noteMenu.dataset.id = "";
-    document.querySelector(".note-actions[aria-expanded]")?.removeAttribute("aria-expanded");
-    if(retainFocus) noteActionBtnHandle.querySelector(".note-actions")?.focus();
-}
-
 function deleteNote(id) {
     storage.local.get("notes", res => {
         const { notes } = res;
@@ -343,15 +234,11 @@ function addNote(note) {
         noteElement.classList.add("note");
         noteElement.dataset.id = note.id;
         noteElement.setAttribute('tabindex', '0');
+        noteElement.setAttribute('style', `border-left-color:${priority.custom.color || priority.default.color}`);
         const formattedNoteValue = (settings.custom.advancedParseUrls ?? settings.default.advancedParseUrls)
-            ? await formatNoteValue(note.value) : note.value;
-        console.log(formattedNoteValue);
+            ? await formatNoteValue(note.value)
+            : note.value;
         noteElement.innerHTML = `
-            <div
-                class="note-priority"
-                style="background-color:${priority.custom.color || priority.default.color};color:${lightenDarkenColor((priority.custom.color || priority.default.color), -70)}"
-            >
-            </div>
             <article>
                 <div
                     class="note-value"
@@ -360,25 +247,89 @@ function addNote(note) {
                     ${formattedNoteValue}
                 </div>
 
-                <div class="note-meta">
-                    <time 
-                        datetime="${note.date}"
-                        title="${formatDateTime(note.date, uiLang)}"
-                    >
-                        ${formatTimestamp(note.date)}
-                    </time>
-
-                    ${(await getNoteOrigin(note.origin, note.value))}
+                <div class="note-footer">
+                    <div class="note-meta">
+                        <time 
+                            datetime="${note.date}"
+                            title="${formatDateTime(note.date, uiLang)}"
+                        >${formatTimestamp(note.date)}</time>
+    
+                        ${(await getNoteOrigin(note.origin, note.value))}
+                    </div>
+                    
+                    <div class="note-actions">
+                        <button class="note-action-edit" title="${getMessage('noteActionEdit')}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                            </svg>
+                        </button>
+                        
+                        <button class="note-action-delete" title="${getMessage('noteActionDelete')}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                        </button>                       
+                    </div>
                 </div>
             </article>
         `;
 
-        // anchors are not working properly in a popup
-        const origin = noteElement.querySelector(".note-origin");
-        if(origin) {
+        const editNoteBtn = noteElement.querySelector('.note-action-edit');
+        const deleteNoteBtn = noteElement.querySelector('.note-action-delete');
+        const origin = noteElement.querySelector('.note-origin');
+        const noteValue = noteElement.querySelector('.note-value');
+
+        noteElement.onkeypress = event => {
+            const editKeys = [ 'e', ' ', 'enter' ];
+
+            if (event.ctrlKey || event.shiftKey || document.activeElement !== noteElement) {
+                return;
+            }
+
+            if (editKeys.includes(event.key.toLowerCase())) {
+                event.preventDefault();
+
+                editNote(note.id);
+            }
+        };
+
+        noteElement.onkeyup = event => {
+            if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const previousElement = noteElement.previousElementSibling;
+
+                if (previousElement?.classList?.contains('note')) {
+                    previousElement.focus();
+                } else {
+                    const notes = recentlyAdded.querySelectorAll('.note');
+                    notes[notes.length -1]?.focus();
+                }
+            }
+
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const nextElement = noteElement.nextElementSibling;
+
+                if (nextElement?.classList?.contains('note')) {
+                    nextElement.focus();
+                } else {
+                    recentlyAdded.querySelector('.note')?.focus();
+                }
+            }
+        }
+
+        editNoteBtn.onclick = () => editNote(note.id);
+        deleteNoteBtn.onclick = () => deleteNote(note.id);
+
+        if (origin) {
             origin.addEventListener("click", e => {
                 e.preventDefault();
-                tabs.create({url: origin.href});
+                tabs.create({ url: origin.href });
             });
         }
 
@@ -408,39 +359,34 @@ function addNote(note) {
         }
         noteActionWrapper.appendChild(completedBtn);
 
-        // more actions btn
-        const noteActionBtn = document.createElement("button");
-        noteActionBtn.title = getMessage("noteActionsTitle");
-        noteActionBtn.classList.add("note-actions");
-        noteActionBtn.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="1"></circle>
-            <circle cx="12" cy="5" r="1"></circle>
-            <circle cx="12" cy="19" r="1"></circle>
-        </svg>`;
-        noteActionBtn.setAttribute("aria-haspopup", "true");
-        noteActionBtn.onclick = openNoteMenu;
-        noteActionWrapper.appendChild(noteActionBtn);
-
         noteElement.ondblclick = editNote.bind(null, note.id);
 
-        // on blur
-        const noteContent = noteElement.querySelector(".note-value");
-        if(settings.custom.advancedParseUrls ?? settings.default.advancedParseUrls) addNoteLinkListeners(noteContent);
-        noteContent.onblur = () => {
-            noteContent.removeAttribute("contenteditable");
-            noteContent.removeAttribute("tabindex");
+        if (settings.custom.advancedParseUrls ?? settings.default.advancedParseUrls) {
+            addNoteLinkListeners(noteValue);
+        }
+
+        noteValue.onblur = () => {
+            noteValue.removeAttribute("contenteditable");
+            noteValue.removeAttribute("tabindex");
         }
 
         noteElement.appendChild(noteActionWrapper);
         recentlyAdded.append(noteElement);
         clearDraft();
+
+        if (settings.custom.advancedShowLinkPreview ?? settings.default.advancedShowLinkPreview) {
+            const urls = Array.from(noteValue.querySelectorAll('a')).filter(anchor => !anchor.href.startsWith('mailto:'));
+            for (const url of urls) {
+                url.outerHTML = await createOgpCard(url.href);
+            }
+            addNoteLinkListeners(noteValue);
+        }
     });
 }
 
 function editNote(id) {
     const selectedNote = Array.from(recentlyAdded.querySelectorAll(".note")).find(note => note.dataset.id === id);
-    if(!selectedNote) return;
+    if (!selectedNote) return;
 
     const selectedNoteContent = selectedNote.querySelector(".note-value");
 
@@ -467,7 +413,7 @@ function editNote(id) {
     selectedNoteContent.onblur = e => {
         e.preventDefault();
 
-        storage.local.get(["notes", "settings"], ({ settings, notes: oldNotes}) => {
+        storage.local.get(['notes', 'settings'], async ({ settings, notes: oldNotes}) => {
             const updateNote = oldNotes.find(note => note.id === id);
             updateNote.value = selectedNoteContent.textContent.trim();
 
@@ -475,12 +421,22 @@ function editNote(id) {
                 notes: oldNotes
             });
 
-            selectedNoteContent.innerHTML = ((settings.custom.advancedParseUrls ?? settings.default.advancedParseUrls) && formatNoteValue(selectedNoteContent.textContent)) || selectedNoteContent.innerHTML;
+            selectedNoteContent.innerHTML = (settings.custom.advancedParseUrls ?? settings.default.advancedParseUrls)
+                ? formatNoteValue(selectedNoteContent.textContent)
+                : selectedNoteContent.innerHTML;
             selectedNoteContent.removeAttribute("contenteditable");
             selectedNoteContent.removeAttribute("tabindex");
             selectedNoteContent.removeAttribute('role');
             addNoteLinkListeners(selectedNoteContent);
             selectedNoteContent.onkeydown = null;
+
+            if (settings.custom.advancedShowLinkPreview ?? settings.default.advancedShowLinkPreview) {
+                const urls = Array.from(selectedNoteContent.querySelectorAll('a')).filter(url => !url.href.startsWith('mailto:'));
+
+                for (const url of urls) {
+                    url.outerHTML = await createOgpCard(url.href);
+                }
+            }
         }); 
     }
 }
@@ -546,7 +502,7 @@ function getNoteOrigin(url, value = null) {
 
             resolve(
             `
-                    <span class="seperator">•</span>
+                    <span class="separator">•</span>
                     <a
                         class="note-origin"
                         href="${preparedUrl}"
@@ -569,30 +525,21 @@ function getNoteOrigin(url, value = null) {
     }));
 }
 
-async function formatNoteValue(value) {
+function formatNoteValue(value) {
     value.match(constant.EMAIL_REGEX)?.forEach(email => {
         value = value.replace(email, `<a href="mailto:${email}" rel="noopener noreferrer">${email}</a>`);
     });
 
-    const urlMatches = value.match(constant.URL_REGEX);
-
-    if (urlMatches) {
-        for (const url of urlMatches) {
-            const ogpData = await createOgpCard(url);
-            value = value.replace(url, (ogpData));
-        }
-    }
-
-    /*value.match(constant.URL_REGEX)?.forEach(url => {
+    value.match(constant.URL_REGEX)?.forEach(url => {
         value = value.replace(url, `<a href="${url}" rel="noopener noreferrer">${url.replace(/https?:\/\//gi, "")}</a>`);
-    });*/
+    });
 
     return value;
 }
 
 function addNoteLinkListeners(note) {
-    note.querySelectorAll(".note-value a").forEach(a => {
-        a.addEventListener("click", e => {
+    note.querySelectorAll('.note-value a').forEach(a => {
+        a.addEventListener('click', e => {
             e.preventDefault();
 
             tabs.create({
@@ -621,16 +568,22 @@ function getUrlFormat(uri) {
 }
 
 async function createOgpCard(url) {
+    const controller = new AbortController();
     const ogpOptions = {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({ url }),
+        signal: controller.signal
     };
+    setTimeout(() => controller.abort(), constant.DEFAULT_TIMEOUT_IN_MS);
     const ogp = await fetch(constant.OGP_URL, ogpOptions).then(res => res.json());
     const media = ogp.media ?
-        `<img src="${ogp.media.url}" alt="${ogp.title}" draggable="false" />`
+        `<img src="${ogp.media.url}" alt="${ogp.title}" draggable="false" class="ogp-banner" />`
+        : '';
+    const favicon = ogp.favicon
+        ? `<img src="${getFaviconUrl(url, ogp.favicon)}" aria-hidden="true" draggable="false" class="ogp-favicon" />`
         : '';
     const lang = ogp.locale ? `hreflang="${ogp.locale}" lang="${ogp.locale}"` : '';
     const description = ogp.description ? `
@@ -646,6 +599,7 @@ async function createOgpCard(url) {
             class="ogp-card"          
         >
             ${media}
+            ${favicon}
             <div class="ogp-data">
                 <div class="ogp-meta">
                     <span class="ogp-page-name">${ogp.pageName}</span>

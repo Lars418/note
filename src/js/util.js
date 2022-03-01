@@ -101,3 +101,15 @@ export function applyTranslations(document) {
        });
     });
 }
+
+export function getFaviconUrl(baseUrl, faviconPath) {
+    try {
+        new URL(faviconPath);
+
+        return faviconPath;
+    } catch (e) {
+        const { protocol, host } = new URL(baseUrl);
+
+        return `${protocol}//${host}${faviconPath}`;
+    }
+}

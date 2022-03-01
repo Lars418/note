@@ -150,6 +150,7 @@ main {
                 padding: .75rem .5rem;
                 border-top: 1px solid transparent;
                 border-bottom: 1px solid transparent;
+                border-left: .35rem solid transparent;
                 transition: border-top-color 200ms, border-bottom-color 200ms, opacity 200ms;
                 display: flex;
                 position: relative;
@@ -162,15 +163,6 @@ main {
                     > article > .note-value {
                         text-decoration: line-through;
                     }
-                }
-
-                > .note-priority {
-                    margin: calc(-.75rem - 1px) .8rem calc(-.75rem - 1px) -10px;
-                    position: relative;
-                    transition: left 200ms ease;
-                    overflow: hidden;
-                    z-index: -1;
-                    width: .5rem;
                 }
 
                 > article {
@@ -200,8 +192,9 @@ main {
                         }
                     }
 
-                    > .note-meta {
+                    > .note-footer {
                         display: flex;
+                        align-items: center;
                         margin-top: .2rem;
                         color: darkgray;
                         font-size: .75rem;
@@ -209,27 +202,59 @@ main {
                         transition: opacity 200ms;
                         font-style: italic;
 
-                        > time {
-                            width: fit-content;
-                        }
-
-                        > .seperator {
-                            margin: 0 .25rem;
-                        }
-
-                        > a {
-                            text-decoration: none;
-                            color: inherit;
-                        }
-
-                        > .note-origin {
+                        > .note-meta {
                             display: flex;
+
+                            > time {
+                                width: fit-content;
+                            }
+
+                            > .separator {
+                                margin: 0 .25rem;
+                            }
+
+                            > a {
+                                text-decoration: none;
+                                color: inherit;
+                            }
+
+                            > .note-origin {
+                                display: flex;
+                                align-items: center;
+
+                                > img {
+                                    width: 14px;
+                                    height: 14px;
+                                    object-fit: contain;
+                                }
+                            }
+                        }
+
+                        > .note-actions {
+                            margin-left: auto;
+                            display: flex;
+                            gap: 0 .5rem;
                             align-items: center;
 
-                            > img {
-                                width: 14px;
-                                height: 14px;
-                                object-fit: contain;
+                            > button {
+                                -webkit-appearance: none;
+                                appearance: none;
+                                background-color: transparent;
+                                border: none;
+                                padding: 0;
+                                margin: 0;
+                                transition: opacity 200ms;
+                                cursor: pointer;
+
+                                > svg {
+                                    width: .8rem;
+                                    height: .8rem;
+                                    stroke: darkgray;
+                                }
+
+                                &:hover {
+                                    opacity: .75;
+                                }
                             }
                         }
                     }
@@ -312,7 +337,7 @@ main {
                     border-top-color: var(--gray);
                     border-bottom-color: var(--gray);
 
-                    > article > .note-meta, > .note-action-wrapper {
+                    > article > .note-footer, > .note-action-wrapper {
                         opacity: 1;
                     }
                 }
@@ -329,67 +354,6 @@ footer {
     padding: .5rem;
 }
 
-#noteMenu {
-    padding: .2rem 0;
-    box-shadow: 5px 5px 8px 0px rgba(0,0,0,0.15);
-    background: var(--white);
-    position: fixed;
-    display: none;
-
-    > ul {
-        padding-inline-start: 0;
-        list-style-type: none;
-        margin: 0;
-
-        > li {
-            padding: .5rem;
-            transition: background-color 200ms;
-            font-size: .95rem;
-            cursor: pointer;
-
-            &:not(:last-of-type) {
-                border-bottom: 1px solid var(--gray);
-            }
-
-            &:hover {
-                background-color: var(--gray);
-            }
-
-            &:focus {
-                outline: none;
-                background: lightgray;
-            }
-        }
-    }
-}
-
-#prioritySelection {
-    position: fixed;
-    width: 100%;
-    display: none;
-    justify-content: stretch;
-    z-index: 100;
-
-    > button {
-        border: none;
-        padding: .5rem 1rem;
-        flex: 1;
-        cursor: pointer;
-    }
-
-    &::after {
-        content: '';
-        z-index: -1;
-        position: fixed;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        right: 0;
-        background: rgba(0,0,0,0.25);
-    }
-}
-
 .ogp-card, .ogp-card:visited {
     display: flex;
     flex-direction: column;
@@ -402,15 +366,24 @@ footer {
     text-decoration-color: var(--black);
     background-color: #f5f5f5;
 
-    > img, video {
+    > img.ogp-banner, video {
         width: 100%;
         height: 7.5rem;
         border-bottom: 1px solid darkgray;
         margin-bottom: .25rem;
     }
 
-    > img {
+    > img.ogp-banner {
         object-fit: cover;
+    }
+
+    > img.ogp-favicon {
+        top: 1rem;
+        left: 1rem;
+        position: absolute;
+        object-fit: contain;
+        width: 1.5rem;
+        height: 1.5rem;
     }
 
     > .ogp-data {

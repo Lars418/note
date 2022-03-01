@@ -93,17 +93,11 @@
         "message": "Noch nichts notiert."
     },
 
-    "noteActionsTitle": {
-        "message": "Mehr Notizaktionen"
-    },
     "noteActionCompletedTitle": {
         "message": "Als abgeschlossen markieren"
     } ,
-    "noteActionChangePriority": {
-        "message": "Priorität ändern"
-    },
     "noteActionDelete": {
-        "message": "Löschen"
+        "message": "Notiz löschen"
     },
     "noteActionEdit": {
         "message": "Text ändern"
@@ -166,7 +160,13 @@
         "message": "URL-Favicon anzeigen"
     },
     "advancedShowUrlFaviconDesc": {
-        "message": "Zeigt das Favicon neben Lins an"
+        "message": "Zeigt das Favicon neben Links an."
+    },
+    "advancedShowLinkPreview": {
+        "message": "Linkvorschau anzeigen"
+    },
+    "advancedShowLinkPreviewDesc": {
+        "message": "Links werden gerendert, sodass Titel, Beschreibung und Vorschaubild angeschaut werden können."
     },
 
     "actionButtons": {
