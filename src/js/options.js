@@ -123,7 +123,12 @@ exportNotesBtn.onclick = () => {
         showSuccessOnBtn(exportNotesBtn);
     })
 }
-
+importNotesBtn.addEventListener('keyup', event => {
+   if (event.key === ' ' || event.key === 'Enter') {
+       event.preventDefault();
+       importNotesBtn.click();
+   }
+});
 importNotesInput.onchange = e => {
     const file = importNotesInput.files[0];
     const reader = new FileReader();

@@ -234,6 +234,8 @@ function addNote(note) {
         noteElement.classList.add("note");
         noteElement.dataset.id = note.id;
         noteElement.setAttribute('tabindex', '0');
+        noteElement.setAttribute('role', 'option');
+        noteElement.setAttribute('aria-selected', 'false');
         noteElement.setAttribute('style', `border-left-color:${priority.custom.color || priority.default.color}`);
         const formattedNoteValue = (settings.custom.advancedParseUrls ?? settings.default.advancedParseUrls)
             ? await formatNoteValue(note.value)
@@ -281,9 +283,14 @@ function addNote(note) {
         const noteValue = noteElement.querySelector('.note-value');
 
         noteElement.onkeypress = event => {
+            console.log(document.activeElement);
             const editKeys = [ 'e', ' ', 'enter' ];
 
-            if (event.ctrlKey || event.shiftKey || document.activeElement !== noteElement) {
+            if (document.activeElement !== noteElement) {
+                return;
+            }
+
+            if (event.ctrlKey || event.metaKey) {
                 return;
             }
 
@@ -293,35 +300,54 @@ function addNote(note) {
                 editNote(note.id);
             }
         };
-
         noteElement.onkeyup = event => {
+            const notes = recentlyAdded.querySelectorAll('.note');
+            const firstElement = recentlyAdded.querySelector('.note');
+            const lastElement = notes[notes.length -1];
+
             if (event.key === 'ArrowUp') {
                 event.preventDefault();
-                event.stopPropagation();
 
                 const previousElement = noteElement.previousElementSibling;
 
                 if (previousElement?.classList?.contains('note')) {
                     previousElement.focus();
                 } else {
-                    const notes = recentlyAdded.querySelectorAll('.note');
-                    notes[notes.length -1]?.focus();
+                    lastElement?.focus();
                 }
             }
 
             if (event.key === 'ArrowDown') {
                 event.preventDefault();
-                event.stopPropagation();
 
                 const nextElement = noteElement.nextElementSibling;
 
                 if (nextElement?.classList?.contains('note')) {
                     nextElement.focus();
                 } else {
-                    recentlyAdded.querySelector('.note')?.focus();
+                    firstElement?.focus();
+                }
+            }
+
+            if (event.key === 'Home') {
+                firstElement?.focus();
+            }
+
+            if (event.key === 'End') {
+                lastElement?.focus();
+            }
+
+            if (event.key === 'Backspace' || event.key === 'Delete') {
+                if (noteElement.dataset.preselectedForDeletion === 'true') {
+                    deleteNote(note.id);
+                } else {
+                    noteElement.dataset.preselectedForDeletion = 'true';
+                    setTimeout(() => noteElement.removeAttribute('data-preselected-for-deletion'), constant.DELETION_TIMEOUT_IN_MS);
                 }
             }
         }
+        noteElement.onfocus = () => noteElement.setAttribute('aria-selected', 'true');
+        noteElement.onblur = () => noteElement.setAttribute('aria-selected', 'false');
 
         editNoteBtn.onclick = () => editNote(note.id);
         deleteNoteBtn.onclick = () => deleteNote(note.id);
@@ -379,7 +405,7 @@ function addNote(note) {
             for (const url of urls) {
                 url.outerHTML = await createOgpCard(url.href);
             }
-            addNoteLinkListeners(noteValue);
+            addNoteLinkListeners(noteValue, true);
         }
     });
 }
@@ -440,46 +466,6 @@ function editNote(id) {
         }); 
     }
 }
-
-function changeNotePriority(id, priority) {
-    storage.local.get(["notes", "notePriorities"], ({notes, notePriorities}) => {
-        const updateNote = notes.find(note => note.id === id);
-        const oldNoteElement = Array.from(recentlyAdded.querySelectorAll(".note")).find(note => note.dataset.id === id);
-
-        if(!updateNote || !oldNoteElement) return;
-
-        updateNote.priority = priority;
-    
-        storage.local.set({
-            notes: notes
-        });
-
-        const newPriority = notePriorities.find(prio => prio.name === priority);
-        const oldNotePriority = oldNoteElement.querySelector(".note-priority");
-    
-        oldNotePriority.innerHTML = `
-            <div style="background-color:${newPriority.custom.color || newPriority.default.color};color:${lightenDarkenColor((newPriority.custom.color || newPriority.default.color), -70)}">
-                ${newPriority.custom.icon || newPriority.default.icon}
-            </div>
-        `;
-
-        recentlyAdded.style.overflowY = null;
-        prioritySelection.style.display = null;
-        prioritySelection.dataset.id = null;
-    })
-}
-
-function showNotePrioritySelection(note) {
-    recentlyAdded.style.overflowY = "hidden";
-    const rect = note.getBoundingClientRect();
-    
-    prioritySelection.style.top = rect.top + "px";
-    prioritySelection.style.left = 0;
-    prioritySelection.style.height = rect.height + "px";
-    prioritySelection.dataset.id = note.dataset.id;
-
-    prioritySelection.style.display = "flex";
-}
 //#endregion
 
 //#region helper functions
@@ -537,16 +523,22 @@ function formatNoteValue(value) {
     return value;
 }
 
-function addNoteLinkListeners(note) {
-    note.querySelectorAll('.note-value a').forEach(a => {
+function addNoteLinkListeners(note, httpLinksOnly=false) {
+    const noteLinks = note.querySelectorAll('.note-value a');
+
+    for (const a of noteLinks) {
+        if (httpLinksOnly && a.href.startsWith('mailto:')) {
+            continue;
+        }
+
         a.addEventListener('click', e => {
             e.preventDefault();
 
             tabs.create({
                 url: a.href
             });
-        })
-    })
+        });
+    }
 }
 
 function getUrlFormat(uri) {
@@ -595,11 +587,12 @@ async function createOgpCard(url) {
     return `
         <a
             href="${url}"
+            title="${url.replace(/https?:\/\//i, '')}"
             ${lang}
             class="ogp-card"          
         >
             ${media}
-            ${favicon}
+            ${media ? favicon : ''}
             <div class="ogp-data">
                 <div class="ogp-meta">
                     <span class="ogp-page-name">${ogp.pageName}</span>

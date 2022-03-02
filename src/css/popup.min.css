@@ -170,6 +170,12 @@ main > #recentlyAddedWrapper > #recentlyAdded > .note.is-completed {
 main > #recentlyAddedWrapper > #recentlyAdded > .note.is-completed > article > .note-value {
   text-decoration: line-through;
 }
+main > #recentlyAddedWrapper > #recentlyAdded > .note[data-preselected-for-deletion=true]::after {
+  content: "";
+  inset: 0;
+  position: absolute;
+  background-color: rgba(255, 0, 0, 0.15);
+}
 main > #recentlyAddedWrapper > #recentlyAdded > .note > article {
   display: flex;
   flex-direction: column;
@@ -356,6 +362,7 @@ footer {
   object-fit: contain;
   width: 1.5rem;
   height: 1.5rem;
+  border-radius: 0.75rem;
 }
 .ogp-card > .ogp-data, .ogp-card:visited > .ogp-data {
   padding: 0.25rem 0.5rem;
