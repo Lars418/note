@@ -5,6 +5,7 @@ const {
     tabs,
     contextMenus,
     browserAction,
+    omnibox,
 } = chrome;
 
 runtime.onInstalled.addListener(async ({ reason }) => {
@@ -89,7 +90,7 @@ runtime.onStartup.addListener(() => {
     })
 
     initContextMenu();
-})
+});
 
 storage.onChanged.addListener(({ notes }) => {
     if (notes) {
@@ -97,10 +98,12 @@ storage.onChanged.addListener(({ notes }) => {
             text: notes.newValue.filter(note => !note.completed).length.toString()
         });
     }
-})
+});
+
+omnibox.onInputEntered.addListener((text) => addNote(text));
 
 //#region helper
-function addNoteThroughContextmenu(value, origin, priority = 'MEDIUM') {
+function addNote(value, priority = 'MEDIUM', origin = null) {
     storage.local.get('notes', ({ notes }) => {
         notes.push({
             completed: false,
@@ -112,7 +115,7 @@ function addNoteThroughContextmenu(value, origin, priority = 'MEDIUM') {
         });
 
         storage.local.set({ notes });
-    })
+    });
 }
 
 function initBadge() {
@@ -131,10 +134,7 @@ function initContextMenu() {
         id: '1',
         contexts: [ 'selection' ],
         title: getMessage('contextMenuText'),
-        onclick: (e) => {
-            console.log(e);
-            addNoteThroughContextmenu(e.selectionText, e.pageUrl)
-        },
+        onclick: (e) => addNote(e.selectionText, e.pageUrl),
         visible: true
     });
 }
@@ -149,7 +149,6 @@ function createId() {
         return v.toString(16);
     });
 }
-
 
 function createUuid() {
     return new Promise((resolve) => {
