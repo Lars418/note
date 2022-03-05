@@ -1,13 +1,15 @@
 //#region vars
 import {
     applyTranslations,
-    createId,
     formatDateTime,
     formatShortDate,
-    formatTimestamp, getFaviconUrl,
+    formatTimestamp,
+    getFaviconUrl,
+    getUrlFormat,
     lightenDarkenColor
 } from './util.js';
-import { constant } from './constant.js';
+import {constant} from './constant.js';
+import {Notes} from './notes.js';
 
 const {
     i18n: { getMessage, getUILanguage },
@@ -22,24 +24,27 @@ const addNoteInput = document.getElementById('addNote');
 const addNoteWrapper = document.getElementById('addNoteWrapper');
 const noteTag = document.getElementById('tag');
 const recentlyAdded = document.getElementById('recentlyAdded');
-const noteMenu = document.getElementById('noteMenu');
 const addNoteBtn = document.getElementById('addNoteBtn');
-
-let noteActionBtnHandle = null;
 //#endregion
 
 //#region Init
 document.documentElement.lang = uiLang;
 
-if(searchParams.get('standalone') === '1') document.documentElement.classList.add('standalone');
-if(searchParams.get('predefinedMessage')) {
+if (searchParams.get('standalone') === '1') {
+    document.documentElement.classList.add('standalone')
+}
+
+if (searchParams.get('predefinedMessage')) {
     addNoteInput.value = decodeURIComponent(searchParams.get('predefinedMessage'));
 
     if (addNoteInput.value.trim()) {
         addNoteBtn.classList.remove('is-hidden');
     }
 }
-if(searchParams.get('priority')) setPriority(searchParams.get('priority'));
+
+if (searchParams.get('priority')) {
+    setPriority(searchParams.get('priority'));
+}
 
 
 function loadDraft() {
@@ -108,7 +113,7 @@ optionsBtn.addEventListener('click', () => runtime.openOptionsPage());
 //#endregion
 
 //#region add priority, add "enter"
-addNoteInput.oninput = () => {
+addNoteInput.addEventListener('input', () => {
     const currentValue = addNoteInput.value.slice(0, 2);
     const parent = addNoteInput.parentElement;
 
@@ -141,7 +146,7 @@ addNoteInput.oninput = () => {
             priority: addNoteInput.parentElement.getAttribute('priority') || null
         }
     });
-}
+});
 //#endregion
 
 //#region Add note
@@ -152,37 +157,28 @@ storage.local.get('settings', ({ settings }) => {
 });
 
 [addNoteInput, addNoteBtn].forEach(element => {
-    element.addEventListener('keypress', (event) => {
-        if(!event.shiftKey && event.key === 'Enter') {
+    element.addEventListener('keypress', async (event) => {
+        if (!event.shiftKey && event.key === 'Enter') {
             event.preventDefault();
-            saveNote();
+            await saveNote();
         }
     });
 });
 addNoteBtn.addEventListener('click', saveNote);
 
-function saveNote() {
-    storage.local.get([ 'notes' ], ({ notes }) => {
-        const note = {
-            value: addNoteInput.value.trim(),
-            priority: addNoteInput.parentElement.getAttribute("priority") || "MEDIUM",
-            completed: false,
-            date: new Date().toISOString(),
-            id: createId(),
-            origin: null
-        };
-        notes.push(note);
-        
-        storage.local.set({ notes });
-        addNoteInput.value = '';
-        addNoteBtn.classList.add('is-hidden');
-        clearTag();
-        addNote(note);
-    });
+async function saveNote() {
+    const content = addNoteInput.value.trim();
+    const priority = addNoteInput.parentElement.getAttribute('priority');
+    const note = await Notes.save(content, priority);
+
+    addNoteInput.value = '';
+    addNoteBtn.classList.add('is-hidden');
+    clearTag();
+    addNote(note);
 }
 //#endregion
 
-//#region note tags
+//#region note priority
 function setPriority(name) {
     storage.local.get(['notePriorities'], ({ notePriorities }) => {
         const priority = notePriorities.find(x => x.name === name);
@@ -207,31 +203,21 @@ function clearTag() {
 
 //#region note specific methods
 
-function deleteNote(id) {
-    storage.local.get("notes", res => {
-        const { notes } = res;
-        const updatedNotes = notes.filter(note => note.id !== id);
-
-        storage.local.set({
-            notes: updatedNotes
-        }, () => {
-            try {
-                const deletedNote = recentlyAdded.querySelector(`div[data-id="${id}"]`);
-                recentlyAdded.removeChild(deletedNote);
-            }
-            catch(e) {
-                console.warn("Could not delete note: ", id);
-            }
-        })
-        
-    })
+async function deleteNote(id) {
+    try {
+        await Notes.delete(id);
+        const deletedNote = recentlyAdded.querySelector(`div[data-id="${id}"]`);
+        recentlyAdded.removeChild(deletedNote);
+    } catch (e) {
+        console.warn('Could not delete note: ', id);
+    }
 }
 
 function addNote(note) {
-    storage.local.get(["notePriorities", "settings"], async ({ notePriorities, settings }) => {
+    storage.local.get(['notePriorities', 'settings'], async ({ notePriorities, settings }) => {
         const priority = notePriorities.find(p => p.name === note.priority);
-        const noteElement = document.createElement("div");
-        noteElement.classList.add("note");
+        const noteElement = document.createElement('div');
+        noteElement.classList.add('note');
         noteElement.dataset.id = note.id;
         noteElement.setAttribute('tabindex', '0');
         noteElement.setAttribute('role', 'option');
@@ -260,13 +246,13 @@ function addNote(note) {
                     </div>
                     
                     <div class="note-actions">
-                        <button class="note-action-edit" title="${getMessage('noteActionEdit')}">
+                        <button class="note-action-edit" title="${getMessage('noteActionEdit')}" aria-keyshortcuts="E">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                             </svg>
                         </button>
                         
-                        <button class="note-action-delete" title="${getMessage('noteActionDelete')}">
+                        <button class="note-action-delete" title="${getMessage('noteActionDelete')}" aria-keyshortcuts="Backspace Delete">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="3 6 5 6 21 6"></polyline>
                                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -304,6 +290,10 @@ function addNote(note) {
             const notes = recentlyAdded.querySelectorAll('.note');
             const firstElement = recentlyAdded.querySelector('.note');
             const lastElement = notes[notes.length -1];
+
+            if (!document.activeElement.classList.contains('note')) {
+                return;
+            }
 
             if (event.key === 'ArrowUp') {
                 event.preventDefault();
@@ -353,35 +343,31 @@ function addNote(note) {
         deleteNoteBtn.onclick = () => deleteNote(note.id);
 
         if (origin) {
-            origin.addEventListener("click", e => {
+            origin.addEventListener('click', e => {
                 e.preventDefault();
                 tabs.create({ url: origin.href });
             });
         }
 
-        const noteActionWrapper = document.createElement("div");
-        noteActionWrapper.classList.add("note-action-wrapper");
+        const noteActionWrapper = document.createElement('div');
+        noteActionWrapper.classList.add('note-action-wrapper');
 
         // completed checkbox
-        const completedBtn = document.createElement("input");
-        completedBtn.type = "checkbox";
-        completedBtn.classList.add("note-action-complete");
-        completedBtn.title = getMessage("noteActionCompletedTitle");
+        const completedBtn = document.createElement('input');
+        completedBtn.type = 'checkbox';
+        completedBtn.classList.add('note-action-complete');
+        completedBtn.title = getMessage('noteActionCompletedTitle');
         completedBtn.checked = note.completed;
-        if(note.completed) noteElement.classList.toggle("is-completed");
-        completedBtn.onclick = e => {
+
+        if (note.completed) {
+            noteElement.classList.toggle('is-completed')
+        }
+
+        completedBtn.onclick = async (e) => {
             e.stopImmediatePropagation();
-            noteElement.classList.toggle("is-completed");
+            noteElement.classList.toggle('is-completed');
 
-            storage.local.get("notes", res => {
-                const oldNotes = res.notes;
-                const updateNote = oldNotes.find(note => note.id === noteElement.dataset.id);
-                updateNote.completed = completedBtn.checked;
-
-                storage.local.set({
-                    notes: oldNotes
-                });
-            })
+            await Notes.update(noteElement.dataset.id, 'completed', completedBtn.checked);
         }
         noteActionWrapper.appendChild(completedBtn);
 
@@ -403,7 +389,7 @@ function addNote(note) {
         if (settings.custom.advancedShowLinkPreview ?? settings.default.advancedShowLinkPreview) {
             const urls = Array.from(noteValue.querySelectorAll('a')).filter(anchor => !anchor.href.startsWith('mailto:'));
             for (const url of urls) {
-                url.outerHTML = await createOgpCard(url.href);
+                url.outerHTML = await createOgpCard(note, url.href);
             }
             addNoteLinkListeners(noteValue, true);
         }
@@ -439,13 +425,9 @@ function editNote(id) {
     selectedNoteContent.onblur = e => {
         e.preventDefault();
 
-        storage.local.get(['notes', 'settings'], async ({ settings, notes: oldNotes}) => {
-            const updateNote = oldNotes.find(note => note.id === id);
-            updateNote.value = selectedNoteContent.textContent.trim();
-
-            storage.local.set({
-                notes: oldNotes
-            });
+        storage.local.get(['notes', 'settings'], async ({ settings }) => {
+            const value = selectedNoteContent.textContent.trim();
+            const updatedNote = await Notes.update(id, 'value', value);
 
             selectedNoteContent.innerHTML = (settings.custom.advancedParseUrls ?? settings.default.advancedParseUrls)
                 ? formatNoteValue(selectedNoteContent.textContent)
@@ -460,8 +442,10 @@ function editNote(id) {
                 const urls = Array.from(selectedNoteContent.querySelectorAll('a')).filter(url => !url.href.startsWith('mailto:'));
 
                 for (const url of urls) {
-                    url.outerHTML = await createOgpCard(url.href);
+                    url.outerHTML = await createOgpCard(updatedNote, url.href);
                 }
+
+                addNoteLinkListeners(selectedNote, true);
             }
         }); 
     }
@@ -541,38 +525,10 @@ function addNoteLinkListeners(note, httpLinksOnly=false) {
     }
 }
 
-function getUrlFormat(uri) {
-    const { host, pathname, protocol} = new URL(uri);
-
-    if(protocol === "file:") {
-        const paths = pathname.split('/');
-
-        return paths[(paths.length - 1)];
-    }
-
-    if(protocol === "chrome-extension:") return getMessage("contextMenuFileUrl");
-
-    if(protocol === "data:") {
-        return "data-uri"
-    }
-
-    return host;
-}
-
-async function createOgpCard(url) {
-    const controller = new AbortController();
-    const ogpOptions = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ url }),
-        signal: controller.signal
-    };
-    setTimeout(() => controller.abort(), constant.DEFAULT_TIMEOUT_IN_MS);
-    const ogp = await fetch(constant.OGP_URL, ogpOptions).then(res => res.json());
+async function createOgpCard(note, url) {
+    const ogp = await getCachedOrDefaultOgpData(note, url);
     const media = ogp.media ?
-        `<img src="${ogp.media.url}" alt="${ogp.title}" draggable="false" class="ogp-banner" />`
+        `<img src="${ogp.media.url}" aria-hidden="true" draggable="false" class="ogp-banner" />`
         : '';
     const favicon = ogp.favicon
         ? `<img src="${getFaviconUrl(url, ogp.favicon)}" aria-hidden="true" draggable="false" class="ogp-favicon" />`
@@ -606,5 +562,31 @@ async function createOgpCard(url) {
             </div>
         </a>
     `;
+}
+
+async function getCachedOrDefaultOgpData(note, url) {
+    if (note.ogp) {
+        return note.ogp;
+    }
+
+    const ogp = await getOgpData(url);
+    await Notes.update(note.id, 'ogp', ogp);
+
+    return ogp;
+}
+
+async function getOgpData(url) {
+    const controller = new AbortController();
+    const ogpOptions = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url }),
+        signal: controller.signal
+    };
+    setTimeout(() => controller.abort(), constant.DEFAULT_TIMEOUT_IN_MS);
+
+    return await fetch(constant.OGP_URL, ogpOptions).then(res => res.json());
 }
 //#endregion

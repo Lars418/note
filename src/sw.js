@@ -4,7 +4,7 @@ const {
     storage,
     tabs,
     contextMenus,
-    browserAction,
+    action,
     omnibox,
 } = chrome;
 
@@ -15,20 +15,20 @@ runtime.onInstalled.addListener(async ({ reason }) => {
         // Load default settings
         await fetch("../json/defaultSettings.json")
         .then(res => res.json())
-        .then((json) => {
-            Object.keys(json.notePriorities).map(x => {
+        .then(async (json) => {
+            Object.keys(json.notePriorities).map(async (x) => {
                 json.notePriorities[x] = {
                     ...json.notePriorities[x],
                     default: {
                         ...json.notePriorities[x].default,
-                        value: getMessage(json.notePriorities[x].default.value)
+                        value: await _getMessage(json.notePriorities[x].default.value)
                     }
                 }
             });
 
             storage.local.set(json);
 
-            initContextMenu();
+            await initContextMenu();
 
             tabs.create({
                 url: "https://lars.koelker.dev/extensions/note/install.php"
@@ -62,7 +62,7 @@ runtime.onInstalled.addListener(async ({ reason }) => {
                 },
             });
 
-            initContextMenu();
+            await initContextMenu();
             contextMenus.update('1', {
                 visible: settings.custom.showContextMenu ?? settings.default.showContextMenu
             });
@@ -80,7 +80,7 @@ runtime.onInstalled.addListener(async ({ reason }) => {
     initBadge();
 });
 
-runtime.onStartup.addListener(() => {
+runtime.onStartup.addListener(async () => {
     initBadge();
 
     storage.local.get('settings', ({ settings }) => {
@@ -89,12 +89,12 @@ runtime.onStartup.addListener(() => {
         });
     })
 
-    initContextMenu();
+    await initContextMenu();
 });
 
 storage.onChanged.addListener(({ notes }) => {
     if (notes) {
-        browserAction.setBadgeText({
+        action.setBadgeText({
             text: notes.newValue.filter(note => !note.completed).length.toString()
         });
     }
@@ -103,7 +103,7 @@ storage.onChanged.addListener(({ notes }) => {
 omnibox.onInputEntered.addListener((text) => addNote(text));
 
 //#region helper
-function addNote(value, priority = 'MEDIUM', origin = null) {
+function addNote(value, origin = null, priority = 'MEDIUM') {
     storage.local.get('notes', ({ notes }) => {
         notes.push({
             completed: false,
@@ -119,23 +119,34 @@ function addNote(value, priority = 'MEDIUM', origin = null) {
 }
 
 function initBadge() {
-    browserAction.setBadgeBackgroundColor({
+    action.setBadgeBackgroundColor({
         color: '#3367d6'
     });
     storage.local.get('notes', ({ notes }) => {
-        browserAction.setBadgeText({
+        action.setBadgeText({
             text: notes.filter(note => !note.completed).length.toString()
         });
     });
 }
 
-function initContextMenu() {
+async function initContextMenu() {
+    const title = await _getMessage('contextMenuText');
+
     contextMenus.create({
         id: '1',
         contexts: [ 'selection' ],
-        title: getMessage('contextMenuText'),
-        onclick: (e) => addNote(e.selectionText, e.pageUrl),
+        title,
         visible: true
+    });
+
+    contextMenus.onClicked.addListener((e) => {
+        switch (e.menuItemId) {
+            case '1':
+                addNote(e.selectionText, e.pageUrl);
+                break;
+            default:
+                return;
+        }
     });
 }
 
@@ -156,5 +167,21 @@ function createUuid() {
              resolve(btoa(`${createId()};${os};${arch};${nacl_arch}`));
         });
     });
+}
+
+// TODO: Change when Chrome v100 rolled out (starting at 29.03.2022)
+/** This method ignores placeholders, but hence it is only being used for two keys who don't need placeholders, it's fine */
+async function _getMessage(key) {
+    if (typeof getMessage === 'undefined') {
+        const lang = navigator.language.toLowerCase().includes('de') ? 'de' : 'en';
+        const path = `./_locales/${lang}/messages.json`;
+
+        const translations = await fetch(path).then(res => res.json());
+        const preparedTranslations = Object.fromEntries(Object.entries(translations).map(translation => [translation[0], translation[1].message]))
+
+        return preparedTranslations[key];
+    }
+
+    return getMessage(key);
 }
 //#endregion

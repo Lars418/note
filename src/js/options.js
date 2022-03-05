@@ -129,14 +129,14 @@ importNotesBtn.addEventListener('keyup', event => {
        importNotesBtn.click();
    }
 });
-importNotesInput.onchange = e => {
+importNotesInput.onchange = () => {
     const file = importNotesInput.files[0];
     const reader = new FileReader();
 
     if(file.type !== 'application/json') return;
 
     reader.addEventListener('load', ({ target: { result }}) => {
-        const notes = JSON.parse(result);
+        const notes = JSON.parse(result.toString());
 
         storage.local.set({ notes });
         showSuccessOnBtn(importNotesBtn);  

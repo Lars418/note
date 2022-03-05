@@ -113,3 +113,25 @@ export function getFaviconUrl(baseUrl, faviconPath) {
         return `${protocol}//${host}${faviconPath}`;
     }
 }
+
+/**
+ * @param url {string}
+ * */
+export function getUrlFormat(url) {
+    const { getMessage } = chrome.i18n;
+    const { host, pathname, protocol} = new URL(url);
+
+    if(protocol === "file:") {
+        const paths = pathname.split('/');
+
+        return paths[(paths.length - 1)];
+    }
+
+    if(protocol === "chrome-extension:") return getMessage("contextMenuFileUrl");
+
+    if(protocol === "data:") {
+        return "data-uri"
+    }
+
+    return host;
+}

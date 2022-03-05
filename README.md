@@ -11,7 +11,7 @@ A clean and simple browser extension for managing notes.
  *Chromium based browsers (e.g. MS Edge) may also be able to install the extension using the link above. Keep in mind: The extension has been developed for Google Chrome. It might not work as expected in other browsers.*
 
 ## Languages
-Note is availiable in English and German.
+Notes is availiable in English and German.
 
 ## Contributing
 (to be done)

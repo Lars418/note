@@ -1,46 +1,49 @@
 {
-    "manifest_version": 2,
-    "version": "0.2.2",
-    "version_name": "­0.2.2",
+  "manifest_version": 3,
+  "version": "0.2.2",
+  "version_name": "­0.2.2",
 
-    "name": "__MSG_name__",
-    "description": "__MSG_description__",
-    "icons": {
-        "16": "img/extension_icon/16.png",
-        "32": "img/extension_icon/32.png",
-        "64": "img/extension_icon/64.png",
-        "128": "img/extension_icon/128.png"
-    },
+  "name": "__MSG_name__",
+  "description": "__MSG_description__",
+  "icons": {
+    "16": "img/extension_icon/16.png",
+    "32": "img/extension_icon/32.png",
+    "64": "img/extension_icon/64.png",
+    "128": "img/extension_icon/128.png"
+  },
 
-    "permissions": [ "storage", "activeTab", "commands", "contextMenus" ],
+  "permissions": [ "storage", "activeTab", "commands", "contextMenus" ],
 
-    "default_locale": "en",
+  "default_locale": "en",
 
-    "options_ui": {
-        "page": "options.html",
-        "open_in_tab": true
-    },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
 
-    "browser_action": {
-        "default_popup": "popup.html"
-    },
+  "action": {
+    "default_popup": "popup.html"
+  },
 
-    "omnibox": {
-        "keyword": "notes"
-    },
+  "omnibox": {
+    "keyword": "notes"
+  },
 
-    "commands": {
-        "_execute_browser_action": {
-            "suggested_key": {
-              "default": "Alt+N",
-              "mac": "Alt+N"
-            }
-        }
-    },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+N",
+        "mac": "Alt+N"
+      }
+    }
+  },
 
-    "background": {
-        "scripts": [ "js/background.js" ]
-    },
+  "background": {
+    "service_worker": "sw.js"
+  },
 
-    "web_accessible_resources": [ "manifest.json" ]
+  "web_accessible_resources": [{
+    "resources": [ "manifest.json" ],
+    "matches": [ "https://*.koelker.dev/*" ]
+  }]
 }
