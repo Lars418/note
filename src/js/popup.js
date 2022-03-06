@@ -4,7 +4,6 @@ import {
     formatDateTime,
     formatShortDate,
     formatTimestamp,
-    getFaviconUrl,
     getUrlFormat,
     lightenDarkenColor
 } from './util.js';
@@ -527,11 +526,11 @@ function addNoteLinkListeners(note, httpLinksOnly=false) {
 
 async function createOgpCard(note, url) {
     const ogp = await getCachedOrDefaultOgpData(note, url);
-    const media = ogp.media ?
-        `<img src="${ogp.media.url}" aria-hidden="true" draggable="false" class="ogp-banner" />`
+    const media = ogp.img ?
+        `<img src="${ogp.img}" aria-hidden="true" draggable="false" class="ogp-banner" />`
         : '';
     const favicon = ogp.favicon
-        ? `<img src="${getFaviconUrl(url, ogp.favicon)}" aria-hidden="true" draggable="false" class="ogp-favicon" />`
+        ? `<img src="${ogp.favicon}" aria-hidden="true" draggable="false" class="ogp-favicon" />`
         : '';
     const lang = ogp.locale ? `hreflang="${ogp.locale}" lang="${ogp.locale}"` : '';
     const description = ogp.description ? `
@@ -565,7 +564,7 @@ async function createOgpCard(note, url) {
 }
 
 async function getCachedOrDefaultOgpData(note, url) {
-    if (note.ogp) {
+    if (note.ogp && new Date() < new Date(note.ogp.exp)) {
         return note.ogp;
     }
 
