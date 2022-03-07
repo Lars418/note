@@ -12,7 +12,12 @@
     "128": "img/extension_icon/128.png"
   },
 
-  "permissions": [ "storage", "activeTab", "commands", "contextMenus" ],
+  "permissions": [
+    "storage",
+    "activeTab",
+    "commands",
+    "contextMenus"
+  ],
 
   "default_locale": "en",
 

@@ -24,12 +24,13 @@ const addNoteWrapper = document.getElementById('addNoteWrapper');
 const noteTag = document.getElementById('tag');
 const recentlyAdded = document.getElementById('recentlyAdded');
 const addNoteBtn = document.getElementById('addNoteBtn');
+const standalone = searchParams.get('standalone') === '1';
 //#endregion
 
 //#region Init
 document.documentElement.lang = uiLang;
 
-if (searchParams.get('standalone') === '1') {
+if (standalone) {
     document.documentElement.classList.add('standalone')
 }
 
@@ -245,11 +246,13 @@ function addNote(note) {
                     </div>
                     
                     <div class="note-actions">
-                        <button class="note-action-edit" title="${getMessage('noteActionEdit')}" aria-keyshortcuts="E">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-                            </svg>
-                        </button>
+                        ${!note.mediaType ? 
+                            `<button class="note-action-edit" title="${getMessage('noteActionEdit')}" aria-keyshortcuts="E">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                                </svg>
+                            </button>`
+                        : ''}
                         
                         <button class="note-action-delete" title="${getMessage('noteActionDelete')}" aria-keyshortcuts="Backspace Delete">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -270,6 +273,11 @@ function addNote(note) {
         noteElement.onkeypress = event => {
             console.log(document.activeElement);
             const editKeys = [ 'e', ' ', 'enter' ];
+
+            // Editing media notes is prohibited
+            if (note.mediaType) {
+                return;
+            }
 
             if (document.activeElement !== noteElement) {
                 return;
@@ -338,7 +346,11 @@ function addNote(note) {
         noteElement.onfocus = () => noteElement.setAttribute('aria-selected', 'true');
         noteElement.onblur = () => noteElement.setAttribute('aria-selected', 'false');
 
-        editNoteBtn.onclick = () => editNote(note.id);
+        if (!note.mediaType) {
+            editNoteBtn.onclick = () => editNote(note.id);
+            noteElement.ondblclick = editNote.bind(null, note.id);
+        }
+
         deleteNoteBtn.onclick = () => deleteNote(note.id);
 
         if (origin) {
@@ -369,8 +381,6 @@ function addNote(note) {
             await Notes.update(noteElement.dataset.id, 'completed', completedBtn.checked);
         }
         noteActionWrapper.appendChild(completedBtn);
-
-        noteElement.ondblclick = editNote.bind(null, note.id);
 
         if (settings.custom.advancedParseUrls ?? settings.default.advancedParseUrls) {
             addNoteLinkListeners(noteValue);
@@ -495,11 +505,11 @@ function getNoteOrigin(url, value = null) {
 }
 
 function formatNoteValue(value) {
-    value.match(constant.EMAIL_REGEX)?.forEach(email => {
+    value?.match(constant.EMAIL_REGEX)?.forEach(email => {
         value = value.replace(email, `<a href="mailto:${email}" rel="noopener noreferrer">${email}</a>`);
     });
 
-    value.match(constant.URL_REGEX)?.forEach(url => {
+    value?.match(constant.URL_REGEX)?.forEach(url => {
         value = value.replace(url, `<a href="${url}" rel="noopener noreferrer">${url.replace(/https?:\/\//gi, "")}</a>`);
     });
 
@@ -525,7 +535,16 @@ function addNoteLinkListeners(note, httpLinksOnly=false) {
 }
 
 async function createOgpCard(note, url) {
+    if (note.mediaType) {
+        return getMediaPreview(note.mediaType, url);
+    }
+
     const ogp = await getCachedOrDefaultOgpData(note, url);
+
+    if (!ogp) {
+        return formatNoteValue(url);
+    }
+
     const media = ogp.img ?
         `<img src="${ogp.img}" aria-hidden="true" draggable="false" class="ogp-banner" />`
         : '';
@@ -586,6 +605,37 @@ async function getOgpData(url) {
     };
     setTimeout(() => controller.abort(), constant.DEFAULT_TIMEOUT_IN_MS);
 
-    return await fetch(constant.OGP_URL, ogpOptions).then(res => res.json());
+    try {
+        return await fetch(constant.OGP_URL, ogpOptions).then(res => res.json());
+    } catch (e) {}
+}
+
+function getMediaPreview(mediaType, url) {
+    switch (mediaType) {
+        case 'img':
+            return `<img
+                        src="${url}"
+                        style="width: 100%"
+                    />`;
+        case 'video':
+            return `<video
+                        controls="controls"
+                        ${!standalone ? 'controlslist="nofullscreen"': ''}
+                        src="${url}"
+                        preload="metadata"
+                        style="width: 100%"
+                    >                           
+                    </video>`;
+        case 'audio':
+            return `<audio
+                        src="${url}"
+                        controls="controls"
+                        preload="metadata"
+                        style="width: 100%"
+                    >                       
+                    </audio>`;
+        default:
+            break;
+    }
 }
 //#endregion

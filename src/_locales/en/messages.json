@@ -223,8 +223,20 @@
     },
 
     
-    "contextMenuText": {
+    "contextMenuSelection": {
         "message": "Add note \"%s\""
+    },
+    "contextMenuLink": {
+        "message": "Save link as note"
+    },
+    "contextMenuImage": {
+        "message": "Save image as note"
+    },
+    "contextMenuVideo": {
+        "message": "Save video as note"
+    },
+    "contextMenuAudio": {
+        "message": "Save audio as note"
     },
     "contextMenuFileUrl": {
         "message": "Local file"

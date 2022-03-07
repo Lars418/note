@@ -28,7 +28,7 @@ runtime.onInstalled.addListener(async ({ reason }) => {
 
             storage.local.set(json);
 
-            await initContextMenu();
+            await initContextMenus();
 
             tabs.create({
                 url: "https://lars.koelker.dev/extensions/note/install.php"
@@ -36,6 +36,10 @@ runtime.onInstalled.addListener(async ({ reason }) => {
         });
 
     }
+
+
+    console.log('I suppose if you managed to get here you\'re probably a fellow developer, but in case you\'re not: %cDONT EXECUTE ANY CODE YOU DONT KNOW!', 'background-color:red;font-weight:bold;font-size:1.75rem;')
+    console.log('Welcome to the service worker! Don\'t want to sneak around the devtools but take a look at the actual source code?\n%c>> https://github.com/Lars418/note', 'background-color:goldenrod');
 
     if(reason === installReason.UPDATE) {
         const { version, version_name, previousVersion } = runtime.getManifest();
@@ -62,7 +66,7 @@ runtime.onInstalled.addListener(async ({ reason }) => {
                 },
             });
 
-            await initContextMenu();
+            await initContextMenus();
             contextMenus.update('1', {
                 visible: settings.custom.showContextMenu ?? settings.default.showContextMenu
             });
@@ -89,7 +93,7 @@ runtime.onStartup.addListener(async () => {
         });
     })
 
-    await initContextMenu();
+    await initContextMenus();
 });
 
 storage.onChanged.addListener(({ notes }) => {
@@ -103,15 +107,16 @@ storage.onChanged.addListener(({ notes }) => {
 omnibox.onInputEntered.addListener((text) => addNote(text));
 
 //#region helper
-function addNote(value, origin = null, priority = 'MEDIUM') {
+function addNote(value = '', origin = null, mediaType = null) {
     storage.local.get('notes', ({ notes }) => {
         notes.push({
             completed: false,
             date: new Date().toISOString(),
             id: createId(),
-            priority,
+            priority: 'MEDIUM',
             value,
-            origin
+            origin,
+            mediaType
         });
 
         storage.local.set({ notes });
@@ -129,20 +134,59 @@ function initBadge() {
     });
 }
 
-async function initContextMenu() {
-    const title = await _getMessage('contextMenuText');
+async function initContextMenus() {
+    const translationPrefix = 'contextMenu';
+    const contexts = [ 'selection', 'link', 'image', 'video', 'audio' ];
 
-    contextMenus.create({
+    for (let i = 0; i < contexts.length; i++) {
+        const ctx = contexts[i];
+        const capitalizedCtx = ctx.charAt(0).toUpperCase() + ctx.slice(1);
+        const title = await _getMessage(translationPrefix + capitalizedCtx);
+
+        contextMenus.create({
+            id: (i + 1).toString(),
+            contexts: [ ctx ],
+            title,
+            visible: true,
+        });
+    }
+
+    /*contextMenus.create({
         id: '1',
         contexts: [ 'selection' ],
-        title,
+        title: await _getMessage('contextMenuSelection'),
         visible: true
     });
 
+    contextMenus.create({
+        id: '2',
+        contexts: [ 'link' ],
+        title: await _getMessage('contextMenuLink'),
+        visible: true
+    });*/
+
     contextMenus.onClicked.addListener((e) => {
+        console.log(e);
+
         switch (e.menuItemId) {
-            case '1':
+            case '1': // Selection
                 addNote(e.selectionText, e.pageUrl);
+                break;
+            case '2': // Link
+                console.log(e);
+                addNote(e.linkUrl, e.pageUrl);
+                break;
+            case '3': // Image
+                console.log(e);
+                addNote(e.srcUrl, e.pageUrl, 'img');
+                break;
+            case '4': // Video
+                console.log(e);
+                addNote(e.srcUrl, e.pageUrl, 'video');
+                break;
+            case '5': // Audio
+                console.log(e);
+                addNote(e.srcUrl, e.pageUrl, 'audio');
                 break;
             default:
                 return;

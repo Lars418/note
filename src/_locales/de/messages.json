@@ -223,8 +223,20 @@
     },
 
     
-    "contextMenuText": {
+    "contextMenuSelection": {
         "message": "Notiz \"%s\" hinzufügen"
+    },
+    "contextMenuLink": {
+        "message": "Link als Notiz speichern"
+    },
+    "contextMenuImage": {
+        "message": "Bild als Notiz speichern"
+    },
+    "contextMenuVideo": {
+        "message": "Video als Notiz speichern"
+    },
+    "contextMenuAudio": {
+        "message": "Audio als Notiz speichern"
     },
     "contextMenuFileUrl": {
         "message": "Lokale Datei"
