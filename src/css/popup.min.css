@@ -14,6 +14,12 @@
   --link: #065fd4;
   --link-dark: #055ac9;
   --success: #28a745;
+  --dark-text: #fff;
+  --dark-body: #202124;
+  --dark-body-alternate: #292a2d;
+  --dark-btn-background-hover: #47494e;
+  --dark-ogp-background: #3d3e42;
+  --dark-border: #4e4e4e;
 }
 
 *, *::before, *::after {
@@ -42,6 +48,48 @@ html.standalone header {
 }
 html.standalone header > #actions > #newTab {
   display: none;
+}
+html.dark-theme {
+  background-color: var(--dark-body);
+  color: var(--dark-text);
+}
+html.dark-theme > body > main > #recentlyAddedWrapper > h2 {
+  color: var(--dark-text);
+}
+html.dark-theme > body > main > #recentlyAddedWrapper > #recentlyAdded .note {
+  color: var(--dark-text);
+}
+html.dark-theme > body > main > #recentlyAddedWrapper > #recentlyAdded .note:nth-child(odd) {
+  background-color: var(--dark-body-alternate);
+}
+html.dark-theme > body > main > #recentlyAddedWrapper > #recentlyAdded .note:hover {
+  border-top-color: var(--dark-border);
+  border-bottom-color: var(--dark-border);
+}
+html.dark-theme > body > main > #recentlyAddedWrapper > #recentlyAdded .note > article > .note-value > a.ogp-card {
+  color: var(--dark-text);
+}
+html.dark-theme > body > main > #addNoteWrapper {
+  background: var(--dark-body-alternate);
+}
+html.dark-theme > body > main > #addNoteWrapper > #addNote {
+  color: var(--dark-text);
+  caret-color: var(--dark-text);
+  border-left-color: var(--dark-body-alternate);
+}
+html.dark-theme > body > main > #addNoteWrapper > #addNoteBtn {
+  color: var(--dark-text);
+  background: var(--dark-body);
+}
+html.dark-theme .ogp-card, html.dark-theme .ogp-card:visited {
+  border-color: var(--dark-border);
+  background-color: var(--dark-ogp-background);
+}
+html.dark-theme .ogp-card > img.ogp-banner, html.dark-theme .ogp-card video, html.dark-theme .ogp-card:visited > img.ogp-banner, html.dark-theme .ogp-card:visited video {
+  border-bottom-color: var(--dark-border);
+}
+html.dark-theme .ogp-card > .ogp-data > strong, html.dark-theme .ogp-card:visited > .ogp-data > strong {
+  color: var(--dark-text);
 }
 
 body {
@@ -169,6 +217,9 @@ main > #recentlyAddedWrapper > #recentlyAdded > .note.is-completed {
 }
 main > #recentlyAddedWrapper > #recentlyAdded > .note.is-completed > article > .note-value {
   text-decoration: line-through;
+}
+main > #recentlyAddedWrapper > #recentlyAdded > .note.is-completed > article > .note-value > a.ogp-card {
+  color: #000;
 }
 main > #recentlyAddedWrapper > #recentlyAdded > .note[data-preselected-for-deletion=true]::after {
   content: "";

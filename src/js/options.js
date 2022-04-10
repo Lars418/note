@@ -1,5 +1,5 @@
 //#region vars
-import { applyTranslations } from './util.js';
+import {applyTranslations, loadTheme} from './util.js';
 
 const generalOptionsWrapper = document.getElementById('generalOptionsWrapper');
 const advancedOptionsWrapper = document.getElementById('advancedOptionsWrapper');
@@ -60,6 +60,7 @@ document.querySelectorAll('.dropdown').forEach(btn => {
 if (new URL(location.href).searchParams.get('debug') === '1') debug.style.display = 'block';
 
 applyTranslations(document);
+loadTheme();
 //#endregion
 
 //#region load settings

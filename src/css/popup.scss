@@ -18,6 +18,77 @@ html {
             }
         }
     }
+
+    &.dark-theme {
+        background-color: var(--dark-body);
+        color: var(--dark-text);
+
+        > body {
+
+            > main {
+                > #recentlyAddedWrapper {
+                    > h2 {
+                        color: var(--dark-text);
+                    }
+
+                    > #recentlyAdded {
+                        .note {
+                            color: var(--dark-text);
+
+                            &:nth-child(odd) {
+                                background-color: var(--dark-body-alternate);
+                            }
+
+                            &:hover {
+                                border-top-color: var(--dark-border);
+                                border-bottom-color: var(--dark-border);
+                            }
+
+                            > article {
+                                > .note-value {
+                                    > a {
+                                        &.ogp-card {
+                                            color: var(--dark-text);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                > #addNoteWrapper {
+                    background: var(--dark-body-alternate);
+
+                    > #addNote {
+                        color: var(--dark-text);
+                        caret-color: var(--dark-text);
+                        border-left-color: var(--dark-body-alternate);
+                    }
+
+                    > #addNoteBtn {
+                        color: var(--dark-text);
+                        background: var(--dark-body);
+                    }
+                }
+            }
+        }
+
+        .ogp-card, .ogp-card:visited {
+            border-color: var(--dark-border);
+            background-color: var(--dark-ogp-background);
+
+            > img.ogp-banner, video {
+                border-bottom-color: var(--dark-border);
+            }
+
+            > .ogp-data {
+                > strong {
+                    color: var(--dark-text);
+                }
+            }
+        }
+    }
 }
 
 body {
@@ -160,6 +231,10 @@ main {
 
                     > article > .note-value {
                         text-decoration: line-through;
+
+                        > a.ogp-card {
+                            color: #000;
+                        }
                     }
                 }
 

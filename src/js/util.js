@@ -123,3 +123,32 @@ export function getUrlFormat(url) {
 
     return host;
 }
+
+/** Load theme */
+export function loadTheme() {
+    const { storage } = chrome;
+
+    storage.local.get([ 'settings' ], ({ settings }) => {
+        if (!settings.custom.theme) {
+            const useDarkTheme = window.matchMedia('(prefers-color-scheme: dark').matches;
+
+            storage.local.set({
+                settings: {
+                    ...settings,
+                    custom: {
+                        ...settings.custom,
+                        theme: useDarkTheme ? 'dark' : 'light'
+                    }
+                }
+            });
+
+            if (useDarkTheme) {
+                document.documentElement.classList.add('dark-theme');
+            }
+        }
+
+        if ((settings.custom.theme ?? settings.default.theme) === 'dark') {
+            document.documentElement.classList.add('dark-theme');
+        }
+    })
+}

@@ -5,7 +5,8 @@ import {
     formatShortDate,
     formatTimestamp,
     getUrlFormat,
-    lightenDarkenColor
+    lightenDarkenColor,
+    loadTheme
 } from './util.js';
 import {constant} from './constant.js';
 import {Notes} from './notes.js';
@@ -90,6 +91,7 @@ function loadNotes() {
 
 loadNotes();
 loadDraft();
+loadTheme();
 applyTranslations(document);
 //#endregion
 
