@@ -37,10 +37,6 @@ runtime.onInstalled.addListener(async ({ reason }) => {
 
     }
 
-
-    console.log('I suppose if you managed to get here you\'re probably a fellow developer, but in case you\'re not: %cDONT EXECUTE ANY CODE YOU DONT KNOW!', 'background-color:red;font-weight:bold;font-size:1.75rem;')
-    console.log('Welcome to the service worker! Don\'t want to sneak around the devtools but take a look at the actual source code?\n%c>> https://github.com/Lars418/note', 'background-color:goldenrod');
-
     if(reason === installReason.UPDATE) {
         const { version, version_name, previousVersion } = runtime.getManifest();
 
@@ -57,8 +53,6 @@ runtime.onInstalled.addListener(async ({ reason }) => {
             // Update default settings in case new ones have been added
             const defaultSettings = await fetch("../json/defaultSettings.json").then(res => res.json());
 
-            console.log('Updating default settings', defaultSettings);
-
             storage.local.set({
                 settings: {
                     ...settings,
@@ -67,8 +61,11 @@ runtime.onInstalled.addListener(async ({ reason }) => {
             });
 
             await initContextMenus();
-            contextMenus.update('1', {
-                visible: settings.custom.showContextMenu ?? settings.default.showContextMenu
+            const ctxMenuIds = [ '1', '2', '3', '4', '5' ];
+            ctxMenuIds.forEach(id => {
+                contextMenus.update(id, {
+                    visible: settings.custom.showContextMenu ?? settings.default.showContextMenu
+                });
             });
         });
     }
@@ -85,15 +82,18 @@ runtime.onInstalled.addListener(async ({ reason }) => {
 });
 
 runtime.onStartup.addListener(async () => {
+    console.log('Init CTX on startup');
+
     initBadge();
 
     storage.local.get('settings', ({ settings }) => {
-        contextMenus.update('1', {
-            visible: settings.custom.showContextMenu ?? settings.default.showContextMenu
+        const ctxMenuIds = [ '1', '2', '3', '4', '5' ];
+        ctxMenuIds.forEach(id => {
+            contextMenus.update(id, {
+                visible: settings.custom.showContextMenu ?? settings.default.showContextMenu
+            });
         });
-    })
-
-    await initContextMenus();
+    });
 });
 
 storage.onChanged.addListener(({ notes }) => {
@@ -150,20 +150,6 @@ async function initContextMenus() {
             visible: true,
         });
     }
-
-    /*contextMenus.create({
-        id: '1',
-        contexts: [ 'selection' ],
-        title: await _getMessage('contextMenuSelection'),
-        visible: true
-    });
-
-    contextMenus.create({
-        id: '2',
-        contexts: [ 'link' ],
-        title: await _getMessage('contextMenuLink'),
-        visible: true
-    });*/
 
     contextMenus.onClicked.addListener((e) => {
         console.log(e);

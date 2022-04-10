@@ -251,5 +251,9 @@
 
     "addMarkedText": {
         "message": "Markierten Text hinzufügen"
+    },
+
+    "ogpNoTitle": {
+        "message": "Kein Titel vorhanden"
     }
 }

@@ -1,8 +1,6 @@
 @import "colors";
 @import "reset";
 
-
-
 html {
     width: 420px;
     overflow-y: hidden;
@@ -364,6 +362,7 @@ footer {
 }
 
 .ogp-card, .ogp-card:visited {
+    position: relative;
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -387,8 +386,8 @@ footer {
     }
 
     > img.ogp-favicon {
-        top: 1rem;
-        left: 1rem;
+        top: .5rem;
+        left: .5rem;
         position: absolute;
         object-fit: contain;
         width: 1.5rem;
@@ -423,6 +422,10 @@ footer {
     &:hover {
         opacity: .7;
     }
+}
+
+.is-hidden {
+    display: none !important;
 }
 
 @keyframes note-action-animation {

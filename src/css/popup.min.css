@@ -335,6 +335,7 @@ footer {
 }
 
 .ogp-card, .ogp-card:visited {
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -356,8 +357,8 @@ footer {
   object-fit: cover;
 }
 .ogp-card > img.ogp-favicon, .ogp-card:visited > img.ogp-favicon {
-  top: 1rem;
-  left: 1rem;
+  top: 0.5rem;
+  left: 0.5rem;
   position: absolute;
   object-fit: contain;
   width: 1.5rem;
@@ -386,6 +387,10 @@ footer {
 }
 .ogp-card:hover, .ogp-card:visited:hover {
   opacity: 0.7;
+}
+
+.is-hidden {
+  display: none !important;
 }
 
 @keyframes note-action-animation {

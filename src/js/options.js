@@ -257,8 +257,12 @@ function updateSetting(key, value) {
         custom[key] = value;
 
         if(key === 'showContextMenu') {
-            contextMenus.update('1', {
-                visible: value
+            const ctxIds = [ '1', '2', '3', '4', '5' ];
+
+            ctxIds.forEach(id => {
+                contextMenus.update(id, {
+                    visible: value
+                });
             });
         }
 

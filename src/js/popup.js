@@ -99,8 +99,8 @@ newTab.addEventListener('click', () => {
     windows.create({
         url: `popup.html?standalone=1&predefinedMessage=${encodeURIComponent(addNoteInput.value.trim()) || ''}&priority=${noteTag.getAttribute('priority') || ''}`,
         type: 'popup',
-        width: 500,
-        height: 750,
+        width: 420,
+        height: 600,
         top: 0
     });
     window.close();
@@ -158,7 +158,8 @@ storage.local.get('settings', ({ settings }) => {
 
 [addNoteInput, addNoteBtn].forEach(element => {
     element.addEventListener('keypress', async (event) => {
-        if (!event.shiftKey && event.key === 'Enter') {
+
+        if (!event.shiftKey && event.key === 'Enter' && addNoteInput.value.trim()) {
             event.preventDefault();
             await saveNote();
         }
@@ -561,7 +562,7 @@ async function createOgpCard(note, url) {
     return `
         <a
             href="${url}"
-            title="${url.replace(/https?:\/\//i, '')}"
+            ${standalone ? '' : `title="${url.replace(/https?:\/\//i, '')}"`}
             ${lang}
             class="ogp-card"          
         >
@@ -575,7 +576,7 @@ async function createOgpCard(note, url) {
                         <time datetime="${ogp.publicationDate}">${formatShortDate(ogp.publicationDate, uiLang)}</time>
                     ` : ''}
                 </div>
-                <strong class="ogp-page-title">${ogp.title}</strong>
+                <strong class="ogp-page-title">${ogp.title ?? getMessage('ogpNoTitle')}</strong>
                ${description}         
             </div>
         </a>
@@ -583,12 +584,12 @@ async function createOgpCard(note, url) {
 }
 
 async function getCachedOrDefaultOgpData(note, url) {
-    if (note.ogp && new Date() < new Date(note.ogp.exp)) {
-        return note.ogp;
+    if (note.ogp?.[url] && new Date() < new Date(note.ogp?.[url]?.exp)) {
+        return note.ogp[url];
     }
 
     const ogp = await getOgpData(url);
-    await Notes.update(note.id, 'ogp', ogp);
+    await Notes.updateOgp(note.id, url, ogp);
 
     return ogp;
 }

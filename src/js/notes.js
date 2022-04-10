@@ -66,4 +66,30 @@ export class Notes {
             });
         });
     }
+
+
+    /**
+     * @description Updates the note ogp for the given url
+     * @param id {string} Note ID
+     * @param url {string} URL inside the note to update the ogp
+     * @param value {object} New OGP data
+     * */
+    static updateOgp(id, url, value) {
+        return new Promise((resolve) => {
+            chrome.storage.local.get('notes', res => {
+                const oldNotes = res.notes;
+                const noteToBeUpdated = oldNotes.find(note => note.id === id);
+                noteToBeUpdated.ogp = {
+                    ...(noteToBeUpdated.ogp || {}),
+                    [url]: value
+                };
+
+                chrome.storage.local.set({
+                    notes: oldNotes
+                });
+
+                resolve(noteToBeUpdated);
+            });
+        });
+    }
 }
