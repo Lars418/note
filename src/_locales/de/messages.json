@@ -124,6 +124,12 @@
     "showContextMenuDesc": {
         "message": "Fügt dem Kontextmenü eine Option hinzu. Diese ermöglicht einem das Erstellen einer Notiz durch eine Textauswahl."
     },
+    "darkMode": {
+        "message": "Dunkler Modus"
+    },
+    "darkModeDesc": {
+        "message": "Wechselt zum dunklen Modus (nach Neuladen der Seite)."
+    },
 
     "optionPriorities": {
         "message": "Notizprioritäten"

@@ -124,12 +124,14 @@ exportNotesBtn.onclick = () => {
         showSuccessOnBtn(exportNotesBtn);
     })
 }
+
 importNotesBtn.addEventListener('keyup', event => {
    if (event.key === ' ' || event.key === 'Enter') {
        event.preventDefault();
        importNotesBtn.click();
    }
 });
+
 importNotesInput.onchange = () => {
     const file = importNotesInput.files[0];
     const reader = new FileReader();
@@ -181,7 +183,7 @@ function createOption(setting, settingsObject, wrapper) {
 
     <input
         type="checkbox"
-        ${(settingsObject.custom[setting] ?? settingsObject.default[setting]) && 'checked'}
+        ${(settingsObject.custom[setting] ?? settingsObject.default[setting]) ? 'checked' : ''}
         id="${setting}"
     />
     <label

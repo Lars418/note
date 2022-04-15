@@ -52,7 +52,7 @@
 
             "saveCurrentNote": true,
             "showContextMenu": true,
-            "theme": "light",
+            "darkMode": false,
 
             "priorityKeywords": {
                 "high": {

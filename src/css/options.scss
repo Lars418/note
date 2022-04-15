@@ -140,7 +140,7 @@ main {
                     display: none;
 
                     &:checked + .is-switch {
-                        background-color: var(--blue);
+                        background-color: var(--blue) !important;
 
                         &:hover {
                             background-color: var(--blue-lighter);
@@ -155,7 +155,7 @@ main {
                 > .is-switch {
                     width: 4rem;
                     height: 34px;
-                    background: var(--gray);
+                    background: var(--switch-disabled-light);
                     cursor: pointer;
                     border-radius: 30px;
                     overflow: hidden;
@@ -295,7 +295,7 @@ footer {
     > p {
         margin: .25rem 0;
 
-        > a {
+        > a, a:visited {
             text-decoration: none;
             color: var(--link);
         }
@@ -375,8 +375,6 @@ html.dark-theme {
         color: var(--dark-text);
     }
 
-    // main > section > #generalOptionsWrapper > .setting-item > .is-switch::after, main > section #advancedOptionsWrapper > .setting-item > .is-switch::after
-
     main {
         > section {
             > h2 {
@@ -394,10 +392,7 @@ html.dark-theme {
             > #generalOptionsWrapper, #advancedOptionsWrapper {
                 > .setting-item {
                     > .is-switch {
-                        &::after {
-                            background-color: var(--dark-border);
-                        }
-
+                        background-color: var(--switch-disabled-dark);
                         border-color: var(--dark-border);
                     }
                 }
@@ -408,5 +403,16 @@ html.dark-theme {
     footer {
         background-color: var(--dark-body-alternate);
         color: var(--dark-text);
+
+        > p {
+            > a, a:visited {
+                color: var(--dark-link);
+            }
+        }
+    }
+
+    dialog {
+        color: var(--dark-text);
+        background-color: var(--dark-body-alternate);
     }
 }

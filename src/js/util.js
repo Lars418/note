@@ -129,7 +129,7 @@ export function loadTheme() {
     const { storage } = chrome;
 
     storage.local.get([ 'settings' ], ({ settings }) => {
-        if (!settings.custom.theme) {
+        if (settings.custom.darkMode === undefined) {
             const useDarkTheme = window.matchMedia('(prefers-color-scheme: dark').matches;
 
             storage.local.set({
@@ -137,7 +137,7 @@ export function loadTheme() {
                     ...settings,
                     custom: {
                         ...settings.custom,
-                        theme: useDarkTheme ? 'dark' : 'light'
+                        darkMode: useDarkTheme
                     }
                 }
             });
@@ -147,7 +147,7 @@ export function loadTheme() {
             }
         }
 
-        if ((settings.custom.theme ?? settings.default.theme) === 'dark') {
+        if (settings.custom.darkMode ?? settings.default.darkMode) {
             document.documentElement.classList.add('dark-theme');
         }
     })

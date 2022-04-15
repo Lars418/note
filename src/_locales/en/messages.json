@@ -124,6 +124,12 @@
     "showContextMenuDesc": {
         "message": "Adds an option to the context menu. This option allows you to create a note from a text selection."
     },
+    "darkMode": {
+        "message": "Dark mode"
+    },
+    "darkModeDesc": {
+        "message": "Switches to dark mode (after page reload)."
+    },
 
     "optionPriorities": {
         "message": "Note priorities"

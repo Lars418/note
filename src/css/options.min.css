@@ -15,6 +15,7 @@ html, body {
   --blue: #3367d6;
   --blue-light: #5b85de;
   --blue-lighter: #3d6ed8;
+  --switch-disabled-light: #f2f2f2;
   --white: #fff;
   --orange: #ffc156;
   --red: #ff5a3f;
@@ -26,12 +27,16 @@ html, body {
   --link: #065fd4;
   --link-dark: #055ac9;
   --success: #28a745;
+  --code: #c4c4c4;
+  --switch-disabled-dark: #787878;
   --dark-text: #fff;
   --dark-body: #202124;
   --dark-body-alternate: #292a2d;
   --dark-btn-background-hover: #47494e;
   --dark-ogp-background: #3d3e42;
   --dark-border: #4e4e4e;
+  --dark-link: #2997ff;
+  --dark-code: #161616;
 }
 
 *:focus {
@@ -156,7 +161,7 @@ main > section > #generalOptionsWrapper > .setting-item > input, main > section 
   display: none;
 }
 main > section > #generalOptionsWrapper > .setting-item > input:checked + .is-switch, main > section #advancedOptionsWrapper > .setting-item > input:checked + .is-switch {
-  background-color: var(--blue);
+  background-color: var(--blue) !important;
 }
 main > section > #generalOptionsWrapper > .setting-item > input:checked + .is-switch:hover, main > section #advancedOptionsWrapper > .setting-item > input:checked + .is-switch:hover {
   background-color: var(--blue-lighter);
@@ -167,7 +172,7 @@ main > section > #generalOptionsWrapper > .setting-item > input:checked + .is-sw
 main > section > #generalOptionsWrapper > .setting-item > .is-switch, main > section #advancedOptionsWrapper > .setting-item > .is-switch {
   width: 4rem;
   height: 34px;
-  background: var(--gray);
+  background: var(--switch-disabled-light);
   cursor: pointer;
   border-radius: 30px;
   overflow: hidden;
@@ -285,7 +290,7 @@ footer {
 footer > p {
   margin: 0.25rem 0;
 }
-footer > p > a {
+footer > p > a, footer > p a:visited {
   text-decoration: none;
   color: var(--link);
 }
@@ -364,14 +369,19 @@ html.dark-theme main > section > h2.dropdown:hover {
   background-color: var(--dark-border);
 }
 html.dark-theme main > section > #generalOptionsWrapper > .setting-item > .is-switch, html.dark-theme main > section #advancedOptionsWrapper > .setting-item > .is-switch {
+  background-color: var(--switch-disabled-dark);
   border-color: var(--dark-border);
-}
-html.dark-theme main > section > #generalOptionsWrapper > .setting-item > .is-switch::after, html.dark-theme main > section #advancedOptionsWrapper > .setting-item > .is-switch::after {
-  background-color: var(--dark-border);
 }
 html.dark-theme footer {
   background-color: var(--dark-body-alternate);
   color: var(--dark-text);
+}
+html.dark-theme footer > p > a, html.dark-theme footer > p a:visited {
+  color: var(--dark-link);
+}
+html.dark-theme dialog {
+  color: var(--dark-text);
+  background-color: var(--dark-body-alternate);
 }
 
 /*# sourceMappingURL=options.min.css.map */

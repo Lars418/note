@@ -228,7 +228,7 @@ function addNote(note) {
         noteElement.setAttribute('style', `border-left-color:${priority.custom.color || priority.default.color}`);
         const formattedNoteValue = (settings.custom.advancedParseUrls ?? settings.default.advancedParseUrls)
             ? await formatNoteValue(note.value)
-            : note.value;
+            : note.value.replace(/</g, '&lt;').replace(/>/g, '&gt;');
         noteElement.innerHTML = `
             <article>
                 <div
@@ -418,6 +418,10 @@ function editNote(id) {
     Array.from(selectedNoteContent.querySelectorAll("a"))
     .filter(a => !a.href.startsWith("mailto:"))
     .forEach(a => a.textContent = a.href);
+
+    Array.from(selectedNoteContent.querySelectorAll('code'))
+        .forEach(code => code.textContent = `\`${code.textContent}\``);
+
     selectedNoteContent.textContent = selectedNoteContent.textContent.trim();
 
     selectedNoteContent.setAttribute('contenteditable', 'true');
@@ -443,7 +447,7 @@ function editNote(id) {
 
             selectedNoteContent.innerHTML = (settings.custom.advancedParseUrls ?? settings.default.advancedParseUrls)
                 ? formatNoteValue(selectedNoteContent.textContent)
-                : selectedNoteContent.innerHTML;
+                : selectedNoteContent.innerHTML.replace(/</g, '&lt;').replace(/>/g, '&gt;');
             selectedNoteContent.removeAttribute("contenteditable");
             selectedNoteContent.removeAttribute("tabindex");
             selectedNoteContent.removeAttribute('role');
@@ -508,12 +512,19 @@ function getNoteOrigin(url, value = null) {
 }
 
 function formatNoteValue(value) {
+    value = value.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
     value?.match(constant.EMAIL_REGEX)?.forEach(email => {
         value = value.replace(email, `<a href="mailto:${email}" rel="noopener noreferrer">${email}</a>`);
     });
 
     value?.match(constant.URL_REGEX)?.forEach(url => {
         value = value.replace(url, `<a href="${url}" rel="noopener noreferrer">${url.replace(/https?:\/\//gi, "")}</a>`);
+    });
+
+    value?.match(constant.CODE_REGEX)?.forEach(code => {
+       const preparedCode = code.slice(1).slice(0, -1);
+       value = value.replace(code, `<code>${preparedCode}</code>`);
     });
 
     return value;

@@ -46,6 +46,10 @@ html {
 
                             > article {
                                 > .note-value {
+                                    &[contenteditable] {
+                                        background-color: var(--dark-ogp-background);
+                                    }
+
                                     > a {
                                         &.ogp-card {
                                             color: var(--dark-text);
@@ -87,6 +91,10 @@ html {
                     color: var(--dark-text);
                 }
             }
+        }
+
+        code {
+            background-color: var(--dark-code);
         }
     }
 }
@@ -434,6 +442,10 @@ main {
 
 footer {
     padding: .5rem;
+}
+
+code {
+    background-color: var(--code);
 }
 
 .ogp-card, .ogp-card:visited {

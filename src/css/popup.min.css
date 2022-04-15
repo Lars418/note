@@ -3,6 +3,7 @@
   --blue: #3367d6;
   --blue-light: #5b85de;
   --blue-lighter: #3d6ed8;
+  --switch-disabled-light: #f2f2f2;
   --white: #fff;
   --orange: #ffc156;
   --red: #ff5a3f;
@@ -14,12 +15,16 @@
   --link: #065fd4;
   --link-dark: #055ac9;
   --success: #28a745;
+  --code: #c4c4c4;
+  --switch-disabled-dark: #787878;
   --dark-text: #fff;
   --dark-body: #202124;
   --dark-body-alternate: #292a2d;
   --dark-btn-background-hover: #47494e;
   --dark-ogp-background: #3d3e42;
   --dark-border: #4e4e4e;
+  --dark-link: #2997ff;
+  --dark-code: #161616;
 }
 
 *, *::before, *::after {
@@ -66,6 +71,9 @@ html.dark-theme > body > main > #recentlyAddedWrapper > #recentlyAdded .note:hov
   border-top-color: var(--dark-border);
   border-bottom-color: var(--dark-border);
 }
+html.dark-theme > body > main > #recentlyAddedWrapper > #recentlyAdded .note > article > .note-value[contenteditable] {
+  background-color: var(--dark-ogp-background);
+}
 html.dark-theme > body > main > #recentlyAddedWrapper > #recentlyAdded .note > article > .note-value > a.ogp-card {
   color: var(--dark-text);
 }
@@ -90,6 +98,9 @@ html.dark-theme .ogp-card > img.ogp-banner, html.dark-theme .ogp-card video, htm
 }
 html.dark-theme .ogp-card > .ogp-data > strong, html.dark-theme .ogp-card:visited > .ogp-data > strong {
   color: var(--dark-text);
+}
+html.dark-theme code {
+  background-color: var(--dark-code);
 }
 
 body {
@@ -383,6 +394,10 @@ main > #recentlyAddedWrapper > #recentlyAdded > .note:nth-child(odd) {
 
 footer {
   padding: 0.5rem;
+}
+
+code {
+  background-color: var(--code);
 }
 
 .ogp-card, .ogp-card:visited {
