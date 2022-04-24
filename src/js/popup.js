@@ -10,6 +10,7 @@ import {
 } from './util.js';
 import {constant} from './constant.js';
 import {Notes} from './notes.js';
+import {Preview} from "./preview.js";
 
 const {
     i18n: { getMessage, getUILanguage },
@@ -401,7 +402,7 @@ function addNote(note) {
         if (settings.custom.advancedShowLinkPreview ?? settings.default.advancedShowLinkPreview) {
             const urls = Array.from(noteValue.querySelectorAll('a')).filter(anchor => !anchor.href.startsWith('mailto:'));
             for (const url of urls) {
-                url.outerHTML = await createOgpCard(note, url.href);
+                url.outerHTML = await createPreviewCard(note, url.href);
             }
             addNoteLinkListeners(noteValue, true);
         }
@@ -458,7 +459,7 @@ function editNote(id) {
                 const urls = Array.from(selectedNoteContent.querySelectorAll('a')).filter(url => !url.href.startsWith('mailto:'));
 
                 for (const url of urls) {
-                    url.outerHTML = await createOgpCard(updatedNote, url.href);
+                    url.outerHTML = await createPreviewCard(updatedNote, url.href);
                 }
 
                 addNoteLinkListeners(selectedNote, true);
@@ -548,80 +549,50 @@ function addNoteLinkListeners(note, httpLinksOnly=false) {
     }
 }
 
-async function createOgpCard(note, url) {
+async function createPreviewCard(note, url) {
     if (note.mediaType) {
         return getMediaPreview(note.mediaType, url);
     }
 
-    const ogp = await getCachedOrDefaultOgpData(note, url);
+    const data = await getCachedOrDefaultPreviewData(note, url);
 
-    if (!ogp) {
+    if (data.error) {
         return formatNoteValue(url);
     }
 
-    const media = ogp.img ?
-        `<img src="${ogp.img}" aria-hidden="true" draggable="false" class="ogp-banner" />`
-        : '';
-    const favicon = ogp.favicon
-        ? `<img src="${ogp.favicon}" aria-hidden="true" draggable="false" class="ogp-favicon" />`
-        : '';
-    const lang = ogp.locale ? `hreflang="${ogp.locale}" lang="${ogp.locale}"` : '';
-    const description = ogp.description ? `
-        <div class="ogp-meta">
-            <span class="ogp-description">${ogp.description}</span>
-        </div>   
-    ` : '';
-
-    return `
-        <a
-            href="${url}"
-            ${standalone ? '' : `title="${url.replace(/https?:\/\//i, '')}"`}
-            ${lang}
-            class="ogp-card"          
-        >
-            ${media}
-            ${media ? favicon : ''}
-            <div class="ogp-data">
-                <div class="ogp-meta">
-                    <span class="ogp-page-name">${ogp.pageName}</span>
-                    ${ogp.publicationDate ? `
-                        <span class="ogp-separator">•</span>
-                        <time datetime="${ogp.publicationDate}">${formatShortDate(ogp.publicationDate, uiLang)}</time>
-                    ` : ''}
-                </div>
-                <strong class="ogp-page-title">${ogp.title ?? getMessage('ogpNoTitle')}</strong>
-               ${description}         
-            </div>
-        </a>
-    `;
+    return Preview.renderCard(url, data, standalone);
 }
 
-async function getCachedOrDefaultOgpData(note, url) {
-    if (note.ogp?.[url] && new Date() < new Date(note.ogp?.[url]?.exp)) {
-        return note.ogp[url];
+/**
+ * @param url {string} Requested url
+ * @param requestTimeout {number|null} Request timeout in milliseconds
+ * @returns {Promise<object>}
+ * */
+async function getPreviewData(url, requestTimeout = null) {
+    const lang = getUILanguage();
+    const preparedUrl = `${constant.OGP_URL}/${encodeURIComponent(btoa(url))}?lang=${lang}`;
+    const controller = new AbortController();
+    const options = {
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        abort: controller.signal
+    };
+
+    setTimeout(() => controller.abort(), requestTimeout || constant.DEFAULT_TIMEOUT_IN_MS);
+
+    return await fetch(preparedUrl, options).then(response => response.json());
+}
+
+async function getCachedOrDefaultPreviewData(note, url) {
+    if (note.preview?.[url] && new Date() < new Date(note.preview?.[url]?._exp)) {
+        return note.preview[url];
     }
 
-    const ogp = await getOgpData(url);
-    await Notes.updateOgp(note.id, url, ogp);
+    const previewData = await getPreviewData(url);
+    await Notes.updatePreview(note.id, url, previewData);
 
-    return ogp;
-}
-
-async function getOgpData(url) {
-    const controller = new AbortController();
-    const ogpOptions = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ url }),
-        signal: controller.signal
-    };
-    setTimeout(() => controller.abort(), constant.DEFAULT_TIMEOUT_IN_MS);
-
-    try {
-        return await fetch(constant.OGP_URL, ogpOptions).then(res => res.json());
-    } catch (e) {}
+    return previewData;
 }
 
 function getMediaPreview(mediaType, url) {

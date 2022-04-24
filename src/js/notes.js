@@ -74,13 +74,13 @@ export class Notes {
      * @param url {string} URL inside the note to update the ogp
      * @param value {object} New OGP data
      * */
-    static updateOgp(id, url, value) {
+    static updatePreview(id, url, value) {
         return new Promise((resolve) => {
             chrome.storage.local.get('notes', res => {
                 const oldNotes = res.notes;
                 const noteToBeUpdated = oldNotes.find(note => note.id === id);
-                noteToBeUpdated.ogp = {
-                    ...(noteToBeUpdated.ogp || {}),
+                noteToBeUpdated.preview = {
+                    ...(noteToBeUpdated.preview || {}),
                     [url]: value
                 };
 

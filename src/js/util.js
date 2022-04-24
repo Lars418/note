@@ -60,6 +60,19 @@ export function formatShortDate(date, language) {
 }
 
 /**
+ * @param number {number}
+ * @param language {string}
+ * @param minimumFractionDigits {number}
+ * */
+export function formatNumber(number, language, minimumFractionDigits = 0) {
+    return new Intl
+        .NumberFormat(language, {
+            minimumFractionDigits
+        })
+        .format(number);
+}
+
+/**
  * @param date {string}
  * */
 export function formatTimestamp(date) {

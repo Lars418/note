@@ -259,7 +259,77 @@
         "message": "Add marked text"
     },
 
-    "ogpNoTitle": {
+    "previewCardNoTitle": {
         "message": "No title availiable"
+    },
+    "previewCardPaywall": {
+        "message": "This content is not freely available and must be purchased before viewing."
+    },
+    "previewCardIsLive": {
+        "message": "Live"
+    },
+    "previewCardCommentCount": {
+        "message": "The content has $COMMENT_COUNT$ comment(s).",
+        "placeholders": {
+            "comment_count": {
+                "content": "$1"
+            }
+        }
+    },
+    "previewCardTrackCount": {
+        "message": "This playlist contains $TRACK_COUNT$ song(s).",
+        "placeholders": {
+            "track_count": {
+                "content": "$1"
+            }
+        }
+    },
+    "previewCardAlbumCount": {
+        "message": "This artist has published $ALBUM_COUNT$ song(s).",
+        "placeholders": {
+            "album_count": {
+                "content": "$1"
+            }
+        }
+    },
+    "previewCardSeasonCount": {
+        "message": "There are $SEASON_COUNT$ season(s) of this series.",
+        "placeholders": {
+            "season_count": {
+                "content": "$1"
+            }
+        }
+    },
+    "previewCardWordCount": {
+        "message": "This content is $WORD_COUNT$ words long.",
+        "placeholders": {
+            "word_count": {
+                "content": "$1"
+            }
+        }
+    },
+    "previewCardPublicationDate": {
+        "message": "This content was published on $PUBLICATION_DATE$.",
+        "placeholders": {
+            "publication_date": {
+                "content": "$1"
+            }
+        }
+    },
+    "previewCardModificationDate": {
+        "message": "This content was edited on $MODIFICATION_DATE$.",
+        "placeholders": {
+            "modification_date": {
+                "content": "$1"
+            }
+        }
+    },
+    "previewCardCategory": {
+        "message": "Category/Genre: $CATEGORY$",
+        "placeholders": {
+            "category": {
+                "content": "$1"
+            }
+        }
     }
 }

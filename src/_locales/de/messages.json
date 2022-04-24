@@ -259,7 +259,77 @@
         "message": "Markierten Text hinzufügen"
     },
 
-    "ogpNoTitle": {
+    "previewCardNoTitle": {
         "message": "Kein Titel vorhanden"
+    },
+    "previewCardPaywall": {
+        "message": "Dieser Inhalt ist nicht frei zugänglich und muss vor dem Ansehen erworben werden."
+    },
+    "previewCardIsLive": {
+        "message": "Live"
+    },
+    "previewCardCommentCount": {
+        "message": "Der Inhalt hat $COMMENT_COUNT$ Kommentar(e).",
+        "placeholders": {
+            "comment_count": {
+                "content": "$1"
+            }
+        }
+    },
+    "previewCardTrackCount": {
+        "message": "Diese Playlist beinhaltet $TRACK_COUNT$ Song(s).",
+        "placeholders": {
+            "track_count": {
+                "content": "$1"
+            }
+        }
+    },
+    "previewCardAlbumCount": {
+        "message": "Dieser Interpret hat $ALBUM_COUNT$ Song(s) veröffentlicht.",
+        "placeholders": {
+            "album_count": {
+                "content": "$1"
+            }
+        }
+    },
+    "previewCardSeasonCount": {
+        "message": "Von dieser Serie gibt es $SEASON_COUNT$ Staffel(n).",
+        "placeholders": {
+            "season_count": {
+                "content": "$1"
+            }
+        }
+    },
+    "previewCardWordCount": {
+        "message": "Dieser Inhalt ist $WORD_COUNT$ Wörter lang.",
+        "placeholders": {
+            "word_count": {
+                "content": "$1"
+            }
+        }
+    },
+    "previewCardPublicationDate": {
+        "message": "Dieser Inhalt wurde am $PUBLICATION_DATE$ veröffentlicht.",
+        "placeholders": {
+            "publication_date": {
+                "content": "$1"
+            }
+        }
+    },
+    "previewCardModificationDate": {
+        "message": "Dieser Inhalt wurde am $MODIFICATION_DATE$ bearbeitet.",
+        "placeholders": {
+            "modification_date": {
+                "content": "$1"
+            }
+        }
+    },
+    "previewCardCategory": {
+        "message": "Kategorie/Genre: $CATEGORY$",
+        "placeholders": {
+            "category": {
+                "content": "$1"
+            }
+        }
     }
 }
