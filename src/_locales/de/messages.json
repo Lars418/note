@@ -309,7 +309,7 @@
         }
     },
     "previewCardPublicationDate": {
-        "message": "Dieser Inhalt wurde am $PUBLICATION_DATE$ veröffentlicht.",
+        "message": "Veröffentlicht am $PUBLICATION_DATE$.",
         "placeholders": {
             "publication_date": {
                 "content": "$1"
@@ -317,7 +317,7 @@
         }
     },
     "previewCardModificationDate": {
-        "message": "Dieser Inhalt wurde am $MODIFICATION_DATE$ bearbeitet.",
+        "message": "Bearbeitet am $MODIFICATION_DATE$.",
         "placeholders": {
             "modification_date": {
                 "content": "$1"
@@ -328,6 +328,14 @@
         "message": "Kategorie/Genre: $CATEGORY$",
         "placeholders": {
             "category": {
+                "content": "$1"
+            }
+        }
+    },
+    "previewCardAuthor": {
+        "message": "Autor(en): $AUTHOR$",
+        "placeholders": {
+            "author": {
                 "content": "$1"
             }
         }

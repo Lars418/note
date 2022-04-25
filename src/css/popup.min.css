@@ -242,7 +242,6 @@ main > #recentlyAddedWrapper > #recentlyAdded > .note > article {
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-right: 3rem;
 }
 main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-value {
   transition: padding 200ms, background-color 200ms;
@@ -318,10 +317,6 @@ main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer >
   opacity: 0.75;
 }
 main > #recentlyAddedWrapper > #recentlyAdded > .note > .note-action-wrapper {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  right: 0.25rem;
   display: flex;
   align-items: center;
   transition: opacity 200ms;
@@ -438,12 +433,15 @@ code {
   display: flex;
   gap: 0.25rem;
 }
+.preview-card > .preview-card-special-metadata > .preview-card-paywall, .preview-card:visited > .preview-card-special-metadata > .preview-card-paywall {
+  color: goldenrod;
+}
 .preview-card > .preview-card-special-metadata > .preview-card-paywall > .preview-card-paywall-circle, .preview-card:visited > .preview-card-special-metadata > .preview-card-paywall > .preview-card-paywall-circle {
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  border: 1px solid var(--white);
+  border: 1px solid goldenrod;
   width: 1.25rem;
   height: 1.25rem;
 }
@@ -490,6 +488,12 @@ code {
   width: 0.75rem;
   height: 0.75rem;
   margin-right: 0.25rem;
+}
+.preview-card > .preview-card-data > .preview-card-metadata > .preview-card-metadata-column > .preview-card-author > span, .preview-card:visited > .preview-card-data > .preview-card-metadata > .preview-card-metadata-column > .preview-card-author > span {
+  max-width: 10rem;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
 }
 .preview-card > .preview-card-data > .preview-card-description, .preview-card:visited > .preview-card-data > .preview-card-description {
   display: inline-block;

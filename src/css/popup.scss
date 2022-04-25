@@ -259,7 +259,6 @@ main {
                     display: flex;
                     flex-direction: column;
                     width: 100%;
-                    margin-right: 3rem;
                     
                     > .note-value {
                         transition: padding 200ms, background-color 200ms;
@@ -351,10 +350,6 @@ main {
                 }
 
                 > .note-action-wrapper {
-                    position: absolute;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    right: .25rem;
                     display: flex;
                     align-items: center;
                     transition: opacity 200ms;
@@ -490,12 +485,14 @@ code {
         gap: .25rem;
 
         > .preview-card-paywall {
+            color: goldenrod;
+
             > .preview-card-paywall-circle {
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 border-radius: 50%;
-                border: 1px solid var(--white);
+                border: 1px solid goldenrod;
                 width: 1.25rem;
                 height: 1.25rem;
             }
@@ -550,6 +547,13 @@ code {
                         height: .75rem;
                         margin-right: .25rem;
                     }
+                }
+
+                > .preview-card-author > span {
+                    max-width: 10rem;
+                    white-space: nowrap;
+                    overflow-x: hidden;
+                    text-overflow: ellipsis;
                 }
             }
         }

@@ -12,8 +12,8 @@ export class Preview {
      * */
     static async renderCard(url, previewData, isStandalone) {
         const card = this._getRenderedFields(previewData);
-        const meta1 = this._formatMetaColumn([ card.pageName, card.publicationDate, card.modificationDate ]);
-        const meta2 = this._formatMetaColumn([ card.category, card.commentCount, card.trackCount, card.albumCount, card.seasonCount, ]);
+        const meta1 = this._formatMetaColumn([ card.pageName, card.author ]);
+        const meta2 = this._formatMetaColumn([ card.publicationDate, card.modificationDate, card.category, card.commentCount, card.trackCount, card.albumCount, card.seasonCount, ]);
         const media = card.videoUrl || card.previewImage || '';
         const standalone = isStandalone ? '' : `title="${url.replace(/https?:\/\//i, '')}"`;
 
@@ -87,11 +87,30 @@ export class Preview {
             : '';
         const author = previewData.author
             ? `
-                <span
-                    class="preview-card-author"
+                <div
+                    class="preview-card-author preview-card-metadata-container"
+                    title="${getMessage('previewCardAuthor', [previewData.author])}"
                 >
-                    ${previewData.author}
-                </span>`
+                    ${(previewData.author?.includes(',') || previewData.author?.includes('et al.'))
+                        ? `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>`
+                        : `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        `
+                     }
+               
+                    <span>
+                        ${previewData.author}
+                    </span>
+                </div>`
             : '';
         const category = previewData.category
             ? `

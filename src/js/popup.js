@@ -570,7 +570,7 @@ async function createPreviewCard(note, url) {
  * */
 async function getPreviewData(url, requestTimeout = null) {
     const lang = getUILanguage();
-    const preparedUrl = `${constant.OGP_URL}/${encodeURIComponent(btoa(url))}?lang=${lang}`;
+    const preparedUrl = `${constant.OGP_URL}/?url=${encodeURIComponent(url)}&lang=${lang}`;
     const controller = new AbortController();
     const options = {
         headers: {
