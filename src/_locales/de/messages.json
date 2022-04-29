@@ -268,6 +268,17 @@
     "previewCardIsLive": {
         "message": "Live"
     },
+    "previewCardIsLiveTitle": {
+        "message": "Live Artikel"
+    },
+    "previewCardIsLiveCountTitle": {
+        "message": "Live Artikel: $UPDATE_COUNT$ Update(s)",
+        "placeholders": {
+            "update_count": {
+                "content": "$1"
+            }
+        }
+    },
     "previewCardCommentCount": {
         "message": "Der Inhalt hat $COMMENT_COUNT$ Kommentar(e).",
         "placeholders": {
@@ -339,5 +350,48 @@
                 "content": "$1"
             }
         }
+    },
+
+    "second": {
+        "message": "Sekunde"
+    },
+    "seconds": {
+        "message": "Sekunden"
+    },
+    "minute": {
+        "message": "Minute"
+    },
+    "minutes": {
+        "message": "Minuten"
+    },
+    "hour": {
+        "message": "Stunde"
+    },
+    "hours": {
+        "message": "Stunden"
+    },
+    "day": {
+        "message": "Tag"
+    },
+    "days": {
+        "message": "Tage"
+    },
+    "week": {
+        "message": "Woche"
+    },
+    "weeks": {
+        "message": "Wochen"
+    },
+    "month": {
+        "message": "Monat"
+    },
+    "months": {
+        "message": "Monate"
+    },
+    "year": {
+        "message": "Jahr"
+    },
+    "years": {
+        "message": "Jahre"
     }
 }

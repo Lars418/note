@@ -53,6 +53,11 @@ html {
                                     > a {
                                         &.preview-card {
                                             color: var(--dark-text);
+
+                                            > .preview-card-special-metadata > .preview-card-live-update {
+                                                background-color: var(--dark-body);
+                                                color: var(--white);
+                                            }
                                         }
                                     }
                                 }
@@ -272,6 +277,13 @@ main {
 
                             &:hover, &:active {
                                 color: var(--link-dark);
+
+                                > .preview-card-special-metadata > .preview-card-live-update {
+                                    &::after {
+                                        animation-play-state: running;
+                                    }
+                                }
+
                             }
                         }
 
@@ -406,10 +418,6 @@ main {
                         cursor: pointer;
                         padding: .35rem .25rem;
                         transition: opacity 200ms;
-
-                        &:hover {
-                            animation: note-action-animation 250ms linear;
-                        }
     
                         > svg {
                             width: 1.1rem;
@@ -422,8 +430,10 @@ main {
                     border-top-color: var(--gray);
                     border-bottom-color: var(--gray);
 
-                    > article > .note-footer, > .note-action-wrapper {
-                        opacity: 1;
+                    > article {
+                        > .note-footer, > .note-action-wrapper {
+                            opacity: 1;
+                        }
                     }
                 }
                 
@@ -501,18 +511,23 @@ code {
         > .preview-card-live-update {
             display: flex;
             align-items: center;
-            background-color: var(--dark-body);
-            padding: .15rem .55rem .15rem .15rem;
+            color: var(--black);
+            background-color: var(--white);
+            padding: .2rem .3rem;
             font-size: .7rem;
             gap: .25rem;
+            border-radius: .25rem;
 
             &::after {
+                margin-left: .1rem;
                 display: inline-block;
-                content: '';
-                width: .35rem;
-                height: .35rem;
-                background-color: red;
+                content: "";
+                width: 7px;
+                height: 7px;
+                background-color: #d8070e;
                 border-radius: 50%;
+                animation: live-update-circle 2s ease-in-out infinite alternate;
+                animation-play-state: paused;
             }
         }
     }
@@ -584,32 +599,16 @@ code {
     display: none !important;
 }
 
-@keyframes note-action-animation {
+@keyframes live-update-circle {
     0% {
-        opacity: 0;
+        opacity: 1;
     }
 
-    /*33% {
-        > svg:nth-child(2) {
-            opacity: 1;
-        }
-
-        > svg:nth-child(1), > svg:nth-child(3) {
-            opacity: 0;
-        }
+    50% {
+        opacity: .1;
     }
-
-    66% {
-        > svg:nth-child(1) {
-            opacity: 1;
-        }
-
-        > svg:nth-child(3) {
-            opacity: 0;
-        }
-    }*/
 
     100% {
-        opacity: 1;
+        opacity: 0;
     }
 }

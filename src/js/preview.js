@@ -1,5 +1,5 @@
 import {constant} from "./constant.js";
-import {formatDateTime, formatNumber, formatShortDate} from "./util.js";
+import {formatDateTime, formatIso8601Duration, formatNumber, formatShortDate} from "./util.js";
 
 const { i18n: { getMessage, getUILanguage } } = chrome;
 
@@ -12,8 +12,8 @@ export class Preview {
      * */
     static async renderCard(url, previewData, isStandalone) {
         const card = this._getRenderedFields(previewData);
-        const meta1 = this._formatMetaColumn([ card.pageName, card.author ]);
-        const meta2 = this._formatMetaColumn([ card.publicationDate, card.modificationDate, card.category, card.commentCount, card.trackCount, card.albumCount, card.seasonCount, ]);
+        const meta1 = this._formatMetaColumn([ card.pageName, card.author, card.duration ]);
+        const meta2 = this._formatMetaColumn([ card.modificationDate || card.publicationDate, card.category, card.commentCount, card.trackCount, card.albumCount, card.seasonCount, ]);
         const media = card.videoUrl || card.previewImage || '';
         const standalone = isStandalone ? '' : `title="${url.replace(/https?:\/\//i, '')}"`;
 
@@ -171,7 +171,7 @@ export class Preview {
         const duration = previewData.duration
             ? `
             <span class="preview-card-duration">
-                ${previewData.duration}
+                ${formatIso8601Duration(previewData.duration)}
             </span>`
             : '';
         const rating = previewData.rating
@@ -182,18 +182,15 @@ export class Preview {
             : '';
         const liveUpdate = previewData.isLive
             ? `
-            <div class="preview-card-live-update">
-                <span>
-                    ${getMessage('previewCardIsLive')}
-                </span>
-                
-                ${previewData.liveUpdateCount
-                    ? `
-                        <span class="preview-card-live-update-count">
-                            (${formatNumber(previewData.liveUpdateCount, getUILanguage())})
-                        </span>`
-                    : ''
-                }
+            <div
+                class="preview-card-live-update"
+                title="${
+                    previewData.liveUpdateCount
+                    ? getMessage('previewCardIsLiveCountTitle', [formatNumber(previewData.liveUpdateCount, getUILanguage())])
+                    : getMessage('previewCardIsLiveTitle')
+                }"
+            >                
+                ${getMessage('previewCardIsLive')}               
             </div>`
             : '';
         const trackCount = previewData.trackCount
