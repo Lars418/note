@@ -166,29 +166,71 @@ export function loadTheme() {
     })
 }
 
+/**
+ * @description Formats the given ISO 8601 duration to a more readable format.
+ * @returns {string} Absolute duration (no leading '-')
+ * */
 export function formatIso8601Duration(duration) {
     const {getMessage} = chrome.i18n;
-    /** @author https://stackoverflow.com/users/2294168/ser */
+    /** @author for regex https://stackoverflow.com/users/2294168/ser */
     const regex = /(-)?P(?:([.,\d]+)Y)?(?:([.,\d]+)M)?(?:([.,\d]+)W)?(?:([.,\d]+)D)?(?:T(?:([.,\d]+)H)?(?:([.,\d]+)M)?(?:([.,\d]+)S)?)?/i;
-    const matches = duration.match(regex).map(x => x === '0' ? undefined : x);
+    let [years, months, weeks, days, hours, minutes, seconds] = duration.match(regex)
+        .slice(2)
+        .map(entry => !entry ? 0 : +entry);
+
+    if (seconds > 59) {
+        const originalSeconds = seconds;
+        seconds %= 60;
+        minutes += ((originalSeconds - seconds) / 60);
+    }
+
+    if (minutes > 59) {
+        const originalMinutes = minutes;
+        minutes %= 60;
+        hours += ((originalMinutes - minutes) / 60);
+    }
+
+    if (hours > 23) {
+        const originalHours = hours;
+        hours %= 24;
+        days += ((originalHours - hours) / 24);
+    }
+
+    if (days > 6) {
+        const originalDays = days;
+        days %= 7;
+        weeks += ((originalDays - days) / 7);
+    }
+
+    if (weeks > 3) {
+        const originalWeeks = weeks;
+        weeks %= 4;
+        months += ((originalWeeks - weeks) / 4);
+    }
+
+    if (months > 11) {
+        const originalMonths = months;
+        months %= 12;
+        years += ((originalMonths - months) / 12);
+    }
+
     const translation = {
-        // sign: !matches[1] ? '+' : '-',
-        years: getMessage((matches[2]) === 1 ? 'year' : 'years'),
-        months: getMessage((matches[3]) === 1 ? 'month' : 'months'),
-        weeks: getMessage((matches[4]) === 1 ? 'week' : 'weeks'),
-        days: getMessage((matches[5]) === 1 ? 'day' : 'days'),
-        hours: getMessage((matches[6]) === 1 ? 'hour' : 'hours'),
-        minutes: getMessage((matches[7]) === 1 ? 'minute' : 'minutes'),
-        seconds: getMessage((matches[8]) === 1 ? 'second' : 'seconds'),
+        years: getMessage((years) === 1 ? 'year' : 'years'),
+        months: getMessage((months) === 1 ? 'month' : 'months'),
+        weeks: getMessage((weeks) === 1 ? 'week' : 'weeks'),
+        days: getMessage((days) === 1 ? 'day' : 'days'),
+        hours: getMessage((hours) === 1 ? 'hour' : 'hours'),
+        minutes: getMessage((minutes) === 1 ? 'minute' : 'minutes'),
+        seconds: getMessage((seconds) === 1 ? 'second' : 'seconds'),
     };
 
     return `
-        ${matches[2] ? ` ${matches[2]} ${translation.years},` : ''}
-        ${matches[3] ? ` ${matches[3]} ${translation.months},` : ''}
-        ${matches[4] ? ` ${matches[4]} ${translation.weeks},` : ''}
-        ${matches[5] ? ` ${matches[5]} ${translation.days},` : ''}
-        ${matches[6] ? ` ${matches[6]} ${translation.hours},` : ''}
-        ${matches[7] ? ` ${matches[7]} ${translation.minutes},` : ''}
-        ${matches[8] ? ` ${matches[8]} ${translation.seconds},` : ''}
+        ${years !== 0 ? ` ${years} ${translation.years},` : ''}
+        ${months !== 0 ? ` ${months} ${translation.months},` : ''}
+        ${weeks !== 0 ? ` ${weeks} ${translation.weeks},` : ''}
+        ${days !== 0 ? ` ${days} ${translation.days},` : ''}
+        ${hours !== 0 ? ` ${hours} ${translation.hours},` : ''}
+        ${minutes !== 0 ? ` ${minutes} ${translation.minutes},` : ''}
+        ${seconds !== 0 ? ` ${seconds} ${translation.seconds},` : ''}
     `.trim().replace(/,+$/g, '');
 }

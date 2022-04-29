@@ -170,9 +170,15 @@ export class Preview {
             : '';
         const duration = previewData.duration
             ? `
-            <span class="preview-card-duration">
-                ${formatIso8601Duration(previewData.duration)}
-            </span>`
+            <div class="preview-card-duration preview-card-metadata-container">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span>
+                    ${formatIso8601Duration(previewData.duration)}
+                </span>
+            </div>`
             : '';
         const rating = previewData.rating
             ? `
