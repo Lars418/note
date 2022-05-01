@@ -176,12 +176,6 @@
     "advancedShowChangelogDesc": {
         "message": "Opens the changelog upon an extension update."
     },
-    "advancedShowUrlFavicon": {
-        "message": "Show url favicon"
-    },
-    "advancedShowUrlFaviconDesc": {
-        "message": "Displays the favicon next to a link."
-    },
     "advancedShowLinkPreview": {
         "message": "Show link preview"
     },
@@ -361,6 +355,22 @@
         "message": "Author(s): $AUTHOR$",
         "placeholders": {
             "author": {
+                "content": "$1"
+            }
+        }
+    },
+    "playMusicTitle": {
+        "message": "Play \"$SONG$\"",
+        "placeholders": {
+            "song": {
+                "content": "$1"
+            }
+        }
+    },
+    "pauseMusicTitle": {
+        "message": "Pause \"$SONG$\"",
+        "placeholders": {
+            "song": {
                 "content": "$1"
             }
         }

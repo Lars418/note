@@ -103,6 +103,30 @@ html {
             }
         }
 
+        .spotify-preview-card, .spotify-preview-card:visited {
+            border-color: var(--dark-border);
+            background-color: var(--dark-ogp-background);
+
+            > .spotify-preview-card-data {
+                > strong {
+                    color: var(--dark-text);
+                }
+            }
+        }
+
+        .spotify-preview-card, .spotify-preview-card:visited {
+            border-color: var(--dark-border);
+            background-color: var(--dark-ogp-background);
+            color: var(--dark-text);
+
+            > .spotify-preview-card-new-tab {
+
+                > svg {
+                    stroke: var(--dark-text);
+                }
+            }
+        }
+
         code {
             background-color: var(--dark-code);
         }
@@ -218,7 +242,7 @@ main {
         > #addNote {
             background: none;
             padding: 1rem .5rem;
-            font-size: 1.1rem;
+            font-size: 1rem;
             width: 100%;
             resize: none;
             border: none;
@@ -485,7 +509,7 @@ code {
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 20rem;
+    max-width: 22rem;
     border: 1px solid darkgray;
     border-radius: .75rem;
     overflow: hidden;
@@ -557,6 +581,19 @@ code {
                 animation-play-state: paused;
             }
         }
+
+        > .preview-card-explicit {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(211, 211, 211, .95);
+            font-size: .7rem;
+            width: 1rem;
+            height: 1rem;
+            color: var(--black);
+            font-weight: bold;
+            border-radius: .2rem;
+        }
     }
 
     > .preview-card-data {
@@ -620,6 +657,112 @@ code {
     &:hover {
         opacity: .7;
     }
+}
+
+.spotify-preview-card, .spotify-preview-card:visited {
+    position: relative;
+    display: flex;
+    width: 100%;
+    max-width: 22rem;
+    border: 1px solid darkgray;
+    border-radius: .75rem;
+    background-color: #f5f5f5;
+    transition: 200ms;
+
+    > button.spotify-preview-card-image-wrapper {
+        height: 5rem;
+        width: 5rem;
+        position: relative;
+        cursor: pointer;
+
+        > img {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        > svg {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+
+            &.spotify-pause-icon {
+                display: none;
+            }
+        }
+
+        &[data-playing="true"] {
+            > svg {
+                &.spotify-play-icon {
+                    display: none;
+                }
+
+                &.spotify-pause-icon {
+                    display: initial;
+                }
+            }
+        }
+    }
+
+    > audio:playing + label.spotify-preview-card-image-wrapper {
+
+    }
+
+    > .spotify-preview-card-data {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding-left: 1rem;
+        color: #999999;
+        font-size: .7rem;
+
+        > strong {
+            font-size: 1rem;
+            font-weight: normal;
+            color: var(--black);
+        }
+
+        .preview-card-metadata-column {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+
+            > .preview-card-metadata-separator {
+                margin: 0 .2rem;
+            }
+
+            > .preview-card-metadata-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                > svg {
+                    width: .75rem;
+                    height: .75rem;
+                    margin-right: .25rem;
+                }
+            }
+        }
+    }
+
+    > .spotify-preview-card-new-tab {
+        position: absolute;
+        bottom: .5rem;
+        right: .5rem;
+
+        > svg {
+            width: .75rem;
+            height: .75rem;
+            stroke: var(--black);
+        }
+    }
+
+    &:hover {
+        opacity: .7;
+    }
+
 }
 
 .is-hidden {

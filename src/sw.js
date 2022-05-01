@@ -61,13 +61,7 @@ runtime.onInstalled.addListener(async ({ reason, previousVersion }) => {
                 },
             });
 
-            await initContextMenus();
-            const ctxMenuIds = [ '1', '2', '3', '4', '5' ];
-            ctxMenuIds.forEach(id => {
-                contextMenus.update(id, {
-                    visible: settings.custom.showContextMenu ?? settings.default.showContextMenu
-                });
-            });
+            initContextMenus();
         });
     }
 
@@ -83,18 +77,8 @@ runtime.onInstalled.addListener(async ({ reason, previousVersion }) => {
 });
 
 runtime.onStartup.addListener(async () => {
-    console.log('Init CTX on startup');
-
     initBadge();
-
-    storage.local.get('settings', ({ settings }) => {
-        const ctxMenuIds = [ '1', '2', '3', '4', '5' ];
-        ctxMenuIds.forEach(id => {
-            contextMenus.update(id, {
-                visible: settings.custom.showContextMenu ?? settings.default.showContextMenu
-            });
-        });
-    });
+    initContextMenus();
 });
 
 storage.onChanged.addListener(({ notes }) => {
@@ -106,6 +90,34 @@ storage.onChanged.addListener(({ notes }) => {
 });
 
 omnibox.onInputEntered.addListener((text) => addNote(text));
+
+contextMenus.onClicked.addListener((e) => {
+    console.log(e);
+
+    switch (e.menuItemId) {
+        case '1': // Selection
+            addNote(e.selectionText, e.pageUrl);
+            break;
+        case '2': // Link
+            console.log(e);
+            addNote(e.linkUrl, e.pageUrl);
+            break;
+        case '3': // Image
+            console.log(e);
+            addNote(e.srcUrl, e.pageUrl, 'img');
+            break;
+        case '4': // Video
+            console.log(e);
+            addNote(e.srcUrl, e.pageUrl, 'video');
+            break;
+        case '5': // Audio
+            console.log(e);
+            addNote(e.srcUrl, e.pageUrl, 'audio');
+            break;
+        default:
+            return;
+    }
+});
 
 //#region helper
 function addNote(value = '', origin = null, mediaType = null) {
@@ -135,50 +147,26 @@ function initBadge() {
     });
 }
 
-async function initContextMenus() {
+function initContextMenus() {
     const translationPrefix = 'contextMenu';
     const contexts = [ 'selection', 'link', 'image', 'video', 'audio' ];
 
-    for (let i = 0; i < contexts.length; i++) {
-        const ctx = contexts[i];
-        const capitalizedCtx = ctx.charAt(0).toUpperCase() + ctx.slice(1);
-        const title = await _getMessage(translationPrefix + capitalizedCtx);
+    storage.local.get('settings', async ({ settings }) => {
+        await removeAllContextMenus();
 
-        contextMenus.create({
-            id: (i + 1).toString(),
-            contexts: [ ctx ],
-            title,
-            visible: true,
-        });
-    }
+        for (let i = 0; i < contexts.length; i++) {
+            const ctx = contexts[i];
+            const capitalizedCtx = ctx.charAt(0).toUpperCase() + ctx.slice(1);
+            const title = await _getMessage(translationPrefix + capitalizedCtx);
 
-    contextMenus.onClicked.addListener((e) => {
-        console.log(e);
-
-        switch (e.menuItemId) {
-            case '1': // Selection
-                addNote(e.selectionText, e.pageUrl);
-                break;
-            case '2': // Link
-                console.log(e);
-                addNote(e.linkUrl, e.pageUrl);
-                break;
-            case '3': // Image
-                console.log(e);
-                addNote(e.srcUrl, e.pageUrl, 'img');
-                break;
-            case '4': // Video
-                console.log(e);
-                addNote(e.srcUrl, e.pageUrl, 'video');
-                break;
-            case '5': // Audio
-                console.log(e);
-                addNote(e.srcUrl, e.pageUrl, 'audio');
-                break;
-            default:
-                return;
+            contextMenus.create({
+                id: (i + 1).toString(),
+                contexts: [ ctx ],
+                title,
+                visible: settings.custom.showContextMenu ?? settings.default.showContextMenu,
+            });
         }
-    });
+    })
 }
 
 /**
@@ -214,5 +202,11 @@ async function _getMessage(key) {
     }
 
     return getMessage(key);
+}
+
+async function removeAllContextMenus() {
+    return new Promise((resolve) => {
+        contextMenus.removeAll(() => resolve(true));
+    });
 }
 //#endregion

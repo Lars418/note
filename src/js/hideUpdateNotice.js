@@ -9,7 +9,7 @@ storage.local.get('updateHint', ({ updateHint }) => {
     }
 
     if (updateHint.visible && updateHint.version === version) {
-        chrome.storage.local.set({
+        storage.local.set({
             updateHint: {
                 ...updateHint,
                 visible: false

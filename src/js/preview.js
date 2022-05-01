@@ -1,4 +1,4 @@
-import {formatDateTime, formatIso8601Duration, formatNumber, formatShortDate} from "./util.js";
+import {formatDateTime, formatIso8601Duration, formatNumber, formatShortDate, createId} from "./util.js";
 const { i18n: { getMessage, getUILanguage } } = chrome;
 
 export class Preview {
@@ -23,8 +23,58 @@ export class Preview {
         const media = card.videoUrl || card.previewImage || '';
         const standalone = isStandalone ? '' : `title="${url.replace(/https?:\/\//i, '')}"`;
 
+        if (previewData.type === 'spotify') {
+            return `
+                <div
+                    data-type="spotify"
+                    data-href="${url}"
+                    class="spotify-preview-card"
+                    ${card.lang}
+                    ${standalone}
+                >
+                    ${previewData.audioUrl ? `
+                        <audio src="${previewData.audioUrl}"></audio>
+                    ` : ''}
+                    <button
+                        class="spotify-preview-card-image-wrapper"     
+                        data-song="${previewData.title}"                                   
+                    >
+                        ${media}
+                        <svg                              
+                            class="spotify-play-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(0, 0, 0, .2)" stroke="white" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                        </svg>
+                        
+                        <svg class="spotify-pause-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(0, 0, 0, .2)" stroke="white" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="10" y1="15" x2="10" y2="9"></line>
+                            <line x1="14" y1="15" x2="14" y2="9"></line>
+                        </svg>
+                    </button>
+                    
+                    <div class="spotify-preview-card-data">
+                        ${card.title}
+                        <div class="preview-card-metadata-column">
+                            ${card.author}
+                            ${card.duration}
+                        </div>
+                    </div>
+                    
+                    <a class="spotify-preview-card-new-tab" href="${url}" target="_blank">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                    </a>
+                </div>
+            `;
+        }
+
         return `
             <a
+                data-type="${card.type}"
                 href="${url}"
                 class="preview-card"
                 ${card.lang}
@@ -35,6 +85,7 @@ export class Preview {
                 <div class="preview-card-special-metadata">
                     ${card.paywall}
                     ${card.liveUpdate}
+                    ${card.explicit}
                 </div>
                 <div class="preview-card-data">
                     <div class="preview-card-metadata">
@@ -45,6 +96,37 @@ export class Preview {
                     ${card.description}
                 </div>
             </a>`;
+    }
+
+    static addAudioListener(url, wrapper) {
+        const ref = Array.from(wrapper.querySelectorAll('a, .spotify-preview-card')).find(el =>
+            el.getAttribute('href') === url
+            || el.dataset.href === url
+        );
+        const audio = ref.querySelector('audio');
+        const button = ref.querySelector('button.spotify-preview-card-image-wrapper');
+
+        if (ref.dataset.type !== 'spotify' || !audio) {
+            return;
+        }
+
+        button.title = getMessage('playMusicTitle', [ button.dataset.song ]);
+        button.ondblclick = (event) => event.stopPropagation();
+        button.onclick = async (event) => {
+            if (audio.paused) {
+                button.title = getMessage('pauseMusicTitle', [ button.dataset.song ]);
+                await audio.play();
+            } else {
+                button.title = getMessage('playMusicTitle', [ button.dataset.song ]);
+                audio.pause();
+            }
+
+            button.dataset.playing = (!audio.paused).toString();
+        }
+        audio.onended = () => {
+            button.title = getMessage('playMusicTitle', [ button.dataset.song ]);
+            button.dataset.playing = 'false';
+        }
     }
 
     static _getRenderedFields(previewData) {
@@ -238,14 +320,6 @@ export class Preview {
                 </span>
             </div>`
             : '';
-        const audioUrl = previewData.audioUrl
-            ? `
-            <audio
-                src="${previewData.audioUrl}"
-                controls="controls"
-                class="preview-card-banner"
-            ></audio>`
-            : '';
         const videoUrl = (previewData.videoUrl || previewData.trailer)
             ? `
             <video
@@ -265,6 +339,13 @@ export class Preview {
             <span class="preview-card-resolution">
                 ${previewData.resolution}
             </span>`
+            : '';
+        const explicit = previewData.explicit
+            ? `
+            <span class="preview-card-explicit" title="Explicit">
+                E
+            </span>
+            `
             : '';
 
         let previewImage = '';
@@ -299,10 +380,10 @@ export class Preview {
             trackCount,
             albumCount,
             seasonCount,
-            audioUrl,
             videoUrl,
             contentRating,
             resolution,
+            explicit,
             lang
         };
     }

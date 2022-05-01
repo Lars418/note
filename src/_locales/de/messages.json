@@ -176,12 +176,6 @@
     "advancedShowChangelogDesc": {
         "message": "Zeigt die Versionsänderungen nach einem Update an."
     },
-    "advancedShowUrlFavicon": {
-        "message": "URL-Favicon anzeigen"
-    },
-    "advancedShowUrlFaviconDesc": {
-        "message": "Zeigt das Favicon neben Links an."
-    },
     "advancedShowLinkPreview": {
         "message": "Linkvorschau anzeigen"
     },
@@ -361,6 +355,22 @@
         "message": "Autor(en): $AUTHOR$",
         "placeholders": {
             "author": {
+                "content": "$1"
+            }
+        }
+    },
+    "playMusicTitle": {
+        "message": "\"$SONG$\" spielen",
+        "placeholders": {
+            "song": {
+                "content": "$1"
+            }
+        }
+    },
+    "pauseMusicTitle": {
+        "message": "\"$SONG$\" pausieren",
+        "placeholders": {
+            "song": {
                 "content": "$1"
             }
         }

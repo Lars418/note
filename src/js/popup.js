@@ -416,9 +416,11 @@ function addNote(note) {
         clearDraft();
 
         if (settings.custom.advancedShowLinkPreview ?? settings.default.advancedShowLinkPreview) {
-            const urls = Array.from(noteValue.querySelectorAll('a')).filter(anchor => !anchor.href.startsWith('mailto:'));
+            const urls = Array.from(noteValue.querySelectorAll('a, .spotify-preview-card')).filter(anchor => !anchor?.href?.startsWith('mailto:'));
             for (const url of urls) {
-                url.outerHTML = await createPreviewCard(note, url.href);
+                const _url = url.dataset.href || url.href;
+                url.outerHTML = await createPreviewCard(note, _url);
+                Preview.addAudioListener(_url, noteValue)
             }
             addNoteLinkListeners(noteValue, true);
         }
@@ -432,9 +434,9 @@ function editNote(id) {
     const selectedNoteContent = selectedNote.querySelector(".note-value");
 
     // Get rid of html markup
-    Array.from(selectedNoteContent.querySelectorAll("a"))
-    .filter(a => !a.href.startsWith("mailto:"))
-    .forEach(a => a.textContent = a.href);
+    Array.from(selectedNoteContent.querySelectorAll("a, .spotify-preview-card"))
+    .filter(a => !a?.href?.startsWith("mailto:"))
+    .forEach(a => a.textContent = a.dataset.href || a.href);
 
     Array.from(selectedNoteContent.querySelectorAll('code'))
         .forEach(code => code.textContent = `\`${code.textContent}\``);
@@ -472,10 +474,12 @@ function editNote(id) {
             selectedNoteContent.onkeydown = null;
 
             if (settings.custom.advancedShowLinkPreview ?? settings.default.advancedShowLinkPreview) {
-                const urls = Array.from(selectedNoteContent.querySelectorAll('a')).filter(url => !url.href.startsWith('mailto:'));
+                const urls = Array.from(selectedNoteContent.querySelectorAll('a, .spotify-preview-card')).filter(url => !url?.href?.startsWith('mailto:'));
 
                 for (const url of urls) {
-                    url.outerHTML = await createPreviewCard(updatedNote, url.href);
+                    const _url = url.dataset.href || url.href;
+                    url.outerHTML = await createPreviewCard(updatedNote, url);
+                    Preview.addAudioListener(_url, selectedNoteContent)
                 }
 
                 addNoteLinkListeners(selectedNote, true);
@@ -500,8 +504,6 @@ function getNoteOrigin(url, value = null) {
                 ? url
                 : url + '#:~:text=' + encodeURIComponent(value);
             const formattedDomain = `${protocol}//${host}`;
-            const faviconTemplateUrl = constant.FAVICON_TEMPLATE_URL.replace('{URL}', formattedDomain);
-            const faviconEnabled = settings.custom.advancedShowUrlFavicon ?? settings.default.advancedShowUrlFavicon;
 
             resolve(
             `
@@ -513,13 +515,6 @@ function getNoteOrigin(url, value = null) {
                         target="_parent"
                         rel="noopener noreferrer"
                     >   
-                        ${(protocol.includes('http') && faviconEnabled) ? `              
-                            <img
-                                src="${faviconTemplateUrl}"
-                                alt="${host}"
-                                class="note-origin-favicon"
-                            />
-                        ` : ''}
                         ${getUrlFormat(url)}
                     </a>
                 `
