@@ -39,10 +39,14 @@ html, body {
   color: var(--black);
 }
 
+:root {
+  --completed-note-height: unset;
+  --completed-note-padding-top-and-bottom: .75rem;
+  --completed-note-animation-duration: 200ms;
+}
+
 html {
   width: 420px;
-  overflow-y: hidden;
-  height: 600px;
 }
 html.standalone {
   width: 100%;
@@ -63,6 +67,7 @@ html.dark-theme > body > main > #recentlyAddedWrapper > h2 {
 }
 html.dark-theme > body > main > #recentlyAddedWrapper > #recentlyAdded .note {
   color: var(--dark-text);
+  position: relative;
 }
 html.dark-theme > body > main > #recentlyAddedWrapper > #recentlyAdded .note:nth-child(odd) {
   background-color: var(--dark-body-alternate);
@@ -111,7 +116,6 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  overflow-y: hidden;
 }
 
 header {
@@ -129,20 +133,39 @@ header > h1 {
 header > #actions {
   margin-left: auto;
 }
-header > #actions > button {
+header > #actions > button, header > #actions a, header > #actions a:visited {
   background: none;
   border: none;
   color: #fff;
   font-size: 0.8rem;
   cursor: pointer;
   transition: opacity 200ms;
+  padding: 0 0.35rem;
 }
-header > #actions > button:hover, header > #actions > button:focus {
+header > #actions > button:hover, header > #actions > button:focus, header > #actions a:hover, header > #actions a:focus, header > #actions a:visited:hover, header > #actions a:visited:focus {
   opacity: 0.7;
 }
-header > #actions > button > svg {
+header > #actions > button > svg, header > #actions a > svg, header > #actions a:visited > svg {
   width: 1.1rem;
   height: 1.1rem;
+}
+header > #actions #extensionUpdateNotice {
+  text-decoration: none;
+}
+header > #actions #extensionUpdateNotice .extensionUpdateNotice-cloud {
+  opacity: 0;
+  animation: extension-update-notice-cloud-appear 200ms linear forwards;
+  animation-delay: 1s;
+}
+header > #actions #extensionUpdateNotice .extensionUpdateNotice-arrow {
+  transform: translateY(1rem);
+  animation: extension-update-notice-arrow-up 200ms ease-in-out forwards;
+  animation-delay: 1s;
+}
+header > #actions #extensionUpdateNotice .extensionUpdateNotice-dot {
+  opacity: 0;
+  animation: extension-update-notice-cloud-appear 300ms ease-in forwards;
+  animation-delay: 2s;
 }
 
 main {
@@ -206,7 +229,6 @@ main > #recentlyAddedWrapper > h2 {
 main > #recentlyAddedWrapper > #recentlyAdded {
   display: flex;
   flex-direction: column;
-  max-height: 425px;
   overflow-y: auto;
 }
 main > #recentlyAddedWrapper > #recentlyAdded:empty::before {
@@ -217,7 +239,7 @@ main > #recentlyAddedWrapper > #recentlyAdded:empty::before {
   font-size: 0.9rem;
 }
 main > #recentlyAddedWrapper > #recentlyAdded > .note {
-  padding: 0.75rem 0.5rem;
+  padding: var(--completed-note-padding-top-and-bottom) 0.5rem;
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
   border-left: 0.35rem solid transparent;
@@ -228,13 +250,11 @@ main > #recentlyAddedWrapper > #recentlyAdded > .note {
   z-index: 0;
 }
 main > #recentlyAddedWrapper > #recentlyAdded > .note.is-completed {
-  opacity: 0.5;
+  overflow: hidden;
+  animation: hide-completed-note var(--completed-note-animation-duration) ease-in forwards;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note.is-completed > article > .note-value {
-  text-decoration: line-through;
-}
-main > #recentlyAddedWrapper > #recentlyAdded > .note.is-completed > article > .note-value > a.preview-card {
-  color: #000;
+main > #recentlyAddedWrapper > #recentlyAdded > .note.is-completed .note-action-wrapper, main > #recentlyAddedWrapper > #recentlyAdded > .note.is-completed .note-actions {
+  display: none;
 }
 main > #recentlyAddedWrapper > #recentlyAdded > .note[data-preselected-for-deletion=true]::after {
   content: "";
@@ -384,7 +404,10 @@ main > #recentlyAddedWrapper > #recentlyAdded > .note:hover, main > #recentlyAdd
   border-top-color: var(--gray);
   border-bottom-color: var(--gray);
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note:hover > article > .note-footer, main > #recentlyAddedWrapper > #recentlyAdded > .note:hover > article > .note-action-wrapper, main > #recentlyAddedWrapper > #recentlyAdded > .note:focus > article > .note-footer, main > #recentlyAddedWrapper > #recentlyAdded > .note:focus > article > .note-action-wrapper, main > #recentlyAddedWrapper > #recentlyAdded > .note:focus-within > article > .note-footer, main > #recentlyAddedWrapper > #recentlyAdded > .note:focus-within > article > .note-action-wrapper {
+main > #recentlyAddedWrapper > #recentlyAdded > .note:hover > article > .note-footer, main > #recentlyAddedWrapper > #recentlyAdded > .note:focus > article > .note-footer, main > #recentlyAddedWrapper > #recentlyAdded > .note:focus-within > article > .note-footer {
+  opacity: 1;
+}
+main > #recentlyAddedWrapper > #recentlyAdded > .note:hover > .note-action-wrapper, main > #recentlyAddedWrapper > #recentlyAdded > .note:focus > .note-action-wrapper, main > #recentlyAddedWrapper > #recentlyAdded > .note:focus-within > .note-action-wrapper {
   opacity: 1;
 }
 main > #recentlyAddedWrapper > #recentlyAdded > .note:nth-child(odd) {
@@ -526,6 +549,23 @@ code {
   display: none !important;
 }
 
+@keyframes hide-completed-note {
+  0% {
+    height: var(--completed-note-height);
+    padding-top: var(--completed-note-padding-top-and-bottom);
+    padding-bottom: var(--completed-note-padding-top-and-bottom);
+  }
+  99% {
+    height: 0;
+    padding: 0;
+  }
+  100% {
+    height: 0;
+    display: none;
+    padding: 0;
+    border: none;
+  }
+}
 @keyframes live-update-circle {
   0% {
     opacity: 1;
@@ -535,6 +575,16 @@ code {
   }
   100% {
     opacity: 0;
+  }
+}
+@keyframes extension-update-notice-arrow-up {
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes extension-update-notice-cloud-appear {
+  to {
+    opacity: 1;
   }
 }
 

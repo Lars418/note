@@ -1,10 +1,14 @@
 @import "colors";
 @import "reset";
 
+:root {
+    --completed-note-height: unset;
+    --completed-note-padding-top-and-bottom: .75rem;
+    --completed-note-animation-duration: 200ms;
+}
+
 html {
     width: 420px;
-    overflow-y: hidden;
-    height: 600px;
 
     &.standalone {
         width: 100%;
@@ -34,6 +38,7 @@ html {
                     > #recentlyAdded {
                         .note {
                             color: var(--dark-text);
+                            position: relative;
 
                             &:nth-child(odd) {
                                 background-color: var(--dark-body-alternate);
@@ -108,7 +113,6 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    overflow-y: hidden;
 }
 
 header {
@@ -127,13 +131,14 @@ header {
     > #actions {
         margin-left: auto;
 
-        > button {
+        > button, a, a:visited {
             background: none;
             border: none;
             color: #fff;
             font-size: .8rem;
             cursor: pointer;
             transition: opacity 200ms;
+            padding: 0 .35rem;
 
             &:hover, &:focus {
                 opacity: .7;
@@ -142,6 +147,28 @@ header {
             > svg {
                 width: 1.1rem;
                 height: 1.1rem;
+            }
+        }
+
+        #extensionUpdateNotice {
+            text-decoration: none;
+
+            .extensionUpdateNotice-cloud {
+                opacity: 0;
+                animation: extension-update-notice-cloud-appear 200ms linear forwards;
+                animation-delay: 1s;
+            }
+
+            .extensionUpdateNotice-arrow {
+                transform: translateY(1rem);
+                animation: extension-update-notice-arrow-up 200ms ease-in-out forwards;
+                animation-delay: 1s;
+            }
+
+            .extensionUpdateNotice-dot {
+                opacity: 0;
+                animation: extension-update-notice-cloud-appear 300ms ease-in forwards;
+                animation-delay: 2s;
             }
         }
     }
@@ -217,7 +244,6 @@ main {
         > #recentlyAdded {
             display: flex;
             flex-direction: column;
-            max-height: 425px;
             overflow-y: auto;
 
             &:empty::before {
@@ -229,7 +255,7 @@ main {
             }
 
             > .note {
-                padding: .75rem .5rem;
+                padding: var(--completed-note-padding-top-and-bottom) .5rem;
                 border-top: 1px solid transparent;
                 border-bottom: 1px solid transparent;
                 border-left: .35rem solid transparent;
@@ -240,14 +266,11 @@ main {
                 z-index: 0;
 
                 &.is-completed {
-                    opacity: .5;
+                    overflow: hidden;
+                    animation: hide-completed-note var(--completed-note-animation-duration) ease-in forwards;
 
-                    > article > .note-value {
-                        text-decoration: line-through;
-
-                        > a.preview-card {
-                            color: #000;
-                        }
+                    .note-action-wrapper, .note-actions {
+                        display: none;
                     }
                 }
 
@@ -431,9 +454,13 @@ main {
                     border-bottom-color: var(--gray);
 
                     > article {
-                        > .note-footer, > .note-action-wrapper {
+                        > .note-footer {
                             opacity: 1;
                         }
+                    }
+
+                    > .note-action-wrapper {
+                        opacity: 1;
                     }
                 }
                 
@@ -599,6 +626,26 @@ code {
     display: none !important;
 }
 
+@keyframes hide-completed-note {
+    0% {
+        height: var(--completed-note-height);
+        padding-top: var(--completed-note-padding-top-and-bottom);
+        padding-bottom: var(--completed-note-padding-top-and-bottom);
+    }
+
+    99% {
+        height: 0;
+        padding: 0;
+    }
+
+    100% {
+        height: 0;
+        display: none;
+        padding: 0;
+        border: none;
+    }
+}
+
 @keyframes live-update-circle {
     0% {
         opacity: 1;
@@ -610,5 +657,17 @@ code {
 
     100% {
         opacity: 0;
+    }
+}
+
+@keyframes extension-update-notice-arrow-up {
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes extension-update-notice-cloud-appear {
+    to {
+        opacity: 1;
     }
 }

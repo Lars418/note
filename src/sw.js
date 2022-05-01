@@ -8,7 +8,7 @@ const {
     omnibox,
 } = chrome;
 
-runtime.onInstalled.addListener(async ({ reason }) => {
+runtime.onInstalled.addListener(async ({ reason, previousVersion }) => {
     const installReason = runtime.OnInstalledReason;
 
     if(reason === installReason.INSTALL) {
@@ -38,15 +38,16 @@ runtime.onInstalled.addListener(async ({ reason }) => {
     }
 
     if(reason === installReason.UPDATE) {
-        const { version, version_name, previousVersion } = runtime.getManifest();
+        const { version } = runtime.getManifest();
 
         storage.local.get('settings', async ({ settings }) => {
-            // Show version changelog if enabled (silent update if version name starts with "&shy;" (shy char: "­"))
-            if((settings.custom.advancedShowChangelog ?? settings.default.advancedShowChangelog) && !version_name.startsWith("­")) {
-                runtime.getPlatformInfo(info => {
-                    tabs.create({
-                        url: `https://lars.koelker.dev/extensions/note/changelog.php?v=${encodeURIComponent(version)}&previous=${encodeURIComponent(previousVersion)}&os=${info.os}`
-                    });
+            if (version !== previousVersion) {
+                storage.local.set({
+                    updateHint: {
+                        visible: true,
+                        version,
+                        previousVersion
+                    }
                 });
             }
 

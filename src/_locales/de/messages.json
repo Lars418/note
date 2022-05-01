@@ -9,6 +9,20 @@
     },
 
 
+    "updateTitle": {
+        "message": "$EXTENSION_NAME wurde von Version $PREVIOUS_VERSION$ auf Version $VERSION$ aktualisiert.",
+        "placeholders": {
+            "extension_name": {
+                "content": "$1"
+            },
+            "previous_version": {
+                "content": "$2"
+            },
+            "version": {
+                "content": "$3"
+            }
+        }
+    },
     "popupTitle": {
         "message": "Notizen"
     },

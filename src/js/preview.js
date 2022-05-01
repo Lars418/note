@@ -1,6 +1,4 @@
-import {constant} from "./constant.js";
 import {formatDateTime, formatIso8601Duration, formatNumber, formatShortDate} from "./util.js";
-
 const { i18n: { getMessage, getUILanguage } } = chrome;
 
 export class Preview {
@@ -12,8 +10,16 @@ export class Preview {
      * */
     static async renderCard(url, previewData, isStandalone) {
         const card = this._getRenderedFields(previewData);
-        const meta1 = this._formatMetaColumn([ card.pageName, card.author, card.duration ]);
-        const meta2 = this._formatMetaColumn([ card.modificationDate || card.publicationDate, card.category, card.commentCount, card.trackCount, card.albumCount, card.seasonCount, ]);
+        const meta1 = this._formatMetaColumn([ card.pageName, card.author ]);
+        const meta2 = this._formatMetaColumn([
+            card.modificationDate || card.publicationDate,
+            card.duration,
+            card.category,
+            card.commentCount,
+            card.trackCount,
+            card.albumCount,
+            card.seasonCount,
+        ]);
         const media = card.videoUrl || card.previewImage || '';
         const standalone = isStandalone ? '' : `title="${url.replace(/https?:\/\//i, '')}"`;
 

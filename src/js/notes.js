@@ -2,6 +2,19 @@ import { createId } from './util.js';
 
 export class Notes {
     /**
+     * @description Get's all notes that are open (not completed)
+     * */
+    static getAllOpenNotes() {
+        return new Promise((resolve) => {
+            chrome.storage.local.get('notes', ({ notes }) => {
+                const openNotes = notes.filter(note => !note.completed);
+
+                resolve(openNotes);
+            });
+        });
+    }
+
+    /**
      * @description Deletes the specified note and removes it from the wrapper element
      * @param id {string}
      * */

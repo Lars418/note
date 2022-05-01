@@ -26,6 +26,7 @@ const addNoteWrapper = document.getElementById('addNoteWrapper');
 const noteTag = document.getElementById('tag');
 const recentlyAdded = document.getElementById('recentlyAdded');
 const addNoteBtn = document.getElementById('addNoteBtn');
+const extensionUpdateNotice = document.getElementById('extensionUpdateNotice');
 const standalone = searchParams.get('standalone') === '1';
 //#endregion
 
@@ -48,6 +49,17 @@ if (searchParams.get('priority')) {
     setPriority(searchParams.get('priority'));
 }
 
+
+function checkForUpdate() {
+    storage.local.get('updateHint', ({ updateHint }) => {
+        if (updateHint.visible) {
+            const { name } = runtime.getManifest();
+            extensionUpdateNotice.title = getMessage('updateTitle', [name, updateHint.previousVersion, updateHint.version]);
+            extensionUpdateNotice.href = `https://lars.koelker.dev/extensions/note/?version=${updateHint.version}#changelog`;
+            extensionUpdateNotice.classList.remove('is-hidden');
+        }
+    });
+}
 
 function loadDraft() {
     storage.local.get(['settings', 'draft'], ({ settings, draft }) => {
@@ -81,19 +93,21 @@ function clearDraft() {
     });
 }
 
-function loadNotes() {
+async function loadNotes() {
     recentlyAdded.textContent = '';
+    const notes = await Notes.getAllOpenNotes();
 
-    storage.local.get('notes', ({ notes }) => {
-        notes.forEach(note => addNote(note));
-        recentlyAdded.dataset.amount = notes.length;
-    });
+    notes.forEach(note => addNote(note));
+    recentlyAdded.dataset.amount = notes.length;
 }
 
-loadNotes();
-loadDraft();
-loadTheme();
-applyTranslations(document);
+(async () => {
+    checkForUpdate();
+    await loadNotes();
+    loadDraft();
+    loadTheme();
+    applyTranslations(document);
+})()
 //#endregion
 
 //#region Standalone
@@ -380,6 +394,8 @@ function addNote(note) {
 
         completedBtn.onclick = async (e) => {
             e.stopImmediatePropagation();
+            noteElement.style.setProperty('--completed-note-height', `${noteElement.offsetHeight}px`);
+            noteElement.style.setProperty('--completed-note-animation-duration', `${noteElement.offsetHeight * Math.E}ms`);
             noteElement.classList.toggle('is-completed');
 
             await Notes.update(noteElement.dataset.id, 'completed', completedBtn.checked);
