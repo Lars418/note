@@ -92,26 +92,20 @@ storage.onChanged.addListener(({ notes }) => {
 omnibox.onInputEntered.addListener((text) => addNote(text));
 
 contextMenus.onClicked.addListener((e) => {
-    console.log(e);
-
     switch (e.menuItemId) {
         case '1': // Selection
             addNote(e.selectionText, e.pageUrl);
             break;
         case '2': // Link
-            console.log(e);
             addNote(e.linkUrl, e.pageUrl);
             break;
         case '3': // Image
-            console.log(e);
             addNote(e.srcUrl, e.pageUrl, 'img');
             break;
         case '4': // Video
-            console.log(e);
             addNote(e.srcUrl, e.pageUrl, 'video');
             break;
         case '5': // Audio
-            console.log(e);
             addNote(e.srcUrl, e.pageUrl, 'audio');
             break;
         default:

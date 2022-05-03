@@ -315,7 +315,6 @@ function addNote(note, wrapper) {
         const noteValue = noteElement.querySelector('.note-value');
 
         noteElement.onkeypress = event => {
-            console.log(document.activeElement);
             const editKeys = [ 'e', ' ', 'enter' ];
 
             // Editing media notes is prohibited
