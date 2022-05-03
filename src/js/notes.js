@@ -14,6 +14,16 @@ export class Notes {
         });
     }
 
+    static getAllCompletedNotes() {
+        return new Promise((resolve) => {
+            chrome.storage.local.get('notes', ({ notes }) => {
+                const openNotes = notes.filter(note => note.completed);
+
+                resolve(openNotes);
+            });
+        });
+    }
+
     /**
      * @description Deletes the specified note and removes it from the wrapper element
      * @param id {string}

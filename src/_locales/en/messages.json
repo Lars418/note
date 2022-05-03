@@ -44,9 +44,11 @@
     "addNotePlaceholder": {
         "message": "Add note…"
     },
-    "recentNotes": {
-        "message": "Recently added",
-        "description": "headline for last/recent notes"
+    "myNotes": {
+        "message": "My notes"
+    },
+    "completedNotes": {
+        "message": "Completed"
     },
 
     "addNoteBtn": {
@@ -168,13 +170,6 @@
     },
     "advancedParseUrlsDesc": {
         "message": "Allows interaction with links to websites or emails inside a note."
-    },
-
-    "advancedShowChangelog": {
-        "message": "Show version changelog"
-    },
-    "advancedShowChangelogDesc": {
-        "message": "Opens the changelog upon an extension update."
     },
     "advancedShowLinkPreview": {
         "message": "Show link preview"

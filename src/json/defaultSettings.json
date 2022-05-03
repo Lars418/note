@@ -46,7 +46,6 @@
         "default": {
             "advancedParseUrls": true,
             "advancedEnableSpellcheck": true,
-            "advancedShowChangelog": true,
             "advancedShowLinkPreview": false,
 
             "saveCurrentNote": true,

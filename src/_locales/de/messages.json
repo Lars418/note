@@ -44,9 +44,11 @@
     "addNotePlaceholder": {
         "message": "Notiz hinzufügen…"
     },
-    "recentNotes": {
-        "message": "Kürzlich hinzugefügt",
-        "description": "headline for last/recent notes"
+    "myNotes": {
+        "message": "Meine Notizen"
+    },
+    "completedNotes": {
+        "message": "Abgeschlossen"
     },
 
     "addNoteBtn": {
@@ -168,13 +170,6 @@
     },
     "advancedParseUrlsDesc": {
         "message": "Ermöglicht die Interkation mit Links und E-Mails innerhalb einer Notiz."
-    },
-
-    "advancedShowChangelog": {
-        "message": "Versionsänderungen anzeigen"
-    },
-    "advancedShowChangelogDesc": {
-        "message": "Zeigt die Versionsänderungen nach einem Update an."
     },
     "advancedShowLinkPreview": {
         "message": "Linkvorschau anzeigen"

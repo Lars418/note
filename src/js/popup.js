@@ -2,7 +2,6 @@
 import {
     applyTranslations,
     formatDateTime,
-    formatShortDate,
     formatTimestamp,
     getUrlFormat,
     lightenDarkenColor,
@@ -24,7 +23,11 @@ const uiLang = getUILanguage();
 const addNoteInput = document.getElementById('addNote');
 const addNoteWrapper = document.getElementById('addNoteWrapper');
 const noteTag = document.getElementById('tag');
-const recentlyAdded = document.getElementById('recentlyAdded');
+const myNotesTab = document.getElementById('myNotes-tab');
+const myNotesTabBtn = document.getElementById('myNotes-btn');
+const completedNotesTab = document.getElementById('completedNotes-tab');
+const completedNotesTabBtn = document.getElementById('completedNotes-btn');
+const tabContainerWrapper = document.querySelector('.tab-container-wrapper');
 const addNoteBtn = document.getElementById('addNoteBtn');
 const extensionUpdateNotice = document.getElementById('extensionUpdateNotice');
 const standalone = searchParams.get('standalone') === '1';
@@ -48,7 +51,6 @@ if (searchParams.get('predefinedMessage')) {
 if (searchParams.get('priority')) {
     setPriority(searchParams.get('priority'));
 }
-
 
 function checkForUpdate() {
     storage.local.get('updateHint', ({ updateHint }) => {
@@ -94,11 +96,31 @@ function clearDraft() {
 }
 
 async function loadNotes() {
-    recentlyAdded.textContent = '';
+    myNotesTab.textContent = '';
     const notes = await Notes.getAllOpenNotes();
 
-    notes.forEach(note => addNote(note));
-    recentlyAdded.dataset.amount = notes.length;
+    notes.forEach(note => addNote(note, myNotesTab));
+    myNotesTab.dataset.amount = notes.length;
+
+    completedNotesTab.textContent = '';
+    const completedNotes = await Notes.getAllCompletedNotes();
+    completedNotes.forEach(note => addNote(note, completedNotesTab));
+    completedNotesTab.dataset.amount = completedNotes.length;
+}
+
+function initTabs() {
+    [myNotesTabBtn, completedNotesTabBtn].forEach(tab => {
+        tab.addEventListener('click', ({ target: element}) => {
+            const otherTabs = document.querySelectorAll(`.tab-wrapper button:not(#${element.id})`);
+            const container = tabContainerWrapper.querySelectorAll(`[role="tabpanel"]:not(#${element.getAttribute('aria-controls')})`);
+            const activeContainer = document.getElementById(element.getAttribute('aria-controls'));
+
+            otherTabs.forEach(tab => tab.setAttribute('aria-selected', 'false'));
+            container.forEach(c => c.classList.add('is-hidden'));
+            activeContainer.classList.remove('is-hidden');
+            element.setAttribute('aria-selected', 'true');
+        });
+    })
 }
 
 (async () => {
@@ -107,6 +129,7 @@ async function loadNotes() {
     loadDraft();
     loadTheme();
     applyTranslations(document);
+    initTabs();
 })()
 //#endregion
 
@@ -175,7 +198,6 @@ storage.local.get('settings', ({ settings }) => {
 
 [addNoteInput, addNoteBtn].forEach(element => {
     element.addEventListener('keypress', async (event) => {
-
         if (!event.shiftKey && event.key === 'Enter' && addNoteInput.value.trim()) {
             event.preventDefault();
             await saveNote();
@@ -192,7 +214,11 @@ async function saveNote() {
     addNoteInput.value = '';
     addNoteBtn.classList.add('is-hidden');
     clearTag();
-    addNote(note);
+    if (note.completed) {
+        addNote(note, completedNotesTab);
+    } else {
+        addNote(note, myNotesTab);
+    }
 }
 //#endregion
 
@@ -224,14 +250,14 @@ function clearTag() {
 async function deleteNote(id) {
     try {
         await Notes.delete(id);
-        const deletedNote = recentlyAdded.querySelector(`div[data-id="${id}"]`);
-        recentlyAdded.removeChild(deletedNote);
+        const deletedNote = myNotesTab.querySelector(`div[data-id="${id}"]`);
+        myNotesTab.removeChild(deletedNote);
     } catch (e) {
         console.warn('Could not delete note: ', id);
     }
 }
 
-function addNote(note) {
+function addNote(note, wrapper) {
     storage.local.get(['notePriorities', 'settings'], async ({ notePriorities, settings }) => {
         const priority = notePriorities.find(p => p.name === note.priority);
         const noteElement = document.createElement('div');
@@ -312,8 +338,8 @@ function addNote(note) {
             }
         };
         noteElement.onkeyup = event => {
-            const notes = recentlyAdded.querySelectorAll('.note');
-            const firstElement = recentlyAdded.querySelector('.note');
+            const notes = myNotesTab.querySelectorAll('.note');
+            const firstElement = myNotesTab.querySelector('.note');
             const lastElement = notes[notes.length -1];
 
             if (!document.activeElement.classList.contains('note')) {
@@ -374,7 +400,7 @@ function addNote(note) {
         if (origin) {
             origin.addEventListener('click', e => {
                 e.preventDefault();
-                tabs.create({ url: origin.href });
+                tabs.create({ url: origin.href }, tab => tab.width = 420);
             });
         }
 
@@ -394,11 +420,14 @@ function addNote(note) {
 
         completedBtn.onclick = async (e) => {
             e.stopImmediatePropagation();
+            const animationDuration = noteElement.offsetHeight * Math.E;
             noteElement.style.setProperty('--completed-note-height', `${noteElement.offsetHeight}px`);
-            noteElement.style.setProperty('--completed-note-animation-duration', `${noteElement.offsetHeight * Math.E}ms`);
+            noteElement.style.setProperty('--completed-note-animation-duration', `${animationDuration}ms`);
             noteElement.classList.toggle('is-completed');
 
             await Notes.update(noteElement.dataset.id, 'completed', completedBtn.checked);
+
+            setTimeout(async() => await loadNotes(), animationDuration);
         }
         noteActionWrapper.appendChild(completedBtn);
 
@@ -412,7 +441,7 @@ function addNote(note) {
         }
 
         noteElement.appendChild(noteActionWrapper);
-        recentlyAdded.append(noteElement);
+        wrapper.append(noteElement);
         clearDraft();
 
         if (settings.custom.advancedShowLinkPreview ?? settings.default.advancedShowLinkPreview) {
@@ -428,7 +457,7 @@ function addNote(note) {
 }
 
 function editNote(id) {
-    const selectedNote = Array.from(recentlyAdded.querySelectorAll(".note")).find(note => note.dataset.id === id);
+    const selectedNote = Array.from(myNotesTab.querySelectorAll(".note")).find(note => note.dataset.id === id);
     if (!selectedNote) return;
 
     const selectedNoteContent = selectedNote.querySelector(".note-value");
@@ -478,7 +507,7 @@ function editNote(id) {
 
                 for (const url of urls) {
                     const _url = url.dataset.href || url.href;
-                    url.outerHTML = await createPreviewCard(updatedNote, url);
+                    url.outerHTML = await createPreviewCard(updatedNote, _url);
                     Preview.addAudioListener(_url, selectedNoteContent)
                 }
 

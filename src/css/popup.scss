@@ -30,38 +30,50 @@ html {
         > body {
 
             > main {
-                > #recentlyAddedWrapper {
-                    > h2 {
-                        color: var(--dark-text);
+                > #addedNotesWrapper {
+                    .tab-wrapper {
+                        .inner-tab-wrapper {
+                            border-bottom-color: var(--dark-text);
+
+                            > button {
+                                color: var(--dark-text);
+
+                                &[aria-selected="true"]::after {
+                                    opacity: 1;
+                                }
+                            }
+                        }
                     }
 
-                    > #recentlyAdded {
-                        .note {
-                            color: var(--dark-text);
-                            position: relative;
+                    > .tab-container-wrapper {
+                        > [role="tabpanel"] {
+                            .note {
+                                color: var(--dark-text);
+                                position: relative;
 
-                            &:nth-child(odd) {
-                                background-color: var(--dark-body-alternate);
-                            }
+                                &:nth-child(odd) {
+                                    background-color: var(--dark-body-alternate);
+                                }
 
-                            &:hover {
-                                border-top-color: var(--dark-border);
-                                border-bottom-color: var(--dark-border);
-                            }
+                                &:hover {
+                                    border-top-color: var(--dark-border);
+                                    border-bottom-color: var(--dark-border);
+                                }
 
-                            > article {
-                                > .note-value {
-                                    &[contenteditable] {
-                                        background-color: var(--dark-ogp-background);
-                                    }
+                                > article {
+                                    > .note-value {
+                                        &[contenteditable] {
+                                            background-color: var(--dark-ogp-background);
+                                        }
 
-                                    > a {
-                                        &.preview-card {
-                                            color: var(--dark-text);
+                                        > a {
+                                            &.preview-card {
+                                                color: var(--dark-text);
 
-                                            > .preview-card-special-metadata > .preview-card-live-update {
-                                                background-color: var(--dark-body);
-                                                color: var(--white);
+                                                > .preview-card-special-metadata > .preview-card-live-update {
+                                                    background-color: var(--dark-body);
+                                                    color: var(--white);
+                                                }
                                             }
                                         }
                                     }
@@ -257,239 +269,278 @@ main {
         }
     }
 
-    > #recentlyAddedWrapper {
+    > #addedNotesWrapper {
 
-        > h2 {
-            font-weight: normal;
-            font-size: 1.15rem;
-            margin: 1.5rem .5rem .75rem .5rem;
-        }
-
-        > #recentlyAdded {
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-
-            &:empty::before {
-                content: '__MSG_noNotes__';
-                color: darkgray;
-                margin-left: .5rem;
-                font-style: italic;
-                font-size: .9rem;
-            }
-
-            > .note {
-                padding: var(--completed-note-padding-top-and-bottom) .5rem;
-                border-top: 1px solid transparent;
-                border-bottom: 1px solid transparent;
-                border-left: .35rem solid transparent;
-                transition: border-top-color 200ms, border-bottom-color 200ms, opacity 200ms;
+        > .tab-wrapper {
+            > .inner-tab-wrapper {
+                width: fit-content;
                 display: flex;
-                position: relative;
-                outline-offset: -1px;
-                z-index: 0;
+                margin: 1.5rem .5rem .75rem .5rem;
+                border-bottom: 1px solid var(--black);
 
-                &.is-completed {
-                    overflow: hidden;
-                    animation: hide-completed-note var(--completed-note-animation-duration) ease-in forwards;
+                > button {
+                    position: relative;
+                    -webkit-appearance: none;
+                    appearance: none;
+                    background: none;
+                    border: none;
+                    font-weight: bold;
+                    font-size: 1rem;
+                    cursor: pointer;
+                    padding: 0 .5rem .35rem .5rem;
 
-                    .note-action-wrapper, .note-actions {
-                        display: none;
-                    }
-                }
-
-                &[data-preselected-for-deletion="true"] {
                     &::after {
                         content: '';
-                        inset: 0;
                         position: absolute;
-                        background-color: rgba(255, 0, 0, .15);
-                    }
-                }
-
-                > article {
-                    display: flex;
-                    flex-direction: column;
-                    width: 100%;
-                    
-                    > .note-value {
-                        transition: padding 200ms, background-color 200ms;
-                        outline: none;
-                        word-break: break-word;
-
-                        > a {
-                            text-decoration: none;
-                            color: var(--link);
-                            transition: color 200ms;
-
-                            &:hover, &:active {
-                                color: var(--link-dark);
-
-                                > .preview-card-special-metadata > .preview-card-live-update {
-                                    &::after {
-                                        animation-play-state: running;
-                                    }
-                                }
-
-                            }
-                        }
-
-                        &[contenteditable] {
-                            padding: .25rem .125rem;
-                            background-color: var(--gray-focus);
-                        }
-                    }
-
-                    > .note-footer {
-                        display: flex;
-                        align-items: center;
-                        margin-top: .2rem;
-                        color: darkgray;
-                        font-size: .75rem;
+                        width: 100%;
+                        height: 3px;
+                        bottom: -2px; left: 0; right: 0;
+                        background-color: var(--blue);
                         opacity: 0;
                         transition: opacity 200ms;
-                        font-style: italic;
+                    }
+                }
+            }
+        }
 
-                        > .note-meta {
-                            display: flex;
+        > .tab-container-wrapper {
+            > [role="tabpanel"] {
+                display: flex;
+                flex-direction: column;
+                overflow-y: auto;
 
-                            > time {
-                                width: fit-content;
-                            }
+                &:empty::before {
+                    content: '__MSG_noNotes__';
+                    color: darkgray;
+                    margin-left: .5rem;
+                    font-style: italic;
+                    font-size: .9rem;
+                }
 
-                            > .separator {
-                                margin: 0 .25rem;
-                            }
+                > .note {
+                    padding: var(--completed-note-padding-top-and-bottom) .5rem;
+                    border-top: 1px solid transparent;
+                    border-bottom: 1px solid transparent;
+                    border-left: .35rem solid transparent;
+                    transition: border-top-color 200ms, border-bottom-color 200ms, opacity 200ms;
+                    display: flex;
+                    position: relative;
+                    outline-offset: -1px;
+                    z-index: 0;
+
+                    &.is-completed {
+                        overflow: hidden;
+                        animation: hide-completed-note var(--completed-note-animation-duration) ease-in forwards;
+
+                        .note-action-wrapper, .note-actions {
+                            display: none;
+                        }
+                    }
+
+                    &[data-preselected-for-deletion="true"] {
+                        &::after {
+                            content: '';
+                            inset: 0;
+                            position: absolute;
+                            background-color: rgba(255, 0, 0, .15);
+                        }
+                    }
+
+                    > article {
+                        display: flex;
+                        flex-direction: column;
+                        width: 100%;
+
+                        > .note-value {
+                            transition: padding 200ms, background-color 200ms;
+                            outline: none;
+                            word-break: break-word;
 
                             > a {
                                 text-decoration: none;
-                                color: inherit;
+                                color: var(--link);
+                                transition: color 200ms;
+
+                                &:hover, &:active {
+                                    color: var(--link-dark);
+
+                                    > .preview-card-special-metadata > .preview-card-live-update {
+                                        &::after {
+                                            animation-play-state: running;
+                                        }
+                                    }
+
+                                }
                             }
 
-                            > .note-origin {
+                            &[contenteditable] {
+                                padding: .25rem .125rem;
+                                background-color: var(--gray-focus);
+                            }
+                        }
+
+                        > .note-footer {
+                            display: flex;
+                            align-items: center;
+                            margin-top: .2rem;
+                            color: darkgray;
+                            font-size: .75rem;
+                            opacity: 0;
+                            transition: opacity 200ms;
+                            font-style: italic;
+
+                            > .note-meta {
                                 display: flex;
+
+                                > time {
+                                    width: fit-content;
+                                }
+
+                                > .separator {
+                                    margin: 0 .25rem;
+                                }
+
+                                > a {
+                                    text-decoration: none;
+                                    color: inherit;
+                                }
+
+                                > .note-origin {
+                                    display: flex;
+                                    align-items: center;
+
+                                    > img {
+                                        width: 14px;
+                                        height: 14px;
+                                        object-fit: contain;
+                                    }
+                                }
+                            }
+
+                            > .note-actions {
+                                margin-left: auto;
+                                display: flex;
+                                gap: 0 .5rem;
                                 align-items: center;
 
-                                > img {
-                                    width: 14px;
-                                    height: 14px;
-                                    object-fit: contain;
+                                > button {
+                                    -webkit-appearance: none;
+                                    appearance: none;
+                                    background-color: transparent;
+                                    border: none;
+                                    padding: 0;
+                                    margin: 0;
+                                    transition: opacity 200ms;
+                                    cursor: pointer;
+
+                                    > svg {
+                                        width: .8rem;
+                                        height: .8rem;
+                                        stroke: darkgray;
+                                    }
+
+                                    &:hover {
+                                        opacity: .75;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    > .note-action-wrapper {
+                        display: flex;
+                        align-items: center;
+                        transition: opacity 200ms;
+                        opacity: 0;
+
+                        > .note-action-complete {
+                            -webkit-appearance: none;
+                            -moz-appearance: none;
+                            appearance: none;
+                            border: 1px solid var(--placeholder);
+                            background: none;
+                            width: 1.25rem;
+                            height: 1.25rem;
+                            border-radius: 4px;
+                            margin-right: .25rem;
+                            transition: border-color 200ms, background-color 200ms;
+                            position: relative;
+
+                            &::after {
+                                content: '';
+                                position: absolute;
+                                top: 50%; left: 50%;
+                                transform: translate(-50%, -50%);
+                                color: #fff;
+                                width: 1.1rem;
+                                height: 1.1rem;
+                                background: url(../img/check.svg) no-repeat center;
+                                opacity: 0;
+                                transition: opacity 200ms;
+                            }
+
+                            &:hover, &:focus {
+                                background-color: var(--blue-light);
+                                border-color: var(--blue-light);
+
+                                &::after {
+                                    opacity: .6;
+                                }
+                            }
+
+                            &:checked {
+                                background-color: var(--blue);
+                                border-color: var(--blue);
+
+                                &::after {
+                                    opacity: 1;
                                 }
                             }
                         }
 
                         > .note-actions {
-                            margin-left: auto;
-                            display: flex;
-                            gap: 0 .5rem;
-                            align-items: center;
+                            background: none;
+                            border: none;
+                            cursor: pointer;
+                            padding: .35rem .25rem;
+                            transition: opacity 200ms;
 
-                            > button {
-                                -webkit-appearance: none;
-                                appearance: none;
-                                background-color: transparent;
-                                border: none;
-                                padding: 0;
-                                margin: 0;
-                                transition: opacity 200ms;
-                                cursor: pointer;
-
-                                > svg {
-                                    width: .8rem;
-                                    height: .8rem;
-                                    stroke: darkgray;
-                                }
-
-                                &:hover {
-                                    opacity: .75;
-                                }
+                            > svg {
+                                width: 1.1rem;
+                                height: 1.1rem;
                             }
                         }
                     }
-                }
 
-                > .note-action-wrapper {
-                    display: flex;
-                    align-items: center;
-                    transition: opacity 200ms;
-                    opacity: 0;
+                    &:hover, &:focus, &:focus-within {
+                        border-top-color: var(--gray);
+                        border-bottom-color: var(--gray);
 
-                    > .note-action-complete {
-                        -webkit-appearance: none;
-                        -moz-appearance: none;
-                        appearance: none;
-                        border: 1px solid var(--placeholder);
-                        background: none;
-                        width: 1.25rem;
-                        height: 1.25rem;
-                        border-radius: 4px;
-                        margin-right: .25rem;
-                        transition: border-color 200ms, background-color 200ms;
-                        position: relative;
-
-                        &::after {
-                            content: '';
-                            position: absolute;
-                            top: 50%; left: 50%;
-                            transform: translate(-50%, -50%);
-                            color: #fff;
-                            width: 1.1rem;
-                            height: 1.1rem;
-                            background: url(../img/check.svg) no-repeat center;
-                            opacity: 0;
-                            transition: opacity 200ms;
-                        }
-
-                        &:hover, &:focus {
-                            background-color: var(--blue-light);
-                            border-color: var(--blue-light);
-
-                            &::after {
-                                opacity: .6;
-                            }
-                        }
-
-                        &:checked {
-                            background-color: var(--blue);
-                            border-color: var(--blue);
-
-                            &::after {
+                        > article {
+                            > .note-footer {
                                 opacity: 1;
                             }
                         }
-                    }
 
-                    > .note-actions {
-                        background: none;
-                        border: none;
-                        cursor: pointer;
-                        padding: .35rem .25rem;
-                        transition: opacity 200ms;
-    
-                        > svg {
-                            width: 1.1rem;
-                            height: 1.1rem;
-                        }
-                    }
-                }
-
-                &:hover, &:focus, &:focus-within {
-                    border-top-color: var(--gray);
-                    border-bottom-color: var(--gray);
-
-                    > article {
-                        > .note-footer {
+                        > .note-action-wrapper {
                             opacity: 1;
                         }
                     }
 
-                    > .note-action-wrapper {
-                        opacity: 1;
+                    &:nth-child(odd) {
+                        background: var(--note);
                     }
                 }
-                
-                &:nth-child(odd) {
-                    background: var(--note);
+            }
+
+            > #completedNotes-tab {
+                > .note.is-completed {
+                    animation: initial;
+
+                    .note-action-wrapper, .note-actions {
+                        display: flex;
+                    }
+
                 }
             }
         }

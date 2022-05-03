@@ -73,9 +73,50 @@
             </div>
         </div>
 
-        <section id="recentlyAddedWrapper">
-            <h2 data-intl="recentNotes"></h2>
-            <div id="recentlyAdded" tabindex="-1" role="group"></div>
+        <section id="addedNotesWrapper">
+            <div
+                class="tab-wrapper"
+                role="tablist"
+                data-intl-aria-label="name"
+            >
+                <div class="inner-tab-wrapper">
+                    <button
+                            id="myNotes-btn"
+                            role="tab"
+                            data-intl="myNotes"
+                            aria-selected="true"
+                            aria-controls="myNotes-tab"
+                    >
+                    </button>
+                    <button
+                            id="completedNotes-btn"
+                            role="tab"
+                            data-intl="completedNotes"
+                            aria-selected="false"
+                            aria-controls="completedNotes-tab"
+                    >
+                    </button>
+                </div>
+            </div>
+
+            <div class="tab-container-wrapper">
+                <div
+                        id="myNotes-tab"
+                        tabindex="0"
+                        role="tabpanel"
+                        aria-labelledby="myNotes-btn"
+                >
+                </div>
+
+                <div
+                        id="completedNotes-tab"
+                        tabindex="0"
+                        role="tabpanel"
+                        aria-labelledby="completedNotes-btn"
+                        class="is-hidden"
+                >
+                </div>
+            </div>
         </section>
     </main>
     <footer>

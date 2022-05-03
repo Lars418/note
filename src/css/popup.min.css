@@ -62,27 +62,33 @@ html.dark-theme {
   background-color: var(--dark-body);
   color: var(--dark-text);
 }
-html.dark-theme > body > main > #recentlyAddedWrapper > h2 {
+html.dark-theme > body > main > #addedNotesWrapper .tab-wrapper .inner-tab-wrapper {
+  border-bottom-color: var(--dark-text);
+}
+html.dark-theme > body > main > #addedNotesWrapper .tab-wrapper .inner-tab-wrapper > button {
   color: var(--dark-text);
 }
-html.dark-theme > body > main > #recentlyAddedWrapper > #recentlyAdded .note {
+html.dark-theme > body > main > #addedNotesWrapper .tab-wrapper .inner-tab-wrapper > button[aria-selected=true]::after {
+  opacity: 1;
+}
+html.dark-theme > body > main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] .note {
   color: var(--dark-text);
   position: relative;
 }
-html.dark-theme > body > main > #recentlyAddedWrapper > #recentlyAdded .note:nth-child(odd) {
+html.dark-theme > body > main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] .note:nth-child(odd) {
   background-color: var(--dark-body-alternate);
 }
-html.dark-theme > body > main > #recentlyAddedWrapper > #recentlyAdded .note:hover {
+html.dark-theme > body > main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] .note:hover {
   border-top-color: var(--dark-border);
   border-bottom-color: var(--dark-border);
 }
-html.dark-theme > body > main > #recentlyAddedWrapper > #recentlyAdded .note > article > .note-value[contenteditable] {
+html.dark-theme > body > main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] .note > article > .note-value[contenteditable] {
   background-color: var(--dark-ogp-background);
 }
-html.dark-theme > body > main > #recentlyAddedWrapper > #recentlyAdded .note > article > .note-value > a.preview-card {
+html.dark-theme > body > main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] .note > article > .note-value > a.preview-card {
   color: var(--dark-text);
 }
-html.dark-theme > body > main > #recentlyAddedWrapper > #recentlyAdded .note > article > .note-value > a.preview-card > .preview-card-special-metadata > .preview-card-live-update {
+html.dark-theme > body > main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] .note > article > .note-value > a.preview-card > .preview-card-special-metadata > .preview-card-live-update {
   background-color: var(--dark-body);
   color: var(--white);
 }
@@ -236,24 +242,48 @@ main > #addNoteWrapper > #addNote {
 main > #addNoteWrapper > #addNote::placeholder {
   color: var(--placeholder);
 }
-main > #recentlyAddedWrapper > h2 {
-  font-weight: normal;
-  font-size: 1.15rem;
+main > #addedNotesWrapper > .tab-wrapper > .inner-tab-wrapper {
+  width: fit-content;
+  display: flex;
   margin: 1.5rem 0.5rem 0.75rem 0.5rem;
+  border-bottom: 1px solid var(--black);
 }
-main > #recentlyAddedWrapper > #recentlyAdded {
+main > #addedNotesWrapper > .tab-wrapper > .inner-tab-wrapper > button {
+  position: relative;
+  -webkit-appearance: none;
+  appearance: none;
+  background: none;
+  border: none;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0 0.5rem 0.35rem 0.5rem;
+}
+main > #addedNotesWrapper > .tab-wrapper > .inner-tab-wrapper > button::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  background-color: var(--blue);
+  opacity: 0;
+  transition: opacity 200ms;
+}
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
 }
-main > #recentlyAddedWrapper > #recentlyAdded:empty::before {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel]:empty::before {
   content: "__MSG_noNotes__";
   color: darkgray;
   margin-left: 0.5rem;
   font-style: italic;
   font-size: 0.9rem;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note {
   padding: var(--completed-note-padding-top-and-bottom) 0.5rem;
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
@@ -264,45 +294,45 @@ main > #recentlyAddedWrapper > #recentlyAdded > .note {
   outline-offset: -1px;
   z-index: 0;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note.is-completed {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note.is-completed {
   overflow: hidden;
   animation: hide-completed-note var(--completed-note-animation-duration) ease-in forwards;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note.is-completed .note-action-wrapper, main > #recentlyAddedWrapper > #recentlyAdded > .note.is-completed .note-actions {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note.is-completed .note-action-wrapper, main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note.is-completed .note-actions {
   display: none;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note[data-preselected-for-deletion=true]::after {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note[data-preselected-for-deletion=true]::after {
   content: "";
   inset: 0;
   position: absolute;
   background-color: rgba(255, 0, 0, 0.15);
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > article {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > article {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-value {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > article > .note-value {
   transition: padding 200ms, background-color 200ms;
   outline: none;
   word-break: break-word;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-value > a {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > article > .note-value > a {
   text-decoration: none;
   color: var(--link);
   transition: color 200ms;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-value > a:hover, main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-value > a:active {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > article > .note-value > a:hover, main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > article > .note-value > a:active {
   color: var(--link-dark);
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-value > a:hover > .preview-card-special-metadata > .preview-card-live-update::after, main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-value > a:active > .preview-card-special-metadata > .preview-card-live-update::after {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > article > .note-value > a:hover > .preview-card-special-metadata > .preview-card-live-update::after, main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > article > .note-value > a:active > .preview-card-special-metadata > .preview-card-live-update::after {
   animation-play-state: running;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-value[contenteditable] {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > article > .note-value[contenteditable] {
   padding: 0.25rem 0.125rem;
   background-color: var(--gray-focus);
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > article > .note-footer {
   display: flex;
   align-items: center;
   margin-top: 0.2rem;
@@ -312,35 +342,35 @@ main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer {
   transition: opacity 200ms;
   font-style: italic;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer > .note-meta {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > article > .note-footer > .note-meta {
   display: flex;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer > .note-meta > time {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > article > .note-footer > .note-meta > time {
   width: fit-content;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer > .note-meta > .separator {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > article > .note-footer > .note-meta > .separator {
   margin: 0 0.25rem;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer > .note-meta > a {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > article > .note-footer > .note-meta > a {
   text-decoration: none;
   color: inherit;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer > .note-meta > .note-origin {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > article > .note-footer > .note-meta > .note-origin {
   display: flex;
   align-items: center;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer > .note-meta > .note-origin > img {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > article > .note-footer > .note-meta > .note-origin > img {
   width: 14px;
   height: 14px;
   object-fit: contain;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer > .note-actions {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > article > .note-footer > .note-actions {
   margin-left: auto;
   display: flex;
   gap: 0 0.5rem;
   align-items: center;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer > .note-actions > button {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > article > .note-footer > .note-actions > button {
   -webkit-appearance: none;
   appearance: none;
   background-color: transparent;
@@ -350,21 +380,21 @@ main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer >
   transition: opacity 200ms;
   cursor: pointer;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer > .note-actions > button > svg {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > article > .note-footer > .note-actions > button > svg {
   width: 0.8rem;
   height: 0.8rem;
   stroke: darkgray;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > article > .note-footer > .note-actions > button:hover {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > article > .note-footer > .note-actions > button:hover {
   opacity: 0.75;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > .note-action-wrapper {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > .note-action-wrapper {
   display: flex;
   align-items: center;
   transition: opacity 200ms;
   opacity: 0;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > .note-action-wrapper > .note-action-complete {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > .note-action-wrapper > .note-action-complete {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -377,7 +407,7 @@ main > #recentlyAddedWrapper > #recentlyAdded > .note > .note-action-wrapper > .
   transition: border-color 200ms, background-color 200ms;
   position: relative;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > .note-action-wrapper > .note-action-complete::after {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > .note-action-wrapper > .note-action-complete::after {
   content: "";
   position: absolute;
   top: 50%;
@@ -390,43 +420,49 @@ main > #recentlyAddedWrapper > #recentlyAdded > .note > .note-action-wrapper > .
   opacity: 0;
   transition: opacity 200ms;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > .note-action-wrapper > .note-action-complete:hover, main > #recentlyAddedWrapper > #recentlyAdded > .note > .note-action-wrapper > .note-action-complete:focus {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > .note-action-wrapper > .note-action-complete:hover, main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > .note-action-wrapper > .note-action-complete:focus {
   background-color: var(--blue-light);
   border-color: var(--blue-light);
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > .note-action-wrapper > .note-action-complete:hover::after, main > #recentlyAddedWrapper > #recentlyAdded > .note > .note-action-wrapper > .note-action-complete:focus::after {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > .note-action-wrapper > .note-action-complete:hover::after, main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > .note-action-wrapper > .note-action-complete:focus::after {
   opacity: 0.6;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > .note-action-wrapper > .note-action-complete:checked {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > .note-action-wrapper > .note-action-complete:checked {
   background-color: var(--blue);
   border-color: var(--blue);
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > .note-action-wrapper > .note-action-complete:checked::after {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > .note-action-wrapper > .note-action-complete:checked::after {
   opacity: 1;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > .note-action-wrapper > .note-actions {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > .note-action-wrapper > .note-actions {
   background: none;
   border: none;
   cursor: pointer;
   padding: 0.35rem 0.25rem;
   transition: opacity 200ms;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note > .note-action-wrapper > .note-actions > svg {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note > .note-action-wrapper > .note-actions > svg {
   width: 1.1rem;
   height: 1.1rem;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note:hover, main > #recentlyAddedWrapper > #recentlyAdded > .note:focus, main > #recentlyAddedWrapper > #recentlyAdded > .note:focus-within {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note:hover, main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note:focus, main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note:focus-within {
   border-top-color: var(--gray);
   border-bottom-color: var(--gray);
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note:hover > article > .note-footer, main > #recentlyAddedWrapper > #recentlyAdded > .note:focus > article > .note-footer, main > #recentlyAddedWrapper > #recentlyAdded > .note:focus-within > article > .note-footer {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note:hover > article > .note-footer, main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note:focus > article > .note-footer, main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note:focus-within > article > .note-footer {
   opacity: 1;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note:hover > .note-action-wrapper, main > #recentlyAddedWrapper > #recentlyAdded > .note:focus > .note-action-wrapper, main > #recentlyAddedWrapper > #recentlyAdded > .note:focus-within > .note-action-wrapper {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note:hover > .note-action-wrapper, main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note:focus > .note-action-wrapper, main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note:focus-within > .note-action-wrapper {
   opacity: 1;
 }
-main > #recentlyAddedWrapper > #recentlyAdded > .note:nth-child(odd) {
+main > #addedNotesWrapper > .tab-container-wrapper > [role=tabpanel] > .note:nth-child(odd) {
   background: var(--note);
+}
+main > #addedNotesWrapper > .tab-container-wrapper > #completedNotes-tab > .note.is-completed {
+  animation: initial;
+}
+main > #addedNotesWrapper > .tab-container-wrapper > #completedNotes-tab > .note.is-completed .note-action-wrapper, main > #addedNotesWrapper > .tab-container-wrapper > #completedNotes-tab > .note.is-completed .note-actions {
+  display: flex;
 }
 
 footer {

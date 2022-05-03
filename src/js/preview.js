@@ -103,16 +103,16 @@ export class Preview {
             el.getAttribute('href') === url
             || el.dataset.href === url
         );
-        const audio = ref.querySelector('audio');
-        const button = ref.querySelector('button.spotify-preview-card-image-wrapper');
+        const audio = ref?.querySelector('audio');
+        const button = ref?.querySelector('button.spotify-preview-card-image-wrapper');
 
-        if (ref.dataset.type !== 'spotify' || !audio) {
+        if (ref?.dataset?.type !== 'spotify' || !audio) {
             return;
         }
 
         button.title = getMessage('playMusicTitle', [ button.dataset.song ]);
         button.ondblclick = (event) => event.stopPropagation();
-        button.onclick = async (event) => {
+        button.onclick = async () => {
             if (audio.paused) {
                 button.title = getMessage('pauseMusicTitle', [ button.dataset.song ]);
                 await audio.play();
@@ -122,11 +122,11 @@ export class Preview {
             }
 
             button.dataset.playing = (!audio.paused).toString();
-        }
+        };
         audio.onended = () => {
             button.title = getMessage('playMusicTitle', [ button.dataset.song ]);
             button.dataset.playing = 'false';
-        }
+        };
     }
 
     static _getRenderedFields(previewData) {
