@@ -247,13 +247,15 @@ function clearTag() {
 
 //#region note specific methods
 
-async function deleteNote(id) {
+async function deleteNote(note) {
     try {
-        await Notes.delete(id);
-        const deletedNote = myNotesTab.querySelector(`div[data-id="${id}"]`);
-        myNotesTab.removeChild(deletedNote);
+        const tab = note.completed ? completedNotesTab : myNotesTab;
+
+        await Notes.delete(note.id);
+        const deletedNote = tab.querySelector(`div[data-id="${note.id}"]`);
+        tab.removeChild(deletedNote);
     } catch (e) {
-        console.warn('Could not delete note: ', id);
+        console.warn('Could not delete note: ', note.id);
     }
 }
 
@@ -333,7 +335,7 @@ function addNote(note, wrapper) {
             if (editKeys.includes(event.key.toLowerCase())) {
                 event.preventDefault();
 
-                editNote(note.id);
+                editNote(note);
             }
         };
         noteElement.onkeyup = event => {
@@ -379,7 +381,7 @@ function addNote(note, wrapper) {
 
             if (event.key === 'Backspace' || event.key === 'Delete') {
                 if (noteElement.dataset.preselectedForDeletion === 'true') {
-                    deleteNote(note.id);
+                    deleteNote(note);
                 } else {
                     noteElement.dataset.preselectedForDeletion = 'true';
                     setTimeout(() => noteElement.removeAttribute('data-preselected-for-deletion'), constant.DELETION_TIMEOUT_IN_MS);
@@ -390,11 +392,11 @@ function addNote(note, wrapper) {
         noteElement.onblur = () => noteElement.setAttribute('aria-selected', 'false');
 
         if (!note.mediaType) {
-            editNoteBtn.onclick = () => editNote(note.id);
-            noteElement.ondblclick = editNote.bind(null, note.id);
+            editNoteBtn.onclick = () => editNote(note);
+            noteElement.ondblclick = editNote.bind(null, note);
         }
 
-        deleteNoteBtn.onclick = () => deleteNote(note.id);
+        deleteNoteBtn.onclick = () => deleteNote(note);
 
         if (origin) {
             origin.addEventListener('click', e => {
@@ -455,8 +457,9 @@ function addNote(note, wrapper) {
     });
 }
 
-function editNote(id) {
-    const selectedNote = Array.from(myNotesTab.querySelectorAll(".note")).find(note => note.dataset.id === id);
+function editNote(note) {
+    const tab = note.completed ? completedNotesTab : myNotesTab;
+    const selectedNote = Array.from(tab.querySelectorAll(".note")).find(noteElement => noteElement.dataset.id === note.id);
     if (!selectedNote) return;
 
     const selectedNoteContent = selectedNote.querySelector(".note-value");
@@ -490,7 +493,7 @@ function editNote(id) {
 
         storage.local.get(['notes', 'settings'], async ({ settings }) => {
             const value = selectedNoteContent.textContent.trim();
-            const updatedNote = await Notes.update(id, 'value', value);
+            const updatedNote = await Notes.update(note.id, 'value', value);
 
             selectedNoteContent.innerHTML = (settings.custom.advancedParseUrls ?? settings.default.advancedParseUrls)
                 ? formatNoteValue(selectedNoteContent.textContent)
