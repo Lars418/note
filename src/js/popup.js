@@ -54,7 +54,7 @@ if (searchParams.get('priority')) {
 
 function checkForUpdate() {
     storage.local.get('updateHint', ({ updateHint }) => {
-        if (updateHint.visible) {
+        if (updateHint?.visible) {
             const { name } = runtime.getManifest();
             extensionUpdateNotice.title = getMessage('updateTitle', [name, updateHint.previousVersion, updateHint.version]);
             extensionUpdateNotice.href = `https://lars.koelker.dev/extensions/note/?version=${updateHint.version}#changelog`;
