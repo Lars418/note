@@ -10,7 +10,7 @@
 
 
     "updateTitle": {
-        "message": "$EXTENSION_NAME wurde von Version $PREVIOUS_VERSION$ auf Version $VERSION$ aktualisiert.",
+        "message": "$EXTENSION_NAME$ wurde von Version $PREVIOUS_VERSION$ auf Version $VERSION$ aktualisiert.",
         "placeholders": {
             "extension_name": {
                 "content": "$1"
