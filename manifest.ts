@@ -23,6 +23,17 @@ const manifest: chrome.runtime.ManifestV3 = {
     "32": "32.png",
     "16": "16.png"
   },
+  omnibox: {
+    keyword: "notes"
+  },
+  commands: {
+    _execute_action: {
+      suggested_key: {
+        default: "Alt+N",
+        mac: "Alt+N"
+      }
+    }
+  },
   permissions: [
     "storage",
     "activeTab",
