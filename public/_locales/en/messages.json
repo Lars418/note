@@ -41,14 +41,18 @@
     "defaultPriorityLow": {
         "message": "Low"
     },
-    "addNotePlaceholder": {
-        "message": "Add note…"
-    },
     "myNotes": {
         "message": "My notes"
     },
     "completedNotes": {
         "message": "Completed"
+    },
+
+    "addNoteLabel": {
+        "message": "Add note"
+    },
+    "addNoteDescription": {
+        "message": "Type in your note."
     },
 
     "addNoteBtn": {

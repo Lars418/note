@@ -1,0 +1,42 @@
+.extensionUpdateNotice {
+  padding: 0 0.35rem;
+  transition: 200ms;
+}
+.extensionUpdateNotice > svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  stroke: var(--white);
+}
+.extensionUpdateNotice:hover {
+  opacity: 0.7;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .extensionUpdateNotice > svg > .extensionUpdateNotice-cloud {
+    opacity: 0;
+    animation: extension-update-notice-cloud-appear 200ms linear forwards;
+    animation-delay: 1s;
+  }
+  .extensionUpdateNotice > svg > .extensionUpdateNotice-arrow {
+    transform: translateY(1rem);
+    animation: extension-update-notice-arrow-up 300ms ease-in-out forwards;
+    animation-delay: 1s;
+  }
+  .extensionUpdateNotice > svg > .extensionUpdateNotice-dot {
+    opacity: 0;
+    animation: extension-update-notice-cloud-appear 300ms ease-in forwards;
+    animation-delay: 2s;
+  }
+}
+@keyframes extension-update-notice-arrow-up {
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes extension-update-notice-cloud-appear {
+  to {
+    opacity: 1;
+  }
+}
+
+/*# sourceMappingURL=updateNotice.min.css.map */

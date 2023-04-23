@@ -50,7 +50,7 @@ export default defineConfig({
         contentStyle: resolve(pagesDir, "content", "style.scss"),
 
         // Service worker
-        serviceWorker: resolve(pagesDir, "sw.ts"),
+        serviceWorker: resolve(root, "sw.ts"),
 
         popup: resolve(pagesDir, "popup", "index.html"),
         options: resolve(pagesDir, "options", "index.html"),

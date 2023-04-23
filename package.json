@@ -13,7 +13,8 @@
   "type": "module",
   "dependencies": {
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-feather": "^2.0.10"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^8.5.0",

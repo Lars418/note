@@ -41,14 +41,18 @@
     "defaultPriorityLow": {
         "message": "Niedrig"
     },
-    "addNotePlaceholder": {
-        "message": "Notiz hinzufügen…"
-    },
     "myNotes": {
         "message": "Meine Notizen"
     },
     "completedNotes": {
         "message": "Abgeschlossen"
+    },
+
+    "addNoteLabel": {
+        "message": "Notiz hinzufügen"
+    },
+    "addNoteDescription": {
+        "message": "Geben Sie Ihre Notiz ein."
     },
 
     "addNoteBtn": {

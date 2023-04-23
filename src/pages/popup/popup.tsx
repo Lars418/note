@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
-import Header from '@pages/popup/header';
+import Header from '@src/component/header';
 import '../../css/colors.min.css';
 import '../../css/reset.min.css';
 import './popup.min.css';
+import AddNote from "@src/component/addNote";
 
 const Popup = () => {
     useEffect(() => {
@@ -16,6 +17,8 @@ const Popup = () => {
   return (
     <>
         <Header />
+
+        <AddNote />
     </>
   );
 };

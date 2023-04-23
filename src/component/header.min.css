@@ -1,0 +1,34 @@
+header {
+  display: flex;
+  align-items: center;
+  background-color: var(--blue);
+  color: var(--white);
+  padding: 0.5rem;
+}
+header > h1 {
+  margin: 0;
+  font-weight: normal;
+  font-size: 1.4rem;
+}
+header > div.header-actions {
+  display: flex;
+  margin-left: auto;
+}
+header > div.header-actions > button {
+  appearance: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 0.35rem;
+  transition: 200ms;
+}
+header > div.header-actions > button > svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  stroke: var(--white);
+}
+header > div.header-actions > button:hover {
+  opacity: 0.7;
+}
+
+/*# sourceMappingURL=header.min.css.map */

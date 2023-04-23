@@ -1,0 +1,19 @@
+{
+  "draft": {
+    "value": "",
+    "priority": null
+  },
+  "settings": {
+    "default": {
+      "advancedParseUrls": true,
+      "advancedEnableSpellcheck": true,
+      "advancedShowLinkPreview": false,
+
+      "saveCurrentNote": true,
+      "showContextMenu": true,
+      "darkMode": false
+    },
+    "custom": {}
+  },
+  "notes": []
+}

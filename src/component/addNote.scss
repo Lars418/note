@@ -1,0 +1,12 @@
+.addNoteInput {
+  background-color: transparent;
+  padding: 1rem .5rem;
+  width: 100%;
+  resize: none;
+  border: none;
+  font-size: 1rem;
+  font-family: 'Arial', sans-serif;
+  overflow-y: auto;
+  outline: none;
+  caret-color: var(--white); // TODO: adjust to theme
+}
