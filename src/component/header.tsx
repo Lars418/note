@@ -7,17 +7,21 @@ import UpdateNotice from '@src/component/updateNotice';
 
 const Header: React.FC = () => {
     const intl = useIntl();
+    const isStandalone = new URL(window.location.href).searchParams.get('standalone') === '1';
 
     const handleOpenSettings = () => {
         chrome.runtime.openOptionsPage();
     };
 
     const handleOpenNewTab = async () => {
+        const { settings } = await chrome.storage.local.get('settings');
+        console.log(settings);
+
         await chrome.windows.create({
             url: `/src/pages/popup/index.html?standalone=1&predefinedMessage=&priority=`,
             type: 'popup',
-            width: 433,
-            height: 600,
+            width: settings.custom?._standalone?.width ?? settings.default._standalone.width,
+            height: settings.custom?._standalone?.height ?? settings.default._standalone.height,
             top: 0
         });
         window.close();
@@ -35,16 +39,22 @@ const Header: React.FC = () => {
                 <button
                     title={intl.formatMessage('settingsTitle')}
                     onClick={handleOpenSettings}
+                    type="button"
                 >
                     <Settings />
                 </button>
 
-                <button
-                    title={intl.formatMessage('newTabTitle')}
-                    onClick={handleOpenNewTab}
-                >
-                    <Maximize2 />
-                </button>
+                {
+                    !isStandalone && (
+                        <button
+                            title={intl.formatMessage('newTabTitle')}
+                            onClick={handleOpenNewTab}
+                            type="button"
+                        >
+                            <Maximize2 />
+                        </button>
+                    )
+                }
             </div>
         </header>
     )

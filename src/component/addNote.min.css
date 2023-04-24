@@ -8,7 +8,12 @@
   font-family: "Arial", sans-serif;
   overflow-y: auto;
   outline: none;
-  caret-color: var(--white);
+  color: var(--text);
+  caret-color: var(--text);
+}
+.addNoteInput::placeholder {
+  color: var(--placeholder);
+  font-style: italic;
 }
 
 /*# sourceMappingURL=addNote.min.css.map */

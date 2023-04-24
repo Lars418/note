@@ -1,10 +1,10 @@
-import React from "react";
-import { createRoot } from "react-dom/client";
-import "@pages/popup/index.min.css";
-import refreshOnUpdate from "virtual:reload-on-update-in-view";
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import '../../css/reset.min.css';
+import refreshOnUpdate from 'virtual:reload-on-update-in-view';
 import Popup from '@pages/popup/popup';
 
-refreshOnUpdate("pages/popup");
+refreshOnUpdate('pages/popup');
 
 function init() {
   const appContainer = document.querySelector("#root");

@@ -11,7 +11,12 @@
 
       "saveCurrentNote": true,
       "showContextMenu": true,
-      "darkMode": false
+      "darkMode": false,
+
+      "_standalone": {
+        "width": 433,
+        "height": 600
+      }
     },
     "custom": {}
   },

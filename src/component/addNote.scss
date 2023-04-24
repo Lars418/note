@@ -8,5 +8,11 @@
   font-family: 'Arial', sans-serif;
   overflow-y: auto;
   outline: none;
-  caret-color: var(--white); // TODO: adjust to theme
+  color: var(--text);
+  caret-color: var(--text);
+
+  &::placeholder {
+    color: var(--placeholder);
+    font-style: italic;
+  }
 }

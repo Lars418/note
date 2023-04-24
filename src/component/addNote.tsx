@@ -14,11 +14,16 @@ const AddNote: React.FC = () => {
         })();
     }, []);
 
+    const saveNote = () => {
+
+    };
+
     return (
         <textarea
             className="addNoteInput"
             aria-label={intl.formatMessage('addNotePlaceholder')}
             placeholder={motd}
+            autoFocus
         />
     )
 }

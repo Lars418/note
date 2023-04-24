@@ -1,12 +1,9 @@
 html {
+  background-color: var(--body);
+  color: var(--text);
+}
+html:not(.standalone) {
   width: 420px;
-}
-html.standalone {
-  width: 100%;
-}
-html.dark-theme {
-  background-color: var(--dark-body);
-  color: var(--dark-text);
 }
 
 /*# sourceMappingURL=popup.min.css.map */

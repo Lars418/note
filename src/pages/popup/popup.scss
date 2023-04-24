@@ -1,12 +1,8 @@
 html {
-  width: 420px;
+  background-color: var(--body);
+  color: var(--text);
 
-  &.standalone {
-    width: 100%;
-  }
-
-  &.dark-theme {
-    background-color: var(--dark-body);
-    color: var(--dark-text);
+  &:not(.standalone) {
+    width: 420px;
   }
 }

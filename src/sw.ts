@@ -35,19 +35,19 @@ async function handleUpdate(previousVersion: string) {
     const { settings } = await chrome.storage.local.get('settings');
     const defaultStorage = await Utils.getDefaultStorage();
 
+    await chrome.storage.local.set({
+        settings: {
+            ...settings,
+            default: defaultStorage.settings.default
+        }
+    });
+
     if (version === previousVersion) {
         return;
     }
 
     await chrome.storage.local.set({
         previousVersion: { visible: true, value: previousVersion  },
-    });
-
-    await chrome.storage.local.set({
-        settings: {
-            ...settings,
-            default: defaultStorage.settings.default
-        }
     });
 }
 
