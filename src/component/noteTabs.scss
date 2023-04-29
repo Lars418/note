@@ -1,0 +1,14 @@
+.note-tabs {
+  display: flex;
+  margin: 0.75rem 0;
+  border-bottom: 1px solid var(--text-translucent);
+  position: relative;
+
+  > .activeTab-highlight {
+    position: absolute;
+    bottom: -1px;
+    height: 2px;
+    background-color: var(--blue);
+    transition: left 200ms, width 200ms;
+  }
+}

@@ -1,7 +1,9 @@
 .addNoteInput {
-  background-color: transparent;
+  background-color: var(--body-alternate);
   padding: 1rem 0.5rem;
   width: 100%;
+  height: 5.75rem;
+  line-height: 1.25;
   resize: none;
   border: none;
   font-size: 1rem;
@@ -14,6 +16,7 @@
 .addNoteInput::placeholder {
   color: var(--placeholder);
   font-style: italic;
+  user-select: none;
 }
 
 /*# sourceMappingURL=addNote.min.css.map */

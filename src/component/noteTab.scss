@@ -1,0 +1,21 @@
+.note-tab {
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  font-size: 1.05rem;
+  color: var(--text);
+  text-align: left;
+  transition: color 200ms;
+
+  &[aria-selected="true"] {
+    color: var(--blue);
+  }
+}
+
+html.dark-theme {
+  .note-tab[aria-selected="true"] {
+    color: var(--blue-lighter);
+  }
+}
