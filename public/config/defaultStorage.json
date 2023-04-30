@@ -16,7 +16,12 @@
       "_standalone": {
         "width": 433,
         "height": 600
-      }
+      },
+      "_selectedTab": "myNotes",
+      "_tabs": [
+        "myNotes",
+        "completedNotes"
+      ]
     },
     "custom": {}
   },
