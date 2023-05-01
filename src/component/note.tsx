@@ -10,7 +10,7 @@ const Note: React.FC<INoteComponent> = (props) => {
 
     return (
         <article>
-            {note.title}
+            {note.value}
         </article>
     );
 }

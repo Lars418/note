@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import NoteTabs from '@src/component/noteTabs';
-import NoteTab from '@src/component/noteTab';
-import NoteTabPanel from '@src/component/noteTabPanel';
+import NoteTabs from '@src/component/noteTab/noteTabs';
+import NoteTab from '@src/component/noteTab/noteTab';
+import NoteTabPanel from '@src/component/noteTab/noteTabPanel';
+import { NoteStorage } from '@src/utils/noteStorage';
+import { Note } from '@src/@types/interface/note';
 
 const NoteTabContainer: React.FC = () => {
     const [tabs, setTabs] = useState<string[]>([]);
     const [tabRefs, setTabRefs] = useState<{ [tab: string]: HTMLButtonElement }>({});
     const [activeTab, setActiveTab] = useState<HTMLButtonElement|null>(null);
+    const [notes, setNotes] = useState<{ [category: string]: Note[] }>({});
 
     const handleTabClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
         const { settings } = await chrome.storage.local.get('settings');
@@ -31,11 +34,34 @@ const NoteTabContainer: React.FC = () => {
         }));
     };
 
+    const getNotes = async (tab: string) => {
+        const _notes = await NoteStorage.getAll();
+
+        switch (tab) {
+            case 'myNotes':
+                return setNotes(notes => ({
+                    ...notes,
+                    myNotes: _notes.filter(note => !note.completedAt)
+                }));
+            case 'completed':
+                return setNotes(notes => ({
+                    ...notes,
+                    completed: _notes.filter(note => note.completedAt)
+                }));
+            default:
+                return setNotes(notes => ({
+                    ...notes,
+                    [tab]: _notes.filter(note => note.category === tab)
+                }));
+        }
+    };
+
     useEffect(() => {
         (async () => {
             const { settings } = await chrome.storage.local.get('settings');
             const prefersDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
             const isStandalone = new URL(window.location.href).searchParams.get('standalone') === '1';
+            const _tabs = !settings.custom._tabs?.length ? settings.default._tabs : settings.custom._tabs;
 
             if (prefersDarkTheme) {
                 document.documentElement.classList.add('dark-theme');
@@ -62,7 +88,20 @@ const NoteTabContainer: React.FC = () => {
                 });
             }
 
-            setTabs(!settings.custom._tabs?.length ? settings.default._tabs : settings.custom._tabs);
+            setTabs(_tabs);
+
+            for (const tab of _tabs) {
+                await getNotes(tab);
+            }
+
+            chrome.storage.onChanged.addListener(async (changes) => {
+                if (changes.notes) {
+                    for (const tab of _tabs) {
+                        console.log('Updating notes for tab ' + tab);
+                       await getNotes(tab);
+                    }
+               }
+            });
         })()
     }, []);
 
@@ -100,9 +139,7 @@ const NoteTabContainer: React.FC = () => {
                     <NoteTabPanel
                         key={tab}
                         id={tab}
-                        notes={[{
-                            title: tab
-                        }]}
+                        notes={notes[tab] ?? []}
                         hidden={activeTab?.dataset.tab !== tab}
                     />
                 ))

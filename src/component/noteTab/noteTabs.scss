@@ -9,6 +9,11 @@
     bottom: -1px;
     height: 2px;
     background-color: var(--blue);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .note-tabs > .activeTab-highlight {
     transition: left 200ms, width 200ms;
   }
 }
