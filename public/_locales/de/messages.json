@@ -110,7 +110,10 @@
     },
 
     "noNotes": {
-        "message": "Noch nichts notiert."
+        "message": "Sie haben noch nichts notiert, erstellen Sie jetzt Ihre erste Notiz!"
+    },
+    "noCompletedNotes": {
+        "message": "Noch keine Notizen abgeschlossen."
     },
 
     "noteActionCompletedTitle": {

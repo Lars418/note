@@ -1,0 +1,61 @@
+.note-wrapper {
+  > .note-body {
+
+  }
+
+  > .note-footer {
+    opacity: 0;
+
+    > .note-meta {
+      display: flex;
+      align-items: center;
+      margin-top: .2rem;
+      color: darkgray;
+      font-size: .75rem;
+      padding-inline-start: 0;
+      list-style: none;
+      font-style: italic;
+
+      > li {
+        > time {
+          width: fit-content;
+        }
+
+        &.separator {
+          margin: 0 .25rem;
+          user-select: none;
+        }
+
+        > a {
+          text-decoration: none;
+          color: inherit;
+        }
+
+        > .note-origin {
+          display: flex;
+          align-items: center;
+
+          > img {
+            width: 14px;
+            height: 14px;
+            object-fit: contain;
+          }
+        }
+      }
+    }
+  }
+
+  &:hover, &:focus {
+    > .note-footer {
+      opacity: 1;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .note-wrapper {
+    > .note-footer {
+      transition: opacity 200ms;
+    }
+  }
+}

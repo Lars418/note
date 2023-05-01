@@ -110,7 +110,10 @@
     },
 
     "noNotes": {
-        "message": "Nothing noted yet."
+        "message": "You haven't written anything down yet, create your first note now!"
+    },
+    "noCompletedNotes": {
+        "message": "No notes completed yet."
     },
 
     "noteActionCompletedTitle": {

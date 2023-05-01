@@ -1,0 +1,44 @@
+.note-wrapper > .note-footer {
+  opacity: 0;
+}
+.note-wrapper > .note-footer > .note-meta {
+  display: flex;
+  align-items: center;
+  margin-top: 0.2rem;
+  color: darkgray;
+  font-size: 0.75rem;
+  padding-inline-start: 0;
+  list-style: none;
+  font-style: italic;
+}
+.note-wrapper > .note-footer > .note-meta > li > time {
+  width: fit-content;
+}
+.note-wrapper > .note-footer > .note-meta > li.separator {
+  margin: 0 0.25rem;
+  user-select: none;
+}
+.note-wrapper > .note-footer > .note-meta > li > a {
+  text-decoration: none;
+  color: inherit;
+}
+.note-wrapper > .note-footer > .note-meta > li > .note-origin {
+  display: flex;
+  align-items: center;
+}
+.note-wrapper > .note-footer > .note-meta > li > .note-origin > img {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+}
+.note-wrapper:hover > .note-footer, .note-wrapper:focus > .note-footer {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .note-wrapper > .note-footer {
+    transition: opacity 200ms;
+  }
+}
+
+/*# sourceMappingURL=note.min.css.map */

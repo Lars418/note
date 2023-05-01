@@ -76,6 +76,22 @@ class Utils {
         });
     }
 
+    static async getLanguage() {
+        const supportedLanguages = await this._getSupportedLanguages();
+        const language = chrome.i18n.getUILanguage();
+        const countryCode = language.split('-')[0];
+
+        if (supportedLanguages.includes(language)) {
+           return language;
+        }
+
+        if (supportedLanguages.includes(countryCode)) {
+            return countryCode;
+        }
+
+        return 'en';
+    }
+
     /**
      * @description Returns a random message of the day
      * @returns {string} Message of the day
@@ -84,17 +100,8 @@ class Utils {
     static async getRandomMotd(): Promise<string> {
         const rawMotds = await fetch('/config/motd.json').then(response => response.json());
         let motds = [];
-        const supportedLanguages = await this._getSupportedLanguages();
-        let language = chrome.i18n.getUILanguage();
-        const countryCode = language.split('-')[0];
-
-        if (supportedLanguages.includes(language)) {
-            motds = rawMotds[language];
-        } else if (supportedLanguages.includes(countryCode)) {
-            motds = rawMotds[countryCode];
-        } else {
-            motds = rawMotds.en;
-        }
+        const lang = await this.getLanguage();
+        motds = rawMotds[lang];
 
         const randomIndex = Math.floor(Math.random() * motds.length);
 

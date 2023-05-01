@@ -16,6 +16,15 @@ const AddNote: React.FC = () => {
         })();
     }, []);
 
+    const submitNote = async () => {
+        await NoteStorage.save({
+            id: crypto.randomUUID(),
+            value: draft,
+            createdAt: new Date().toISOString()
+        });
+        setDraft('');
+    };
+
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setDraft(event.target.value);
     };
@@ -25,12 +34,7 @@ const AddNote: React.FC = () => {
             return;
         }
 
-        await NoteStorage.save({
-            id: crypto.randomUUID(),
-            value: draft,
-            createdAt: new Date().toISOString()
-        });
-        setDraft('');
+        await submitNote();
     };
 
     return (
@@ -43,7 +47,7 @@ const AddNote: React.FC = () => {
             onChange={handleChange}
             onKeyPress={handleKeyPress}
         />
-    )
+    );
 }
 
 export default AddNote;
