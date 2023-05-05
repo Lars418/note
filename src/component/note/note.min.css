@@ -1,3 +1,11 @@
+.note-wrapper {
+  padding: 0.35rem 0.25rem;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+}
+> .note-wrapper.alternate {
+  background-color: var(--body-alternate);
+}
 .note-wrapper > .note-footer {
   opacity: 0;
 }
@@ -34,8 +42,15 @@
 .note-wrapper:hover > .note-footer, .note-wrapper:focus > .note-footer {
   opacity: 1;
 }
+.note-wrapper:hover:hover, .note-wrapper:focus:hover {
+  border-top-color: var(--border);
+  border-bottom-color: var(--border);
+}
 
 @media (prefers-reduced-motion: no-preference) {
+  .note-wrapper {
+    transition: border-top-color, border-bottom-color 200ms;
+  }
   .note-wrapper > .note-footer {
     transition: opacity 200ms;
   }

@@ -1,4 +1,12 @@
 .note-wrapper {
+  padding: 0.35rem 0.25rem;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+
+  > &.alternate {
+    background-color: var(--body-alternate);
+  }
+
   > .note-body {
 
   }
@@ -49,11 +57,18 @@
     > .note-footer {
       opacity: 1;
     }
+
+    &:hover {
+      border-top-color: var(--border);
+      border-bottom-color: var(--border);
+    }
   }
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .note-wrapper {
+    transition: border-top-color, border-bottom-color 200ms;
+
     > .note-footer {
       transition: opacity 200ms;
     }

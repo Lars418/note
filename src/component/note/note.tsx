@@ -3,13 +3,15 @@ import {Note as INote} from '@src/@types/interface/note';
 import {Formatter} from '@src/utils/formatter';
 import './note.scss';
 import NoteOrigin from "@src/component/note/noteOrigin";
+import FormattedNoteValue from '@src/component/note/formattedNoteValue';
 
 interface INoteComponent {
     note: INote;
+    alternateBackground?: boolean;
 }
 
 const Note: React.FC<INoteComponent> = (props) => {
-    const { note } = props;
+    const { note, alternateBackground } = props;
     const [formattedCreatedAt, setFormattedCreatedAt] = useState<string>('');
 
     useEffect(() => {
@@ -20,11 +22,9 @@ const Note: React.FC<INoteComponent> = (props) => {
     }, []);
 
     return (
-        <li className="note-wrapper">
+        <li className={['note-wrapper', alternateBackground ? 'alternate': ''].join(' ').trim()}>
             <div className="note-body">
-                <article>
-                    {note.value}
-                </article>
+                <FormattedNoteValue value={note.value} />
             </div>
 
             <aside className="note-footer">

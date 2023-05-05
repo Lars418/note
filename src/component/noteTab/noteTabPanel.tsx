@@ -43,10 +43,11 @@ const NoteTabPanel: React.FC<INotesStatusTabPanel> = (props) => {
 
             <ol className="note-list">
                 {
-                    notes.map(note => (
+                    notes.map((note, index) => (
                         <Note
                             key={note.id}
                             note={note}
+                            alternateBackground={index % 2 === 0}
                         />
                     ))
                 }

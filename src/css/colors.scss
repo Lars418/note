@@ -7,6 +7,7 @@ html {
   --text-translucent: rgba(13, 13, 13, 0.2);
   --body: #fff;
   --body-alternate: #fff;
+  --border: #f2f2f2;
   --placeholder: #6b6b6b;
   --switch-disabled: #f2f2f2;
   --code: #c4c4c4;
@@ -33,8 +34,8 @@ html {
     --code: #161616;
 
     --body-alternate: #292a2d;
-    --btn-background-hover: #47494e;
-    --ogp-background: #3d3e42;
+    // --btn-background-hover: #47494e;
+    //--ogp-background: #3d3e42;
     --border: #4e4e4e;
     --link: #2997ff;
   }

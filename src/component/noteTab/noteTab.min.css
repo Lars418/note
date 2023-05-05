@@ -8,6 +8,7 @@
   color: var(--text);
   text-align: left;
   transition: color 200ms;
+  user-select: none;
 }
 .note-tab[aria-selected=true] {
   color: var(--blue);
