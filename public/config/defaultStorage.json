@@ -7,7 +7,7 @@
     "default": {
       "advancedParseUrls": true,
       "advancedEnableSpellcheck": true,
-      "advancedShowLinkPreview": false,
+      "advancedShowLinkPreview": true,
 
       "saveCurrentNote": true,
       "showContextMenu": true,

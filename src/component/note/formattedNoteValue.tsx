@@ -1,47 +1,72 @@
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
+import NoteContext from '@src/context/noteContext';
+import NoteTabPanelContext from '@src/context/noteTabPanelContext';
+import './formattedNoteValue.scss';
 
-interface IFormattedNoteValue {
-    value: string;
-}
+const FormattedNoteValue: React.FC = () => {
+    const {
+        editModeEnabled,
+        value,
+        setEditModeEnabled,
+        setNoteRef,
+        setValue,
+        handleUpdateNote,
+    } = useContext(NoteContext);
+    const { parseUrlsEnabled, spellcheckEnabled, linkPreviewEnabled } = useContext(NoteTabPanelContext);
+    const noteRef = useRef<HTMLElement>();
 
-const FormattedNoteValue: React.FC<IFormattedNoteValue> = (props) => {
-    const { value } = props;
-    const [editModeEnabled, setEditModeEnabled] = useState<boolean>(false);
-    const [spellcheckEnabled, setSpellcheckEnabled] = useState(true);
-    const [parseUrlsEnabled, setParseUrlsEnabled] = useState<boolean>(false);
-    const [linkPreviewEnabled, setLinkPreviewEnabled] = useState<boolean>(false);
-    const defaultPreparedValue = value.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    const [preparedValue, setPreparedValue] = useState(defaultPreparedValue);
+    const updateNote = async (value: string) => {
+        setEditModeEnabled(false);
+        const preparedValue = value.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        setValue(preparedValue);
+        await handleUpdateNote(preparedValue);
+    };
+
+    const handleKeyPress = async (event: React.KeyboardEvent<HTMLElement>) => {
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            event.stopPropagation();
+
+            setEditModeEnabled(false);
+            event.currentTarget.innerHTML = value;
+        }
+
+        if (!event.shiftKey && event.key === 'Enter') {
+            event.preventDefault();
+            event.stopPropagation();
+
+            await updateNote(event.currentTarget.innerHTML);
+        }
+    };
+
+    const handleBlur = async (event: React.FocusEvent<HTMLElement>) => {
+        await updateNote(event.currentTarget.innerHTML);
+    };
+
+    useEffect(() => {
+        setNoteRef(noteRef.current);
+    }, [noteRef.current])
 
     useEffect(() => {
         if (parseUrlsEnabled) {
-            setPreparedValue(preparedValue => preparedValue);
+            // TODO
         }
 
         if (linkPreviewEnabled) {
-            setPreparedValue(preparedValue => {
-                return preparedValue;
-            });
+            // TODO
         }
-    }, []);
-
-    useEffect(() => {
-        (async () => {
-            const { settings } = await chrome.storage.local.get('settings');
-
-            setSpellcheckEnabled(settings.custom.advancedEnableSpellcheck ?? settings.default.advancedEnableSpellcheck);
-            setParseUrlsEnabled(settings.custom.advancedParseUrls ?? settings.default.advancedParseUrls);
-            setLinkPreviewEnabled(settings.custom.advancedShowLinkPreview ?? settings.default.advancedShowLinkPreview);
-        })();
     }, []);
 
     return (
       <article
+          className="formattedNoteValue"
+          ref={noteRef}
           spellCheck={spellcheckEnabled}
           contentEditable={editModeEnabled}
-          dangerouslySetInnerHTML={{ __html: preparedValue }}
+          dangerouslySetInnerHTML={{ __html: value }}
+          onKeyDown={handleKeyPress}
+          onBlur={handleBlur}
       />
-
     );
 }
 

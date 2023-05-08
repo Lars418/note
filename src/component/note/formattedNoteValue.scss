@@ -1,0 +1,11 @@
+.formattedNoteValue {
+  &[contenteditable="true"] {
+    padding: 0.25rem 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .formattedNoteValue {
+    transition: padding 200ms;
+  }
+}

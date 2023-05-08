@@ -4,12 +4,16 @@ import NoteTab from '@src/component/noteTab/noteTab';
 import NoteTabPanel from '@src/component/noteTab/noteTabPanel';
 import { NoteStorage } from '@src/utils/noteStorage';
 import { Note } from '@src/@types/interface/note';
+import NoteTabPanelContext from "@src/context/noteTabPanelContext";
 
 const NoteTabContainer: React.FC = () => {
     const [tabs, setTabs] = useState<string[]>([]);
     const [tabRefs, setTabRefs] = useState<{ [tab: string]: HTMLButtonElement }>({});
     const [activeTab, setActiveTab] = useState<HTMLButtonElement|null>(null);
     const [notes, setNotes] = useState<{ [category: string]: Note[] }>({});
+    const [spellcheckEnabled, setSpellcheckEnabled] = useState(true);
+    const [parseUrlsEnabled, setParseUrlsEnabled] = useState<boolean>(false);
+    const [linkPreviewEnabled, setLinkPreviewEnabled] = useState<boolean>(false);
 
     const handleTabClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
         const { settings } = await chrome.storage.local.get('settings');
@@ -63,6 +67,10 @@ const NoteTabContainer: React.FC = () => {
             const isStandalone = new URL(window.location.href).searchParams.get('standalone') === '1';
             const _tabs = !settings.custom._tabs?.length ? settings.default._tabs : settings.custom._tabs;
 
+            setSpellcheckEnabled(settings.custom.advancedEnableSpellcheck ?? settings.default.advancedEnableSpellcheck);
+            setParseUrlsEnabled(settings.custom.advancedParseUrls ?? settings.default.advancedParseUrls);
+            setLinkPreviewEnabled(settings.custom.advancedShowLinkPreview ?? settings.default.advancedShowLinkPreview);
+
             if (prefersDarkTheme) {
                 document.documentElement.classList.add('dark-theme');
             }
@@ -97,7 +105,6 @@ const NoteTabContainer: React.FC = () => {
             chrome.storage.onChanged.addListener(async (changes) => {
                 if (changes.notes) {
                     for (const tab of _tabs) {
-                        console.log('Updating notes for tab ' + tab);
                        await getNotes(tab);
                     }
                }
@@ -134,16 +141,28 @@ const NoteTabContainer: React.FC = () => {
                 }
             </NoteTabs>
 
-            {
-                tabs.map(tab => (
-                    <NoteTabPanel
-                        key={tab}
-                        id={tab}
-                        notes={notes[tab] ?? []}
-                        hidden={activeTab?.dataset.tab !== tab}
-                    />
-                ))
-            }
+            <NoteTabPanelContext.Provider
+                value={{
+                    spellcheckEnabled,
+                    parseUrlsEnabled,
+                    linkPreviewEnabled,
+
+                    setSpellcheckEnabled,
+                    setParseUrlsEnabled,
+                    setLinkPreviewEnabled
+                }}
+            >
+                {
+                    tabs.map(tab => (
+                        <NoteTabPanel
+                            key={tab}
+                            id={tab}
+                            notes={notes[tab] ?? []}
+                            hidden={activeTab?.dataset.tab !== tab}
+                        />
+                    ))
+                }
+            </NoteTabPanelContext.Provider>
         </>
     )
 }
