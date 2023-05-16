@@ -1,6 +1,13 @@
 import utils from "@src/utils/utils";
 
 export class Formatter {
+    static escape(unescapedValue: string) {
+        return unescapedValue
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+    }
+
     static async formatDateTime (date: string) {
         const language = await utils.getLanguage();
 
@@ -44,5 +51,28 @@ export class Formatter {
         else if (diff < (60 * 24 * 30)) return getMessage('nDaysAgo', Math.round(diff / (60*24)).toString());
 
         return getMessage('overAMonth');
-    }
+    };
+
+    static formatNoteValue(rawValue: string) {
+        const parser = new DOMParser();
+        const preparedValue = rawValue.replace(/<br>/gi, '\n');
+        const dom = parser.parseFromString(preparedValue, 'text/html');
+        const linesToBeAdded = [];
+
+        dom.querySelectorAll('div').forEach(line => {
+            const lineContent = line.textContent.trim();
+
+            if (lineContent) {
+                linesToBeAdded.push(lineContent);
+            }
+
+            line.parentNode.removeChild(line);
+        });
+
+        linesToBeAdded.forEach(line => {
+           dom.body.textContent += `\n${line}`;
+        });
+
+        return this.escape(dom.body.textContent);
+    };
 }

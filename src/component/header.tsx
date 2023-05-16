@@ -15,7 +15,6 @@ const Header: React.FC = () => {
 
     const handleOpenNewTab = async () => {
         const { settings } = await chrome.storage.local.get('settings');
-        console.log(settings);
 
         await chrome.windows.create({
             url: `/src/pages/popup/index.html?standalone=1&predefinedMessage=&priority=`,

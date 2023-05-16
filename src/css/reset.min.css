@@ -12,4 +12,8 @@ html, body, #root {
   color: var(--black);
 }
 
+::selection {
+  background-color: #3367d6;
+}
+
 /*# sourceMappingURL=reset.min.css.map */

@@ -18,9 +18,7 @@ const AddNote: React.FC = () => {
 
     const submitNote = async () => {
         await NoteStorage.save({
-            id: crypto.randomUUID(),
             value: draft,
-            createdAt: new Date().toISOString()
         });
         setDraft('');
     };
@@ -30,11 +28,9 @@ const AddNote: React.FC = () => {
     };
 
     const handleKeyPress = async (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        if (event.key !== 'Enter') {
-            return;
+        if (event.ctrlKey && event.code === 'Enter') {
+            await submitNote();
         }
-
-        await submitNote();
     };
 
     return (

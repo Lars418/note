@@ -2,6 +2,8 @@ import React, {useContext, useEffect, useRef, useState} from 'react';
 import NoteContext from '@src/context/noteContext';
 import NoteTabPanelContext from '@src/context/noteTabPanelContext';
 import './formattedNoteValue.scss';
+import { constant } from '@src/utils/constant';
+import { Formatter } from '@src/utils/formatter';
 
 const FormattedNoteValue: React.FC = () => {
     const {
@@ -13,11 +15,12 @@ const FormattedNoteValue: React.FC = () => {
         handleUpdateNote,
     } = useContext(NoteContext);
     const { parseUrlsEnabled, spellcheckEnabled, linkPreviewEnabled } = useContext(NoteTabPanelContext);
+    const [richValue, setRichValue] = useState<string>('');
     const noteRef = useRef<HTMLElement>();
 
     const updateNote = async (value: string) => {
         setEditModeEnabled(false);
-        const preparedValue = value.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const preparedValue = Formatter.formatNoteValue(value);
         setValue(preparedValue);
         await handleUpdateNote(preparedValue);
     };
@@ -31,7 +34,7 @@ const FormattedNoteValue: React.FC = () => {
             event.currentTarget.innerHTML = value;
         }
 
-        if (!event.shiftKey && event.key === 'Enter') {
+        if (event.ctrlKey && event.code === 'Enter') {
             event.preventDefault();
             event.stopPropagation();
 
@@ -48,14 +51,32 @@ const FormattedNoteValue: React.FC = () => {
     }, [noteRef.current])
 
     useEffect(() => {
+        let _value = value.replace(/\n/gi, '<br>');
+
+        setValue(_value);
+
         if (parseUrlsEnabled) {
-            // TODO
+
+            _value?.match(constant.EMAIL_REGEX)?.forEach(email => {
+                _value = _value.replace(email, `<a href='mailto:${email}'>${email}</a>`);
+            });
+
+            _value?.match(constant.URL_REGEX)?.forEach(url => {
+                _value = _value.replace(url, `<a href='${url}'>${url.replace(/https?:\/\//gi, '')}</a>`);
+            });
+
+            _value?.match(constant.CODE_REGEX)?.forEach(code => {
+                const preparedCode = code.slice(1).slice(0, -1);
+                _value = _value.replace(code, `<code>${preparedCode}</code>`);
+            });
+
+            setRichValue(_value);
         }
 
         if (linkPreviewEnabled) {
             // TODO
         }
-    }, []);
+    }, [value]);
 
     return (
       <article
@@ -63,7 +84,10 @@ const FormattedNoteValue: React.FC = () => {
           ref={noteRef}
           spellCheck={spellcheckEnabled}
           contentEditable={editModeEnabled}
-          dangerouslySetInnerHTML={{ __html: value }}
+          dangerouslySetInnerHTML={{ __html: editModeEnabled
+                  ? value
+                  : richValue || value
+          }}
           onKeyDown={handleKeyPress}
           onBlur={handleBlur}
       />

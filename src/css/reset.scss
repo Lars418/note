@@ -11,3 +11,7 @@ html, body, #root {
   font-family: "Arial", sans-serif;
   color: var(--black);
 }
+
+::selection {
+  background-color: #3367d6;
+}

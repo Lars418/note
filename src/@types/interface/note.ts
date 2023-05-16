@@ -1,10 +1,13 @@
-export interface Note {
-    id: string;
+export interface BlankNote {
     value: string;
     origin?: string;
-    createdAt: string;
-    modifiedAt?: string;
     completedAt?: string;
     dueAt?: string;
     category?: string;
+}
+
+export interface Note extends BlankNote {
+    id: string;
+    createdAt: string;
+    modifiedAt?: string;
 }
