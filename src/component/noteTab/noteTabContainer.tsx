@@ -5,6 +5,8 @@ import NoteTabPanel from '@src/component/noteTab/noteTabPanel';
 import { NoteStorage } from '@src/utils/noteStorage';
 import { Note } from '@src/@types/interface/note';
 import NoteTabPanelContext from "@src/context/noteTabPanelContext";
+import {PreviewDataContainer} from "@src/@types/interface/linkPreview/previewDataContainer";
+import UrlCache from "@src/utils/urlCache";
 
 const NoteTabContainer: React.FC = () => {
     const [tabs, setTabs] = useState<string[]>([]);
@@ -14,6 +16,7 @@ const NoteTabContainer: React.FC = () => {
     const [spellcheckEnabled, setSpellcheckEnabled] = useState(true);
     const [parseUrlsEnabled, setParseUrlsEnabled] = useState<boolean>(false);
     const [linkPreviewEnabled, setLinkPreviewEnabled] = useState<boolean>(false);
+    const [previewData, setPreviewData] = useState<PreviewDataContainer>({});
 
     const handleTabClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
         const { settings } = await chrome.storage.local.get('settings');
@@ -62,7 +65,7 @@ const NoteTabContainer: React.FC = () => {
 
     useEffect(() => {
         (async () => {
-            const { settings } = await chrome.storage.local.get('settings');
+            const { settings, urlCache } = await chrome.storage.local.get(['settings', 'urlCache']);
             const prefersDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
             const isStandalone = new URL(window.location.href).searchParams.get('standalone') === '1';
             const _tabs = !settings.custom._tabs?.length ? settings.default._tabs : settings.custom._tabs;
@@ -70,6 +73,7 @@ const NoteTabContainer: React.FC = () => {
             setSpellcheckEnabled(settings.custom.advancedEnableSpellcheck ?? settings.default.advancedEnableSpellcheck);
             setParseUrlsEnabled(settings.custom.advancedParseUrls ?? settings.default.advancedParseUrls);
             setLinkPreviewEnabled(settings.custom.advancedShowLinkPreview ?? settings.default.advancedShowLinkPreview);
+            setPreviewData(urlCache);
 
             if (prefersDarkTheme) {
                 document.documentElement.classList.add('dark-theme');
@@ -125,6 +129,14 @@ const NoteTabContainer: React.FC = () => {
         })();
     }, [tabRefs]);
 
+    useEffect(() => {
+        (async () => {
+            if (Object.keys(previewData).length > 0) {
+                await UrlCache.setOrUpdateComplete(previewData);
+            }
+        })();
+    }, [previewData]);
+
     return (
         <>
             <NoteTabs activeTabCoordinates={activeTab?.getBoundingClientRect() ?? {} as DOMRect}>
@@ -146,10 +158,12 @@ const NoteTabContainer: React.FC = () => {
                     spellcheckEnabled,
                     parseUrlsEnabled,
                     linkPreviewEnabled,
+                    previewData,
 
                     setSpellcheckEnabled,
                     setParseUrlsEnabled,
-                    setLinkPreviewEnabled
+                    setLinkPreviewEnabled,
+                    setPreviewData,
                 }}
             >
                 {

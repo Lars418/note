@@ -4,25 +4,29 @@ import NoteTabPanelContext from '@src/context/noteTabPanelContext';
 import './formattedNoteValue.scss';
 import { constant } from '@src/utils/constant';
 import { Formatter } from '@src/utils/formatter';
+import NoteLink from '@src/component/note/noteLink';
+import LinkPreviewCard from '@src/component/linkPreview/linkPreviewCard';
 
 const FormattedNoteValue: React.FC = () => {
     const {
         editModeEnabled,
-        value,
+        value: currentValue,
         setEditModeEnabled,
-        setNoteRef,
         setValue,
         handleUpdateNote,
     } = useContext(NoteContext);
     const { parseUrlsEnabled, spellcheckEnabled, linkPreviewEnabled } = useContext(NoteTabPanelContext);
-    const [richValue, setRichValue] = useState<string>('');
-    const noteRef = useRef<HTMLElement>();
+    const [draftValue, setDraftValue] = useState(currentValue);
+    const [richValue, setRichValue] = useState<any>([]);
+    const noteEditorRef = useRef<HTMLTextAreaElement>();
 
-    const updateNote = async (value: string) => {
+    const updateNote = async () => {
         setEditModeEnabled(false);
-        const preparedValue = Formatter.formatNoteValue(value);
-        setValue(preparedValue);
+
+        const preparedValue = Formatter.formatNoteValue(draftValue);
+
         await handleUpdateNote(preparedValue);
+        setValue(preparedValue);
     };
 
     const handleKeyPress = async (event: React.KeyboardEvent<HTMLElement>) => {
@@ -31,66 +35,94 @@ const FormattedNoteValue: React.FC = () => {
             event.stopPropagation();
 
             setEditModeEnabled(false);
-            event.currentTarget.innerHTML = value;
+            setDraftValue(currentValue);
         }
 
-        if (event.ctrlKey && event.code === 'Enter') {
+        if (event.ctrlKey && (event.code === 'Enter' || event.code === 'NumpadEnter')) {
             event.preventDefault();
             event.stopPropagation();
 
-            await updateNote(event.currentTarget.innerHTML);
+            await updateNote();
         }
     };
 
-    const handleBlur = async (event: React.FocusEvent<HTMLElement>) => {
-        await updateNote(event.currentTarget.innerHTML);
+    const handleBlur = async () => {
+        await updateNote();
+    };
+
+    const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setDraftValue(event.target.value);
+    };
+
+    const renderNoteValue = (rawRichValue: string) => {
+        const combinedRegex = new RegExp(`${constant.LINEBREAK_REGEX.source}|${constant.EMAIL_REGEX.source}|${constant.URL_REGEX.source}`);
+        const preparedLines = rawRichValue.split(combinedRegex).filter(value => value);
+
+        if (editModeEnabled) {
+            return currentValue.split(constant.LINEBREAK_REGEX).map(line => {
+                if (line.match(constant.LINEBREAK_REGEX)) {
+                    return <br />;
+                }
+
+                return line;
+            });
+        }
+
+        return preparedLines.map(value => {
+            if (value?.match(constant.LINEBREAK_REGEX)) {
+                return <br />;
+            }
+
+            if (parseUrlsEnabled) {
+                if (value?.match(constant.URL_REGEX)) {
+                    if (linkPreviewEnabled) {
+                        return <LinkPreviewCard url={value} />;
+                    }
+
+                    return <NoteLink url={value} />;
+                }
+
+                if (value?.match(constant.EMAIL_REGEX)) {
+                    return <NoteLink url={value} />;
+                }
+            }
+
+            return value;
+        });
     };
 
     useEffect(() => {
-        setNoteRef(noteRef.current);
-    }, [noteRef.current])
+        const renderedRichNoteValue = renderNoteValue(currentValue);
+
+        setRichValue(renderedRichNoteValue);
+    }, [currentValue]);
 
     useEffect(() => {
-        let _value = value.replace(/\n/gi, '<br>');
-
-        setValue(_value);
-
-        if (parseUrlsEnabled) {
-
-            _value?.match(constant.EMAIL_REGEX)?.forEach(email => {
-                _value = _value.replace(email, `<a href='mailto:${email}'>${email}</a>`);
-            });
-
-            _value?.match(constant.URL_REGEX)?.forEach(url => {
-                _value = _value.replace(url, `<a href='${url}'>${url.replace(/https?:\/\//gi, '')}</a>`);
-            });
-
-            _value?.match(constant.CODE_REGEX)?.forEach(code => {
-                const preparedCode = code.slice(1).slice(0, -1);
-                _value = _value.replace(code, `<code>${preparedCode}</code>`);
-            });
-
-            setRichValue(_value);
+        if (editModeEnabled) {
+            noteEditorRef.current?.focus();
+            noteEditorRef.current.selectionStart = currentValue.length;
+            noteEditorRef.current.selectionEnd = currentValue.length;
         }
-
-        if (linkPreviewEnabled) {
-            // TODO
-        }
-    }, [value]);
+    }, [editModeEnabled]);
 
     return (
-      <article
-          className="formattedNoteValue"
-          ref={noteRef}
-          spellCheck={spellcheckEnabled}
-          contentEditable={editModeEnabled}
-          dangerouslySetInnerHTML={{ __html: editModeEnabled
-                  ? value
-                  : richValue || value
-          }}
-          onKeyDown={handleKeyPress}
-          onBlur={handleBlur}
-      />
+      <>
+          <article
+              className="formattedNoteValue"
+              hidden={editModeEnabled}
+          >{richValue}</article>
+          <textarea
+              className="formattedNoteValue-editor"
+              ref={noteEditorRef}
+              onKeyDown={handleKeyPress}
+              onBlur={handleBlur}
+              onChange={handleChange}
+              spellCheck={spellcheckEnabled}
+              hidden={!editModeEnabled}
+              value={draftValue}
+              rows={draftValue.split('\n').length}
+          />
+      </>
     );
 }
 

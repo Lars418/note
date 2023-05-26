@@ -2,10 +2,26 @@
   &[contenteditable="true"] {
     padding: 0.25rem 0;
   }
+
+  .note-link, .note-link:visited {
+    color: var(--link);
+    text-decoration: none;
+    transition: color 200ms;
+
+    &:hover {
+      color: var(--link-dark);
+    }
+  }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .formattedNoteValue {
-    transition: padding 200ms;
-  }
+.formattedNoteValue-editor {
+  padding: 0;
+  resize: vertical;
+  background-color: transparent;
+  border: none;
+  width: 100%;
+  height: fit-content;
+  line-height: 1;
+  font: inherit;
+  color: inherit;
 }

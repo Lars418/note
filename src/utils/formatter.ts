@@ -55,11 +55,11 @@ export class Formatter {
 
     static formatNoteValue(rawValue: string) {
         const parser = new DOMParser();
-        const preparedValue = rawValue.replace(/<br>/gi, '\n');
+        const preparedValue = rawValue?.replace(/<br>/gi, '\n');
         const dom = parser.parseFromString(preparedValue, 'text/html');
         const linesToBeAdded = [];
 
-        dom.querySelectorAll('div').forEach(line => {
+        dom.querySelectorAll('div').forEach((line) => {
             const lineContent = line.textContent.trim();
 
             if (lineContent) {

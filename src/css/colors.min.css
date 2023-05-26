@@ -10,6 +10,7 @@ html {
   --placeholder: #6b6b6b;
   --switch-disabled: #f2f2f2;
   --code: #c4c4c4;
+  --linkPreview-background: #bebebe;
   --text-light: #fff;
   --orange: #ffc156;
   --red: #ff5a3f;
@@ -28,9 +29,11 @@ html.dark-theme {
   --placeholder: rgba(255, 255, 255, 0.225);
   --switch-disabled: #787878;
   --code: #161616;
+  --linkPreview-background: #3d3e42;
   --body-alternate: #292a2d;
   --border: #4e4e4e;
   --link: #2997ff;
+  --link-dark: #166de1;
 }
 
 /*# sourceMappingURL=colors.min.css.map */

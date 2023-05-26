@@ -25,16 +25,13 @@ export class NoteStorage {
     };
     static update = async (id: string, value: string) => {
         const notes = await this.getAll();
-        const note = await this.get(id);
+        const note = notes.find(note => note.id === id);
 
         note.value = value.trim();
         note.modifiedAt = new Date().toISOString();
 
         await chrome.storage.local.set({
-            notes: [
-                ...notes,
-                note,
-            ]
+            notes
         });
     }
 }

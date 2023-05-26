@@ -28,7 +28,7 @@ const AddNote: React.FC = () => {
     };
 
     const handleKeyPress = async (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        if (event.ctrlKey && event.code === 'Enter') {
+        if (event.ctrlKey && (event.code === 'Enter' || event.code === 'NumpadEnter')) {
             await submitNote();
         }
     };

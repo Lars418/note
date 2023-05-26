@@ -1,11 +1,25 @@
 .formattedNoteValue[contenteditable=true] {
   padding: 0.25rem 0;
 }
+.formattedNoteValue .note-link, .formattedNoteValue .note-link:visited {
+  color: var(--link);
+  text-decoration: none;
+  transition: color 200ms;
+}
+.formattedNoteValue .note-link:hover, .formattedNoteValue .note-link:visited:hover {
+  color: var(--link-dark);
+}
 
-@media (prefers-reduced-motion: no-preference) {
-  .formattedNoteValue {
-    transition: padding 200ms;
-  }
+.formattedNoteValue-editor {
+  padding: 0;
+  resize: vertical;
+  background-color: transparent;
+  border: none;
+  width: 100%;
+  height: fit-content;
+  line-height: 1;
+  font: inherit;
+  color: inherit;
 }
 
 /*# sourceMappingURL=formattedNoteValue.min.css.map */

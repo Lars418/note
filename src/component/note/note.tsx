@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {Note as INote} from '@src/@types/interface/note';
 import {Formatter} from '@src/utils/formatter';
 import './note.scss';
@@ -16,7 +16,6 @@ const Note: React.FC<INoteComponent> = (props) => {
     const { note, alternateBackground } = props;
     const [formattedCreatedAt, setFormattedCreatedAt] = useState<string>('');
     const [editModeEnabled, setEditModeEnabled] = useState(false);
-    const [noteRef, setNoteRef] = useState<HTMLElement|undefined>(null);
     const [value, setValue] = useState<string>(note.value);
     const [initialValue, setInitialValue] = useState<string>(note.value);
 
@@ -45,30 +44,14 @@ const Note: React.FC<INoteComponent> = (props) => {
         })();
     }, []);
 
-    useEffect(() => {
-        if (editModeEnabled) {
-            const selection = window.getSelection();
-            const range = document.createRange();
-
-            selection.removeAllRanges();
-            range.selectNodeContents(noteRef);
-            range.collapse();
-            selection.addRange(range);
-
-            noteRef?.focus();
-        }
-    }, [editModeEnabled, noteRef]);
-
     return (
         <NoteContext.Provider
             value={{
                 editModeEnabled,
-                noteRef,
                 initialValue,
                 value,
 
                 setEditModeEnabled,
-                setNoteRef,
                 setInitialValue,
                 setValue,
                 handleUpdateNote,

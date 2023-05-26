@@ -1,0 +1,53 @@
+.linkPreview, .linkPreview:visited {
+  --margin: 0.15rem;
+  display: inline-block;
+  margin: var(--margin);
+  text-decoration: none;
+}
+.linkPreview > article, .linkPreview:visited > article {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: calc(100vw - var(--margin));
+  height: 100%;
+  background-color: var(--linkPreview-background);
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.linkPreview > article > .linkPreview-previewImage, .linkPreview:visited > article > .linkPreview-previewImage {
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
+  width: 100%;
+  height: 100%;
+  min-height: 5rem;
+  max-height: 15rem;
+  object-fit: cover;
+  border-bottom: 1px solid var(--border);
+}
+.linkPreview > article > div, .linkPreview:visited > article > div {
+  margin: 0 0.4rem;
+}
+.linkPreview > article > div.move-up, .linkPreview:visited > article > div.move-up {
+  position: relative;
+  margin-top: -1.25rem;
+}
+.linkPreview > article > div > .linkPreview-author-list, .linkPreview:visited > article > div > .linkPreview-author-list {
+  display: flex;
+  padding-inline-start: 0;
+}
+.linkPreview > article > div > .linkPreview-author-list > .linkPreview-author:not(:first-of-type), .linkPreview:visited > article > div > .linkPreview-author-list > .linkPreview-author:not(:first-of-type) {
+  margin-left: -1rem;
+}
+.linkPreview > article > div > h2, .linkPreview:visited > article > div > h2 {
+  font-size: 1.1rem;
+  font-weight: normal;
+  margin: 0.8rem 0 0.4rem 0;
+}
+.linkPreview > article > div > p, .linkPreview:visited > article > div > p {
+  font-size: 0.8rem;
+  margin-top: 0;
+  color: var(--text-translucent);
+}
+
+/*# sourceMappingURL=linkPreviewCard.min.css.map */

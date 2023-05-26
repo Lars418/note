@@ -1,0 +1,22 @@
+.linkPreview-author {
+  border-radius: 50%;
+  overflow: hidden;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: white;
+
+  > img {
+    background-color: inherit;
+    width: inherit;
+    height: inherit;
+    overflow: hidden;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+html.dark-theme {
+  .linkPreview-author {
+    background-color: black;
+  }
+}

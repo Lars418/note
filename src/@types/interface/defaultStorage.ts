@@ -12,5 +12,5 @@ export interface DefaultStorage {
         custom: Settings | {};
     };
     notes: Note[];
-    cachedUrls: { [url: string]: UrlMetadata }
+    urlCache: { [url: string]: UrlMetadata }
 }
