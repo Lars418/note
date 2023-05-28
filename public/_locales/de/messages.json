@@ -353,13 +353,8 @@
             }
         }
     },
-    "previewCardAuthor": {
-        "message": "Autor(en): $AUTHOR$",
-        "placeholders": {
-            "author": {
-                "content": "$1"
-            }
-        }
+    "previewCardAuthorSilhouetteAlt": {
+        "message": "Silhouette einer Person"
     },
     "playMusicTitle": {
         "message": "\"$SONG$\" spielen",

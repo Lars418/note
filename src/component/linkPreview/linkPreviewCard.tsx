@@ -62,19 +62,40 @@ const LinkPreviewCard: React.FC<ILinkPreview> = (props) => {
         >
             <article>
                 {
-                    urlPreview.previewImages.length > 0 && (
-                        <img
-                            className="linkPreview-previewImage"
-                            src={urlPreview.previewImages[0].url}
-                            alt={urlPreview.previewImages[0].alt}
-                            draggable={false}
-                        />
+                    urlPreview.previewImages?.length > 0 && (
+                        <div className={[
+                            'linkPreview-previewImage-container',
+                            urlPreview.favicon ? 'linkPreview-previewImage-container-with-favicon' : ''
+                        ].join(' ').trim()}>
+                            <img
+                                className="linkPreview-previewImage"
+                                src={urlPreview.previewImages[0].url}
+                                alt={urlPreview.previewImages[0].alt}
+                                draggable={false}
+                                data-favicon={urlPreview.favicon}
+                            />
+
+                            {
+                                urlPreview.favicon && (
+                                    <img
+                                        className="linkPreview-favicon"
+                                        src={urlPreview.favicon}
+                                        alt=""
+                                    />
+                                )
+                            }
+                        </div>
                     )
                 }
 
-                <div className={urlPreview.previewImages.length > 0 ? 'move-up' : undefined}>
+                <div
+                    className={[
+                        'linkPreview-textContent',
+                        (urlPreview.previewImages?.length > 0 && (urlPreview as PreviewArticle).author?.length > 0) ? 'move-up' : ''
+                    ].join(' ').trim()}
+                >
                     {
-                        urlPreview.type === 'article' && (urlPreview as PreviewArticle).author.length > 0 && (
+                        urlPreview.type === 'article' && (urlPreview as PreviewArticle).author?.length > 0 && (
                             <ol className="linkPreview-author-list">
                                 {
                                     (urlPreview as PreviewArticle).author.map(author => (

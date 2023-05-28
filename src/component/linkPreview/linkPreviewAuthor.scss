@@ -1,9 +1,14 @@
 .linkPreview-author {
   border-radius: 50%;
+  border: 1px solid var(--border);
   overflow: hidden;
   width: 2.5rem;
   height: 2.5rem;
   background-color: white;
+
+  &:hover {
+    z-index: 999999999;
+  }
 
   > img {
     background-color: inherit;
