@@ -8,8 +8,7 @@ import PreviewError from "@src/@types/interface/linkPreview/previewError";
 import {LinkPreview} from "@src/@types/type/linkPreview/linkPreview";
 import './linkPreviewCard.min.css';
 import LinkPreviewAuthor from "@src/component/linkPreview/linkPreviewAuthor";
-import utils from "@src/utils/utils";
-import {Formatter} from "@src/utils/formatter";
+import PlayAndPauseAudioButton from "@src/component/linkPreview/playAndPauseAudioButton";
 
 interface ILinkPreview {
     url: string;
@@ -29,6 +28,15 @@ const LinkPreviewCard: React.FC<ILinkPreview> = (props) => {
             }
 
             const linkPreview = await Query.getLinkPreview(url);
+
+            if (linkPreview.type !== 'error') {
+                chrome.alarms.create(JSON.stringify({
+                    type: 'URL_CACHE_EXPIRATION',
+                    url
+                }), {
+                    when: new Date((linkPreview as PreviewBase).exp).getTime()
+                });
+            }
 
             setRawUrlPreview(linkPreview);
             setPreviewData(previewData => ({
@@ -109,23 +117,25 @@ const LinkPreviewCard: React.FC<ILinkPreview> = (props) => {
                         )
                     }
 
-                    <h2>
-                        {urlPreview.title}
-                    </h2>
-
-                    <p>
-                        {urlPreview.description}
+                    <p className="linkPreview-pageName">
+                        {urlPreview.pageName}
                     </p>
 
-                    <small>
-                        <span>
-                            {urlPreview.pageName}
-                        </span>
-                        {' '}
-                        <time dateTime={urlPreview.publicationDate}>
-                            {urlPreview.publicationDate}
-                        </time>
-                    </small>
+                    <h2>
+                        <span>{urlPreview.title}</span>
+                        {
+                            urlPreview.audioUrl && (
+                                <PlayAndPauseAudioButton
+                                    audioUrl={urlPreview.audioUrl}
+                                    type={urlPreview.type}
+                                />
+                            )
+                        }
+                    </h2>
+
+                    <p className="linkPreview-description">
+                        {urlPreview.description}
+                    </p>
                 </div>
             </article>
         </a>

@@ -269,6 +269,16 @@
         "message": "Add marked text"
     },
 
+    "previewCardTypeArticle": {
+        "message": "Article"
+    },
+    "previewCardTypeQA": {
+        "message": "Q&A"
+    },
+    "previewCardTypeMusic": {
+        "message": "Music"
+    },
+
     "previewCardNoTitle": {
         "message": "No title availiable"
     },
@@ -356,6 +366,23 @@
     "previewCardAuthorSilhouetteAlt": {
         "message": "Silhouette of a person"
     },
+    "playAudioButton": {
+        "message": "Play $TYPE$",
+        "placeholders": {
+            "type": {
+                "content": "$1"
+            }
+        }
+    },
+    "pauseAudioButton": {
+        "message": "Pause $TYPE$",
+        "placeholders": {
+            "type": {
+                "content": "$1"
+            }
+        }
+    },
+
     "playMusicTitle": {
         "message": "Play \"$SONG$\"",
         "placeholders": {

@@ -4,4 +4,5 @@ export interface Author {
     name: string;
     jobTitle?: string;
     images: Image[];
+    url?: string;
 }

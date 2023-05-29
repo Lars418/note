@@ -8,6 +8,10 @@
 
   &:hover {
     z-index: 999999999;
+
+    &[href] {
+      opacity: .9;
+    }
   }
 
   > img {
@@ -23,5 +27,11 @@
 html.dark-theme {
   .linkPreview-author {
     background-color: black;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .linkPreview-author[href]:hover {
+    transition: 200ms;
   }
 }

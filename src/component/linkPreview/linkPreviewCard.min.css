@@ -8,7 +8,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: calc(100vw - var(--margin));
+  max-width: 27.5rem;
   height: 100%;
   background-color: var(--linkPreview-background);
   border-radius: 0.75rem;
@@ -61,15 +61,23 @@
 .linkPreview > article > .linkPreview-textContent > .linkPreview-author-list > .linkPreview-author:not(:first-of-type), .linkPreview:visited > article > .linkPreview-textContent > .linkPreview-author-list > .linkPreview-author:not(:first-of-type) {
   margin-left: -1rem;
 }
+.linkPreview > article > .linkPreview-textContent > .linkPreview-pageName, .linkPreview:visited > article > .linkPreview-textContent > .linkPreview-pageName {
+  margin: 0.8rem 0 0 0;
+  font-size: 0.65rem;
+}
 .linkPreview > article > .linkPreview-textContent > h2, .linkPreview:visited > article > .linkPreview-textContent > h2 {
   font-size: 1.1rem;
   font-weight: normal;
-  margin: 0.8rem 0 0.4rem 0;
+  margin: 0 0 0.4rem 0;
+  float: left;
 }
 .linkPreview > article > .linkPreview-textContent > p, .linkPreview:visited > article > .linkPreview-textContent > p {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   margin-top: 0;
-  color: var(--text-translucent);
+  color: var(--linkPreview-description);
+}
+.linkPreview > article > .linkPreview-textContent > .linkPreview-description, .linkPreview:visited > article > .linkPreview-textContent > .linkPreview-description {
+  clear: both;
 }
 
 /*# sourceMappingURL=linkPreviewCard.min.css.map */

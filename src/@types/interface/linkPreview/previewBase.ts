@@ -9,6 +9,7 @@ export interface PreviewBase {
     previewImages: Image[];
     publicationDate: string;
     modificationDate?: string;
+    audioUrl?: string;
     locale: string;
     favicon?: string;
     themeColor?: string;

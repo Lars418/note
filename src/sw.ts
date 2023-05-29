@@ -1,6 +1,10 @@
 import reloadOnUpdate from "virtual:reload-on-update-in-background-script";
 import Utils from '@src/utils/utils';
 import ContextType = chrome.contextMenus.ContextType;
+import Alarm = chrome.alarms.Alarm;
+import Query from "@src/utils/query";
+import UrlCache from "@src/utils/urlCache";
+import {PreviewBase} from "@src/@types/interface/linkPreview/previewBase";
 
 
 reloadOnUpdate("pages/background");
@@ -11,6 +15,7 @@ reloadOnUpdate("pages/background");
  */
 reloadOnUpdate("pages/content/style.scss");
 
+//#region Install / Update
 chrome.runtime.onInstalled.addListener(async ({ reason, previousVersion}) => {
     switch (reason) {
         case chrome.runtime.OnInstalledReason.INSTALL:
@@ -50,4 +55,27 @@ async function handleUpdate(previousVersion: string) {
         previousVersion: { visible: true, value: previousVersion  },
     });
 }
+//#endregion
+
+//#region Link preview updater
+chrome.alarms.onAlarm.addListener(async (alarm: Alarm) => {
+    const { type, url } = JSON.parse(alarm.name);
+
+    if (type === 'URL_CACHE_EXPIRATION') {
+        console.log('Updating URL cache for: ', url);
+        const linkPreview = await Query.getLinkPreview(url);
+
+        if (linkPreview.type !== 'error') {
+            chrome.alarms.create(JSON.stringify({
+                type: 'URL_CACHE_EXPIRATION',
+                url
+            }), {
+                when: new Date((linkPreview as PreviewBase).exp).getTime()
+            });
+        }
+
+        await UrlCache.setOrUpdate(url, linkPreview);
+    }
+});
+//#endregion
 

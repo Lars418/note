@@ -75,4 +75,33 @@ export class Formatter {
 
         return this.escape(dom.body.textContent);
     };
+
+    static async formatDuration(rawDuration: number) {
+        const language = await utils.getLanguage();
+        const options: { [key: string]: string|boolean } = {
+            second: 'numeric',
+            hour12: false,
+        };
+
+        if (rawDuration >= 60) {
+            options.minute = 'numeric';
+        }
+
+        if (rawDuration >= 3600) {
+            options.hour = 'numeric';
+        }
+
+        const formatter = new Intl.DateTimeFormat(language, options as any);
+        const date = new Date(0);
+        date.setSeconds(rawDuration);
+
+        const formattedDate =  formatter.format(date);
+
+        if (!options.minute) {
+            return `00:${formattedDate}`;
+        }
+
+        return formattedDate;
+
+    };
 }

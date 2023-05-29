@@ -10,7 +10,9 @@ html {
   --placeholder: #6b6b6b;
   --switch-disabled: #f2f2f2;
   --code: #c4c4c4;
+  --linkPreview-description: #4c4c4c;
   --linkPreview-background: #e9e9e9;
+  --linkPreview-pageName: #4c4c4c;
   --text-light: #fff;
   --orange: #ffc156;
   --red: #ff5a3f;
@@ -29,7 +31,9 @@ html.dark-theme {
   --placeholder: rgba(255, 255, 255, 0.225);
   --switch-disabled: #787878;
   --code: #161616;
+  --linkPreview-description: #aaaaaa;
   --linkPreview-background: #3d3e42;
+  --linkPreview-pageName: #d3d3d3;
   --body-alternate: #292a2d;
   --border: #4e4e4e;
   --link: #2997ff;

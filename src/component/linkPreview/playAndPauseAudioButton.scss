@@ -1,0 +1,46 @@
+.playAndPauseAudioButton-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0 0.15rem;
+  color: var(--linkPreview-description);
+  margin-top: -0.5rem;
+  position: relative;
+  bottom: -0.2rem;
+
+  > .playAndPauseAudioButton {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    background: none;
+    appearance: none;
+    border: none;
+    cursor: pointer;
+
+    > svg {
+      width: inherit;
+      height: inherit;
+      stroke: var(--linkPreview-description);
+    }
+
+    &:hover {
+      opacity: 0.8
+    }
+  }
+
+  > .playAndPauseAudioButton-details {
+    margin-left: 0.5rem;
+    font-size: 0.6rem;
+    white-space: nowrap;
+
+    &:not([hidden]) {
+      display: inline-block;
+    }
+  }
+}
+
+
+@media (prefers-reduced-motion: no-preference) {
+  .playAndPauseAudioButton {
+    transition: opacity 200ms;
+  }
+}

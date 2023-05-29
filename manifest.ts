@@ -37,7 +37,8 @@ const manifest: chrome.runtime.ManifestV3 = {
   permissions: [
     "storage",
     "activeTab",
-    "contextMenus"
+    "contextMenus",
+    "alarms"
   ],
   default_locale: "en",
   content_scripts: [

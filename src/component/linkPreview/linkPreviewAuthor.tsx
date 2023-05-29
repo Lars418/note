@@ -10,16 +10,18 @@ interface ILinkPreviewAuthor {
 }
 
 const LinkPreviewAuthor: React.FC<ILinkPreviewAuthor> = (props) => {
-    const { author: { name, jobTitle, images } } = props;
+    const { author: { name, jobTitle, images, url } } = props;
     const title = jobTitle ? `${name} (${jobTitle})` : name;
     const intl = useIntl();
     const isDarkTheme = document.documentElement.classList.contains('dark-theme');
-    console.log({isDarkTheme})
+    const WrapperComponent = url ? 'a' : 'div';
 
     return (
-        <div
+        <WrapperComponent
             className="linkPreview-author"
             title={title}
+            href={url ? url : undefined}
+            target={url ? '_blank' : undefined}
         >
             {
                 !images?.length ? (
@@ -77,7 +79,7 @@ const LinkPreviewAuthor: React.FC<ILinkPreviewAuthor> = (props) => {
                     />
                 )
             }
-        </div>
+        </WrapperComponent>
     );
 }
 

@@ -269,6 +269,15 @@
         "message": "Markierten Text hinzufügen"
     },
 
+    "previewCardTypeArticle": {
+        "message": "Artikel"
+    },
+    "previewCardTypeQA": {
+        "message": "Q&A"
+    },
+    "previewCardTypeMusic": {
+        "message": "Musik"
+    },
     "previewCardNoTitle": {
         "message": "Kein Titel vorhanden"
     },
@@ -356,6 +365,23 @@
     "previewCardAuthorSilhouetteAlt": {
         "message": "Silhouette einer Person"
     },
+    "playAudioButton": {
+        "message": "$TYPE$ anhören",
+        "placeholders": {
+            "type": {
+                "content": "$1"
+            }
+        }
+    },
+    "pauseAudioButton": {
+        "message": "$TYPE$ pausieren",
+        "placeholders": {
+            "type": {
+                "content": "$1"
+            }
+        }
+    },
+
     "playMusicTitle": {
         "message": "\"$SONG$\" spielen",
         "placeholders": {
