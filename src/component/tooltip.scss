@@ -1,0 +1,34 @@
+.tooltip-wrapper {
+  display: flex;
+}
+
+.tooltip {
+  position: fixed;
+  border-radius: 0.25rem;
+  padding: 0.35rem;
+  background-color: #fff;
+  z-index: 9999999999999;
+  max-width: 18.75rem;
+
+  &.arrow {
+    &::before {
+      content: '';
+      position: absolute;
+      top: -0.5rem;
+      left: calc((var(--container-width) / 2) - 0.425rem);
+      border-style: solid;
+      border-width: 0 0.5rem 0.85rem 0.5rem;
+      border-color: transparent transparent #fff transparent;
+    }
+  }
+}
+
+html.dark-theme {
+  .tooltip {
+    background-color: #000;
+
+    &.arrow::before {
+      border-color: transparent transparent #000 transparent;
+    }
+  }
+}

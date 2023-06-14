@@ -400,6 +400,10 @@
         }
     },
 
+    "linkPreviewAuthorUrlHint": {
+        "message": "Click to view author"
+    },
+
     "second": {
         "message": "Second"
     },

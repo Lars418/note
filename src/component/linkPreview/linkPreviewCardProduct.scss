@@ -1,0 +1,33 @@
+.linkPreviewCardProduct {
+  .product-content-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: .4rem;
+    margin: 0.4rem;
+
+    > .product-image {
+      object-fit: contain;
+      width: 100%;
+      height: 100%;
+      min-width: 5.5rem;
+      max-width: 12.25rem;
+      border-radius: 0.75rem;
+    }
+  }
+
+  > article > .linkPreview-textContent {
+    > h2 {
+      margin-bottom: 0.2rem;
+    }
+
+    > .product-meta {
+      font-size: 0.8rem;
+      margin-bottom: 0.4rem;
+      clear: both;
+      padding-inline-start: 0;
+      display: flex;
+      list-style: none;
+    }
+  }
+}

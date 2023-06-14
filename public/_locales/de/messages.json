@@ -399,6 +399,10 @@
         }
     },
 
+    "linkPreviewAuthorUrlHint": {
+        "message": "Klicken, um Autor anzuzeigen"
+    },
+
     "second": {
         "message": "Sekunde"
     },

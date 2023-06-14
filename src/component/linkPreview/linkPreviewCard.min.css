@@ -58,7 +58,7 @@
   display: flex;
   padding-inline-start: 0;
 }
-.linkPreview > article > .linkPreview-textContent > .linkPreview-author-list > .linkPreview-author:not(:first-of-type), .linkPreview:visited > article > .linkPreview-textContent > .linkPreview-author-list > .linkPreview-author:not(:first-of-type) {
+.linkPreview > article > .linkPreview-textContent > .linkPreview-author-list .linkPreview-author:not(:first-child), .linkPreview:visited > article > .linkPreview-textContent > .linkPreview-author-list .linkPreview-author:not(:first-child) {
   margin-left: -1rem;
 }
 .linkPreview > article > .linkPreview-textContent > .linkPreview-pageName, .linkPreview:visited > article > .linkPreview-textContent > .linkPreview-pageName {

@@ -24,6 +24,21 @@
   }
 }
 
+.linkPreviewAuthor-tooltip-title {
+  display: block;
+}
+
+.linkPreviewAuthor-tooltip-subtitle {
+  font-size: .7rem;
+}
+
+.linkPreviewAuthor-tooltip-linkHint {
+  display: block;
+  margin-top: 0.55rem;
+  font-style: italic;
+  font-size: .6rem;
+}
+
 html.dark-theme {
   .linkPreview-author {
     background-color: black;

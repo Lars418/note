@@ -104,4 +104,17 @@ export class Formatter {
         return formattedDate;
 
     };
+
+    static async formatCurrency(value: number, currency: string) {
+        const language = await utils.getLanguage();
+
+        return new Intl
+            .NumberFormat(language, {
+                style: 'currency',
+                currency,
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })
+            .format(value);
+    }
 }

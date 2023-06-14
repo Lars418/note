@@ -4,39 +4,64 @@ import './linkPreviewAuthor.min.css';
 // @ts-ignore
 import { ReactComponent as Silhouette } from '@assets/img/silhouette.svg';
 import useIntl from "@src/hook/useIntl";
+import Tooltip from "@src/component/tooltip";
+import FormattedMessage from '@src/component/formattedMessage';
 
 interface ILinkPreviewAuthor {
     author: Author;
+    onTooltipEnter?(): void;
+    onTooltipLeave?(): void;
 }
 
 const LinkPreviewAuthor: React.FC<ILinkPreviewAuthor> = (props) => {
-    const { author: { name, jobTitle, images, url } } = props;
+    const { author: { name, jobTitle, images, url }, onTooltipEnter, onTooltipLeave } = props;
     const title = jobTitle ? `${name} (${jobTitle})` : name;
     const intl = useIntl();
     const isDarkTheme = document.documentElement.classList.contains('dark-theme');
     const WrapperComponent = url ? 'a' : 'div';
 
     return (
-        <WrapperComponent
-            className="linkPreview-author"
-            title={title}
-            href={url ? url : undefined}
-            target={url ? '_blank' : undefined}
+        <Tooltip
+            onTooltipEnter={onTooltipEnter}
+            onTooltipLeave={onTooltipLeave}
+            arrow
+            title={(
+                <>
+                    <span className="linkPreviewAuthor-tooltip-title">{name}</span>
+                    {jobTitle && (
+                        <span className="linkPreviewAuthor-tooltip-subtitle">
+                            {jobTitle}
+                        </span>
+                    )}
+                    {
+                        url && (
+                            <span className="linkPreviewAuthor-tooltip-linkHint">
+                                <FormattedMessage id="linkPreviewAuthorUrlHint" />
+                            </span>
+                        )
+                    }
+                </>
+            )}
         >
-            {
-                !images?.length ? (
-                    <svg
-                        role="img"
-                        aria-label={intl.formatMessage('previewCardAuthorSilhouetteAlt')}
-                        version="1.0" xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 1529.000000 1533.000000"
-                        preserveAspectRatio="xMidYMid meet">
-                        <g
-                            transform="translate(0.000000,1533.000000) scale(0.100000,-0.100000)"
-                            fill="var(--text-translucent)"
-                            stroke="none"
-                        >
-                            <path d="M7400 14726 c-3 -3 -96 -10 -205 -16 -110 -6 -238 -15 -284 -21 -191
+            <WrapperComponent
+                className="linkPreview-author"
+                href={url ? url : undefined}
+                target={url ? '_blank' : undefined}
+            >
+                {
+                    !images?.length ? (
+                        <svg
+                            role="img"
+                            aria-label={intl.formatMessage('previewCardAuthorSilhouetteAlt')}
+                            version="1.0" xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 1529.000000 1533.000000"
+                            preserveAspectRatio="xMidYMid meet">
+                            <g
+                                transform="translate(0.000000,1533.000000) scale(0.100000,-0.100000)"
+                                fill="var(--text-translucent)"
+                                stroke="none"
+                            >
+                                <path d="M7400 14726 c-3 -3 -96 -10 -205 -16 -110 -6 -238 -15 -284 -21 -191
 -23 -452 -98 -711 -206 -103 -43 -460 -254 -575 -341 -92 -69 -364 -348 -471
 -482 -37 -47 -90 -110 -119 -140 -95 -100 -167 -232 -239 -437 -50 -144 -58
 -222 -41 -363 8 -63 24 -217 35 -341 20 -230 24 -254 86 -604 l36 -200 -18
@@ -68,18 +93,19 @@ const LinkPreviewAuthor: React.FC<ILinkPreviewAuthor> = (props) => {
 -322 338 -407 405 -44 35 -125 91 -179 125 -55 35 -133 89 -174 122 -64 51
 -298 196 -387 240 -16 9 -60 18 -96 21 -36 3 -147 25 -245 47 -183 43 -265 56
 -274 46z"/>
-                        </g
-                        >
-                    </svg>
-                ) : (
-                    <img
-                        src={images[0].url}
-                        alt={images[0].alt}
-                        draggable={false}
-                    />
-                )
-            }
-        </WrapperComponent>
+                            </g
+                            >
+                        </svg>
+                    ) : (
+                        <img
+                            src={images[0].url}
+                            alt={images[0].alt}
+                            draggable={false}
+                        />
+                    )
+                }
+            </WrapperComponent>
+        </Tooltip>
     );
 }
 

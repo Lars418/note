@@ -9,6 +9,8 @@ import {LinkPreview} from "@src/@types/type/linkPreview/linkPreview";
 import './linkPreviewCard.min.css';
 import LinkPreviewAuthor from "@src/component/linkPreview/linkPreviewAuthor";
 import PlayAndPauseAudioButton from "@src/component/linkPreview/playAndPauseAudioButton";
+import LinkPreviewCardProduct from "@src/component/linkPreview/linkPreviewCardProduct";
+import {PreviewProduct} from "@src/@types/interface/linkPreview/previewProduct";
 
 interface ILinkPreview {
     url: string;
@@ -19,6 +21,15 @@ const LinkPreviewCard: React.FC<ILinkPreview> = (props) => {
     const { previewData, setPreviewData } = useContext(NoteTabPanelContext);
     const [rawUrlPreview, setRawUrlPreview] = useState<PreviewError|PreviewBase|PreviewArticle|PreviewQA|undefined>();
     const urlPreview = rawUrlPreview as LinkPreview;
+    const [linkDisabled, setLinkDisabled] = useState<boolean>(false);
+
+    const handleTooltipEnter = () => {
+        setLinkDisabled(true);
+    };
+
+    const handleTooltipLeave = () => {
+        setLinkDisabled(false);
+    };
 
     useEffect(() => {
         (async () => {
@@ -60,86 +71,157 @@ const LinkPreviewCard: React.FC<ILinkPreview> = (props) => {
         )
     }
 
-
-    return (
-        <a
-            href={url}
-            hrefLang={urlPreview.locale}
-            target="_blank"
-            className="linkPreview"
-        >
-            <article>
-                {
-                    urlPreview.previewImages?.length > 0 && (
-                        <div className={[
-                            'linkPreview-previewImage-container',
-                            urlPreview.favicon ? 'linkPreview-previewImage-container-with-favicon' : ''
-                        ].join(' ').trim()}>
-                            <img
-                                className="linkPreview-previewImage"
-                                src={urlPreview.previewImages[0].url}
-                                alt={urlPreview.previewImages[0].alt}
-                                draggable={false}
-                                data-favicon={urlPreview.favicon}
-                            />
-
-                            {
-                                urlPreview.favicon && (
-                                    <img
-                                        className="linkPreview-favicon"
-                                        src={urlPreview.favicon}
-                                        alt=""
-                                    />
-                                )
-                            }
-                        </div>
-                    )
-                }
-
-                <div
-                    className={[
-                        'linkPreview-textContent',
-                        (urlPreview.previewImages?.length > 0 && (urlPreview as PreviewArticle).author?.length > 0) ? 'move-up' : ''
-                    ].join(' ').trim()}
+    switch (urlPreview.type) {
+        case 'article':
+            return (
+                <a
+                    href={linkDisabled ? undefined : url}
+                    hrefLang={urlPreview.locale}
+                    target="_blank"
+                    className="linkPreview"
                 >
-                    {
-                        urlPreview.type === 'article' && (urlPreview as PreviewArticle).author?.length > 0 && (
-                            <ol className="linkPreview-author-list">
-                                {
-                                    (urlPreview as PreviewArticle).author.map(author => (
-                                        <LinkPreviewAuthor
-                                            key={author.name + author.jobTitle}
-                                            author={author}
-                                        />
-                                    ))
-                                }
-                            </ol>
-                        )
-                    }
-
-                    <p className="linkPreview-pageName">
-                        {urlPreview.pageName}
-                    </p>
-
-                    <h2>
-                        <span>{urlPreview.title}</span>
+                    <article>
                         {
-                            urlPreview.audioUrl && (
-                                <PlayAndPauseAudioButton
-                                    audioUrl={urlPreview.audioUrl}
-                                    type={urlPreview.type}
-                                />
+                            urlPreview.previewImages?.length > 0 && (
+                                <div className={[
+                                    'linkPreview-previewImage-container',
+                                    urlPreview.favicon ? 'linkPreview-previewImage-container-with-favicon' : ''
+                                ].join(' ').trim()}>
+                                    <img
+                                        className="linkPreview-previewImage"
+                                        src={urlPreview.previewImages[0].url}
+                                        alt={urlPreview.previewImages[0].alt}
+                                        draggable={false}
+                                        data-favicon={urlPreview.favicon}
+                                    />
+
+                                    {
+                                        urlPreview.favicon && (
+                                            <img
+                                                className="linkPreview-favicon"
+                                                src={urlPreview.favicon}
+                                                alt=""
+                                            />
+                                        )
+                                    }
+                                </div>
                             )
                         }
-                    </h2>
 
-                    <p className="linkPreview-description">
-                        {urlPreview.description}
-                    </p>
-                </div>
-            </article>
-        </a>
-    )
+                        <div
+                            className={[
+                                'linkPreview-textContent',
+                                (urlPreview.previewImages?.length > 0 && (urlPreview as PreviewArticle).article.author?.length > 0) ? 'move-up' : ''
+                            ].join(' ').trim()}
+                        >
+                            {
+                                urlPreview.type === 'article' && (urlPreview as PreviewArticle).article.author?.length > 0 && (
+                                    <ol className="linkPreview-author-list">
+                                        {
+                                            (urlPreview as PreviewArticle).article.author.map(author => (
+                                                <LinkPreviewAuthor
+                                                    key={author.name + author.jobTitle}
+                                                    author={author}
+                                                    onTooltipEnter={handleTooltipEnter}
+                                                    onTooltipLeave={handleTooltipLeave}
+                                                />
+                                            ))
+                                        }
+                                    </ol>
+                                )
+                            }
+
+                            <p className="linkPreview-pageName">
+                                {urlPreview.pageName}
+                            </p>
+
+                            <h2>
+                                <span>{urlPreview.title}</span>
+                                {
+                                    urlPreview.audioUrl && (
+                                        <PlayAndPauseAudioButton
+                                            audioUrl={urlPreview.audioUrl}
+                                            type={urlPreview.type}
+                                        />
+                                    )
+                                }
+                            </h2>
+
+                            <p className="linkPreview-description">
+                                {urlPreview.description}
+                            </p>
+                        </div>
+                    </article>
+                </a>
+            );
+        case 'product':
+            return (
+                <LinkPreviewCardProduct
+                    url={url}
+                    urlPreview={urlPreview as PreviewProduct}
+                />
+            )
+        default:
+            return (
+                <a
+                    href={url}
+                    hrefLang={urlPreview.locale}
+                    target="_blank"
+                    className="linkPreview"
+                >
+                    <article>
+                        {
+                            urlPreview.previewImages?.length > 0 && (
+                                <div className={[
+                                    'linkPreview-previewImage-container',
+                                    urlPreview.favicon ? 'linkPreview-previewImage-container-with-favicon' : ''
+                                ].join(' ').trim()}>
+                                    <img
+                                        className="linkPreview-previewImage"
+                                        src={urlPreview.previewImages[0].url}
+                                        alt={urlPreview.previewImages[0].alt}
+                                        draggable={false}
+                                        data-favicon={urlPreview.favicon}
+                                    />
+
+                                    {
+                                        urlPreview.favicon && (
+                                            <img
+                                                className="linkPreview-favicon"
+                                                src={urlPreview.favicon}
+                                                alt=""
+                                            />
+                                        )
+                                    }
+                                </div>
+                            )
+                        }
+
+                        <div className="linkPreview-textContent" >
+                            <p className="linkPreview-pageName">
+                                {urlPreview.pageName}
+                            </p>
+
+                            <h2>
+                                <span>{urlPreview.title}</span>
+                                {
+                                    urlPreview.audioUrl && (
+                                        <PlayAndPauseAudioButton
+                                            audioUrl={urlPreview.audioUrl}
+                                            type={urlPreview.type}
+                                        />
+                                    )
+                                }
+                            </h2>
+
+                            <p className="linkPreview-description">
+                                {urlPreview.description}
+                            </p>
+                        </div>
+                    </article>
+                </a>
+            );
+    }
 }
 
 export default LinkPreviewCard;

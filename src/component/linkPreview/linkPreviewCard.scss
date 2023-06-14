@@ -65,7 +65,7 @@
         display: flex;
         padding-inline-start: 0;
 
-        > .linkPreview-author:not(:first-of-type) {
+        .linkPreview-author:not(:first-child) {
           margin-left: -1rem;
         }
       }
