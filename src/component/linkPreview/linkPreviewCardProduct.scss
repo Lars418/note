@@ -28,6 +28,11 @@
       padding-inline-start: 0;
       display: flex;
       list-style: none;
+
+      > .product-meta-separator {
+        margin: 0 0.3rem;
+        color: var(--linkPreview-description);
+      }
     }
   }
 }

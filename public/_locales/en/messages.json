@@ -403,6 +403,49 @@
     "linkPreviewAuthorUrlHint": {
         "message": "Click to view author"
     },
+    "linkPreview_ItemAvailability_BackOrder": {
+        "message": "Backordered"
+    },
+    "linkPreview_ItemAvailability_Discontinued": {
+        "message": "Discontinued"
+    },
+    "linkPreview_ItemAvailability_InStock": {
+        "message": "In stock"
+    },
+    "linkPreview_ItemAvailability_InStoreOnly": {
+        "message": "In store only"
+    },
+    "linkPreview_ItemAvailability_LimitedAvailability": {
+        "message": "Limited availability"
+    },
+    "linkPreview_ItemAvailability_OnlineOnly": {
+        "message": "Online only"
+    },
+    "linkPreview_ItemAvailability_OutOfStock": {
+        "message": "Out of stock"
+    },
+    "linkPreview_ItemAvailability_PreOrder": {
+        "message": "Preorder"
+    },
+    "linkPreview_ItemAvailability_PreSale": {
+        "message": "Presale"
+    },
+    "linkPreview_ItemAvailability_SoldOut": {
+        "message": "Sold out"
+    },
+
+    "linkPreview_ItemCondition_DamagedCondition": {
+        "message": "Damaged"
+    },
+    "linkPreview_ItemCondition_NewCondition": {
+        "message": "New"
+    },
+    "linkPreview_ItemCondition_RefurbishedCondition": {
+        "message": "Refurbished"
+    },
+    "linkPreview_ItemCondition_UsedCondition": {
+        "message": "Used"
+    },
 
     "second": {
         "message": "Second"

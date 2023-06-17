@@ -402,6 +402,49 @@
     "linkPreviewAuthorUrlHint": {
         "message": "Klicken, um Autor anzuzeigen"
     },
+    "linkPreview_ItemAvailability_BackOrder": {
+        "message": "Nachbestellt"
+    },
+    "linkPreview_ItemAvailability_Discontinued": {
+        "message": "Eingestellt"
+    },
+    "linkPreview_ItemAvailability_InStock": {
+        "message": "Vorrätig"
+    },
+    "linkPreview_ItemAvailability_InStoreOnly": {
+        "message": "Nur im Geschäft"
+    },
+    "linkPreview_ItemAvailability_LimitedAvailability": {
+        "message": "Limitierte Verfügbarkeit"
+    },
+    "linkPreview_ItemAvailability_OnlineOnly": {
+        "message": "Nur online"
+    },
+    "linkPreview_ItemAvailability_OutOfStock": {
+        "message": "Nicht auf Lager"
+    },
+    "linkPreview_ItemAvailability_PreOrder": {
+        "message": "Vorbestellbar"
+    },
+    "linkPreview_ItemAvailability_PreSale": {
+        "message": "Vorverkauf"
+    },
+    "linkPreview_ItemAvailability_SoldOut": {
+        "message": "Ausverkauft"
+    },
+
+    "linkPreview_ItemCondition_DamagedCondition": {
+        "message": "Beschädigt"
+    },
+    "linkPreview_ItemCondition_NewCondition": {
+        "message": "Neu"
+    },
+    "linkPreview_ItemCondition_RefurbishedCondition": {
+        "message": "Generalüberholt"
+    },
+    "linkPreview_ItemCondition_UsedCondition": {
+        "message": "Gebraucht"
+    },
 
     "second": {
         "message": "Sekunde"

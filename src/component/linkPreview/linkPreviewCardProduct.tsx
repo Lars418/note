@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {PreviewProduct} from "@src/@types/interface/linkPreview/previewProduct";
 import './linkPreviewCardProduct.scss';
 import {Formatter} from "@src/utils/formatter";
+import useIntl from '@src/hook/useIntl';
 
 interface ILinkPreviewCardProduct {
     url: string;
@@ -10,7 +11,9 @@ interface ILinkPreviewCardProduct {
 
 const LinkPreviewCardProduct: React.FC<ILinkPreviewCardProduct> = (props) => {
     const { url, urlPreview } = props;
+    const intl = useIntl();
     const [formattedPrice, setFormattedPrice] = useState<string>('');
+    const formattedCondition = urlPreview.product.availability ? intl.formatMessage(`linkPreview_ItemAvailability_${urlPreview.product.availability}`) : undefined;
     const previewImages = (() => {
         if (urlPreview.product.previewImages?.length > 0 ) {
             return urlPreview.product.previewImages.slice(0, 2);
@@ -22,6 +25,7 @@ const LinkPreviewCardProduct: React.FC<ILinkPreviewCardProduct> = (props) => {
 
         return [];
     })();
+    const metaData = [formattedPrice, formattedCondition].filter(x => x);
 
     useEffect(() => {
         (async () => {
@@ -77,23 +81,30 @@ const LinkPreviewCardProduct: React.FC<ILinkPreviewCardProduct> = (props) => {
                         <span>{urlPreview.product.name || urlPreview.title}</span>
                     </h2>
 
-                    <ul className="product-meta">
-                        {
-                            formattedPrice && (
-                                <li>
-                                    {formattedPrice}
-                                </li>
-                            )
-                        }
+                    {
+                        metaData.length > 0 && (
+                            <ul className="product-meta">
+                                {
+                                    metaData.map((entry, index) => (
+                                        <React.Fragment key={entry}>
+                                            <li>
+                                                {entry}
+                                            </li>
 
-                        {
-                            urlPreview.product?.availability && (
-                                <li>
-                                    {urlPreview.product.availability}
-                                </li>
-                            )
-                        }
-                    </ul>
+                                            {
+                                                index !== (metaData.length - 1) && (
+                                                    <li className="product-meta-separator">
+                                                        &bull;
+                                                    </li>
+                                                )
+                                            }
+                                        </React.Fragment>
+
+                                    ))
+                                }
+                            </ul>
+                        )
+                    }
 
                     <p className="linkPreview-description">
                         {urlPreview.description}

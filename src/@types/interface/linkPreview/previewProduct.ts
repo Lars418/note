@@ -1,6 +1,8 @@
 import { Author } from '@src/@types/interface/linkPreview/author';
 import { Image } from '@src/@types/interface/linkPreview/image';
 import {PreviewBase} from "@src/@types/interface/linkPreview/previewBase";
+import { ProductItemAvailability } from '@src/@types/enum/productItemAvailability';
+import { ProductItemCondition } from '@src/@types/enum/productItemCondition';
 
 export interface PreviewProduct extends PreviewBase {
     type: 'product';
@@ -8,7 +10,8 @@ export interface PreviewProduct extends PreviewBase {
         name: string;
         description: string;
         offerCount?: number;
-        availability?: string;
+        condition?: ProductItemCondition;
+        availability?: ProductItemAvailability;
         brand?: string;
         previewImages: Image[];
         price: {
