@@ -446,6 +446,18 @@
         "message": "Gebraucht"
     },
 
+    "linkPreview_offerCount": {
+        "message": "$OFFER_COUNT$ Angebote",
+        "placeholders": {
+            "offer_count": {
+                "content": "$1"
+            }
+        }
+    },
+    "linkPreview_offerCountOne": {
+        "message": "Ein Angebot"
+    },
+
     "second": {
         "message": "Sekunde"
     },

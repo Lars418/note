@@ -14,6 +14,19 @@ const LinkPreviewCardProduct: React.FC<ILinkPreviewCardProduct> = (props) => {
     const intl = useIntl();
     const [formattedPrice, setFormattedPrice] = useState<string>('');
     const formattedCondition = urlPreview.product.availability ? intl.formatMessage(`linkPreview_ItemAvailability_${urlPreview.product.availability}`) : undefined;
+    const formattedOffers = (() => {
+        if (!urlPreview.product.offerCount) {
+            return;
+        }
+
+        if (urlPreview.product.offerCount === 1) {
+            return intl.formatMessage('linkPreview_offerCountOne');
+        }
+
+        return intl.formatMessage('linkPreview_offerCount', {
+            offer_count: urlPreview.product.offerCount.toString()
+        });
+    })();
     const previewImages = (() => {
         if (urlPreview.product.previewImages?.length > 0 ) {
             return urlPreview.product.previewImages.slice(0, 2);
@@ -25,7 +38,7 @@ const LinkPreviewCardProduct: React.FC<ILinkPreviewCardProduct> = (props) => {
 
         return [];
     })();
-    const metaData = [formattedPrice, formattedCondition].filter(x => x);
+    const metaData = [formattedPrice, formattedCondition, formattedOffers].filter(x => x);
 
     useEffect(() => {
         (async () => {
@@ -107,7 +120,7 @@ const LinkPreviewCardProduct: React.FC<ILinkPreviewCardProduct> = (props) => {
                     }
 
                     <p className="linkPreview-description">
-                        {urlPreview.description}
+                        {urlPreview.product.description || urlPreview.description}
                     </p>
                 </div>
             </article>

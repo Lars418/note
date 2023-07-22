@@ -447,6 +447,18 @@
         "message": "Used"
     },
 
+    "linkPreview_offerCount": {
+        "message": "$OFFER_COUNT$ offers",
+        "placeholders": {
+            "offer_count": {
+                "content": "$1"
+            }
+        }
+    },
+    "linkPreview_offerCountOne": {
+        "message": "One offer"
+    },
+
     "second": {
         "message": "Second"
     },

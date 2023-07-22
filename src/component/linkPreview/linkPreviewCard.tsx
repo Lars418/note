@@ -111,11 +111,11 @@ const LinkPreviewCard: React.FC<ILinkPreview> = (props) => {
                         <div
                             className={[
                                 'linkPreview-textContent',
-                                (urlPreview.previewImages?.length > 0 && (urlPreview as PreviewArticle).article.author?.length > 0) ? 'move-up' : ''
+                                (urlPreview.previewImages?.length > 0 && (urlPreview as PreviewArticle).article?.author?.length > 0) ? 'move-up' : ''
                             ].join(' ').trim()}
                         >
                             {
-                                urlPreview.type === 'article' && (urlPreview as PreviewArticle).article.author?.length > 0 && (
+                                urlPreview.type === 'article' && (urlPreview as PreviewArticle).article?.author?.length > 0 && (
                                     <ol className="linkPreview-author-list">
                                         {
                                             (urlPreview as PreviewArticle).article.author.map(author => (
